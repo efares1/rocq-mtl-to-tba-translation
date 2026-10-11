@@ -85,11 +85,11 @@ satisfiable.
 On the benchmark configurations, $P_1$, $P_2$, and $S$ are empty for every
 configuration that completes within the limits (F1--F14 except the hatted F3
 and F13, which CASAAL cannot express, R1--R3, and N1--N4); for F3 and F13
-only $S$ is checked, and it is empty. For R4, R5, N5, and N6 the three checks exceed
-600~s and are inconclusive; R6--R8 produce no automaton within the limit.
-For N7 and N8, $\mathit{compile}(\varphi)$ is built (26~s and 101~s), but $P_1$
-exceeds 600~s and the automaton for $\neg\varphi$ is not built within the
-limit, so $P_2$ and $S$ are not run; they are inconclusive.
+only $S$ is checked, and it is empty. For R5 and N6 the three checks exceed 600~s. At 1{,}800~s, run singly, $P_2$ of R4
+is empty, while $P_1$, $S$ of R4 and all three checks of N5 still time out (which
+may also mean memory exhaustion). R6--R8 produce no automaton within the limit.
+For N7 and N8, $O$ is built (26~s and 101~s), but $P_1$ exceeds 600~s and $O'$ is
+not built within the limit, so $P_2$ and $S$ are not run (inconclusive).
 The sanity product is non-empty in every completed case.
 
 The artifact also contains 100 random formulas of depth at most three over
@@ -97,15 +97,13 @@ three propositions, generated with their CASAAL automata. For 99 of them,
 $P_1$, $P_2$, and $S$ are empty, with no timeout; for five of these, the
 sanity product is empty as well, and inspection shows that each of these
 five formulas is unsatisfiable under mutual exclusion (for example
-$q\land\Diamond_{>2}p\land r$). The remaining formula, X74, is
-$\Diamond(q\land r)\Rightarrow\neg p$, for which $P_1$ is non-empty. Its
-negation $\Diamond(q\land r)\land p$ is unsatisfiable under mutual
-exclusion, and our automaton for it has no accepting location. CASAAL's
-printed automaton for the negation has states labeled with the pending
-eventuality $\mathsf F(q\land r)$ but no acceptance mark, and the conversion
-script reads an automaton without marks as accepting every run; the same
-behavior appears on $\mathsf F q\land\mathsf G\neg q$. We therefore report
-X74 as inconclusive: it reflects how acceptance is printed and read, not a
+$q\land\Diamond_{>2}p\land r$). The remaining formula, X74, is $\Diamond(q\land r)\Rightarrow
+eg p$, for which
+$P_1$ is non-empty. Its negation $\Diamond(q\land r)\land p$ is unsatisfiable
+under mutual exclusion, and our automaton for it has no accepting location.
+CASAAL's printed automaton for the negation has no acceptance mark, and the
+conversion script reads an automaton without marks as accepting every run (as for $\mathsf F q\land\mathsf G\neg q$). We report X74 as
+inconclusive: it reflects how acceptance is printed and read, not a
 disagreement that the products can establish.
 
 \subsection{Agreement on ultimately periodic words}
@@ -122,9 +120,11 @@ are tried on a grid when it has at most three clocks, since the theorem
 quantifies them existentially. On the 28 benchmark configurations that build
 (400 words each, 11{,}200 in all, 4{,}495 satisfying the formula) and on the
 100 random formulas (150 words each, 15{,}000 in all, 8{,}273 satisfying
-it), the three verdicts agree on every word; CASAAL is included on 26 of the
-benchmark configurations (not on the hatted F3 and F13) and on all random
-formulas. As a negative control, the same checker finds disagreements for F1
+it), the semantics and $\mathsf{compile}(f)$ agree on every word. CASAAL is included on 26 of the
+28 benchmark configurations (not on the hatted F3 and F13) and on all random
+formulas, and agrees on every word there as well: 10{,}400 plus 15{,}000
+words, 25{,}400 three-way comparisons; the other 800 words compare only the
+semantics and the automaton. As a negative control, the same checker finds disagreements for F1
 against the formulas with bound 4 instead of 5 (11 of 300 words) and with a
 strict bound (5 of 300). The test has little weight for some formulas:
 no word of N8 satisfies the formula among the random ones, so for N5--N8 we

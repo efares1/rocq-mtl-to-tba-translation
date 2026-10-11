@@ -64,6 +64,7 @@
  (e-mail: efares@hct.ac.ae, halaqrabi@hct.ac.ae, asalami@hct.ac.ae)}
 \address[2]{IRIT, Universit\'e de Toulouse, France (e-mail: bodeveix@irit.fr)}
 \corresp{Corresponding author: Elie Fares (e-mail: efares@hct.ac.ae).}
+\gdef\thevol{XX}\gdef\theyear{2026}
 \markboth{Fares et al.: Mechanically Verified MTL-to-TBA Translation}
 {Fares et al.: Mechanically Verified MTL-to-TBA Translation}
 
@@ -94,8 +95,8 @@ and event-guarded TBAs with existential initial clock valuations; the Spot
 graph-to-record correspondence is outside the proof. On 31 benchmark
 configurations and 100 random formulas, we measure the automata produced by
 extracted code, check language inclusions against CASAAL with TChecker,
-compare the semantics, the automaton, and CASAAL on 26{,}200 random timed
-words, and test the backend contract with an independent
+compare the semantics with the automaton on 26{,}200 random timed words, 25{,}400 of them
+also against CASAAL, and test the backend contract with an independent
 translator.
 \end{abstract}
 
@@ -125,7 +126,7 @@ MTL$_{0,\infty}$-to-TBA language equality and show that their best-choice
 reset policy preserves language~\cite{[BDLG14],li_spin7}. Their
 work already contains the central timed-subformula clocking and reset
 architecture. Our research result is a machine-checked proof for the specified
-construction.
+construction. Table~\ref{tab:prior-construction-comparison} compares them.
 
 Mathematical proofs and machine-checked proofs provide different assurance.
 A proof assistant requires the syntax, timed-word semantics, clock updates,
@@ -1411,8 +1412,7 @@ research interests include cybersecurity and cloud security.
 \end{IEEEbiographynophoto}
 
 \begin{IEEEbiographynophoto}{Azar Salami}
-Azar Salami is with the Higher Colleges of Technology, Sharjah, UAE. He received
-the Ph.D. degree in mathematics from Universit\'e Laval, Canada. His research
-interests include mathematical modeling and formal methods.\EOD
+Azar Salami is with the Higher Colleges of Technology, Sharjah, UAE. His research interests
+include formal methods.\EOD
 \end{IEEEbiographynophoto}
 \end{document}

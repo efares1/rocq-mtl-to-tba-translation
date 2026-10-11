@@ -17,7 +17,7 @@
 #   EXE=<mtl2tba.exe> bash run_compiled_eval.sh        [SET=bench|random|all]
 # Writes compiled_bench.tsv and compiled_random.tsv.  LIMIT seconds per tool
 # run and per emptiness check (default 600).  ONLY="N7 N8" runs just those
-# bench ids and writes compiled_bench_only.tsv.
+# bench ids and writes compiled_bench_only.tsv (or $OUTFILE).
 HERE="$(cd "$(dirname "$0")" && pwd)"
 EXE=${EXE:-"$HERE/../tool/_build/default/src/mtl2tba.exe"}
 TCK=${TCK:-~/local/bin/tck-liveness}
@@ -72,7 +72,7 @@ run() {
 HDR='id\tformula\tlocs\ttrans\tclocks\ttime_s\tP1\tP2\tS\tC\n'
 if [ "$SET" = bench ] || [ "$SET" = all ]; then
   OUT="$HERE/compiled_bench.tsv"
-  if [ -n "$ONLY" ]; then OUT="$HERE/compiled_bench_only.tsv"; fi
+  if [ -n "$ONLY" ]; then OUT="${OUTFILE:-$HERE/compiled_bench_only.tsv}"; fi
   printf "$HDR" > "$OUT"
   grep -v '^#' "$HERE/formulas.tsv" | while IFS=$'\t' read -r id desc ours cas; do
     [ -z "$id" ] && continue
