@@ -1,0 +1,173 @@
+\section{Evaluation}
+\label{sec:evaluation}
+The theorem says nothing about the size of the automaton, about the
+unverified components that produce it, or about how it compares with an
+independent implementation. This section measures the automaton
+$\mathsf{compile}(f)$ obtained by the translation $\T$, Spot, relaxation, and
+reset completion, before any further processing; no optimization or export
+is applied here. We ask three questions. Q1: how large is
+$\mathsf{compile}(f)$, compared with the automaton of CASAAL~\cite{casaal_tool},
+which implements the construction of Li et al.~\cite{li_spin7}? Q2: on
+concrete formulas, do the languages agree with CASAAL's, as far as an
+independent timed-automaton checker, or independent evaluation on words, can
+tell? Q3: does the backend satisfy,
+on these formulas, the contract that the theorem assumes? The answers are
+measurements and tests; none of them is a mechanized result.
+
+\subsection{Setup}
+The tool \texttt{mtl2tba} parses a formula, computes $\T(f)$, calls Spot~2.16
+(\texttt{ltl2tgba}), reads its LBTT output, and applies relaxation and reset
+completion. The functions $\T$, relaxation, and reset completion are OCaml
+code extracted from the Rocq definitions; the parser, the call to Spot, the
+LBTT reader, the printers, and extraction itself are not verified. The tool is
+run with the options \texttt{-noweak -norecur}, so that the clocked-LTL
+formula is exactly $\T(f)$ as defined in Section~\ref{sec:translation}.
+Measurements were taken on an Intel Core i7-8650U (1.9~GHz, 11.7~GB) under
+Ubuntu~26.04 in WSL~2, with a limit of 600~s per tool run and per check
+(120~s for random formulas). The 31 configurations are fifteen
+specification patterns F1--F14 (F3b is F3 without hat), conjunctions R$k$ of
+$k$ bounded responses $\Box(a_i\Rightarrow\Diamond_{\le5}b_i)$ for
+$k=1,\dots,8$, and nestings N$k$ of $k$ bounded eventualities
+$\Diamond_{\le5}(p_1\land\Diamond_{\le5}(p_2\land\cdots))$. Scripts, inputs,
+CASAAL outputs, and raw results are in the artifact
+(\path{evaluation/}).
+
+\subsection{Size of compile(f) and CASAAL reference}
+Table~\ref{tab:compiled} gives, for each configuration, the reachable
+locations, transitions, and clocks of $\mathsf{compile}(f)$, and the size of
+CASAAL's output. CASAAL was run with mutually exclusive events, which matches
+our one-event-per-position words. The two counts of transitions are not
+directly comparable: CASAAL labels a transition with a Boolean formula over
+propositions, whereas Spot's output, and hence $\mathsf{compile}(f)$, has one
+transition per cube over the propositions and clock literals. In R4, for
+example, $\mathsf{compile}(f)$ has 48 locations and 1,625 transitions, and
+CASAAL 16 locations and 80 symbolic transitions; both use four clocks.
+Column Grp.~T counts the transitions of $\mathsf{compile}(f)$ after grouping
+edges with the same source, target, guard, and resets into one edge labelled by
+the union of their events; it is a way of counting and changes no automaton.
+Grouping reduces R4 from 1,625 to 768 and N8 from 166 to 54 transitions, but a
+gap remains (CASAAL: 80 and 19), so the difference is not explained by the
+representation of labels alone.
+\input{evaluation/compiled_table}
+
+The number of clocks coincides with CASAAL's on every configuration that
+CASAAL encodes exactly, except F2: under mutual exclusion,
+$\Box(p\Rightarrow\Box_{\le3}q)$ forbids $p$ altogether, and CASAAL produces a
+one-state automaton without clock, whereas $\mathsf{compile}(f)$ keeps two
+locations and one clock. This agrees with the clock discipline of the
+construction: one clock per structurally distinct primitive timed
+subformula. Locations and transitions are larger than CASAAL's on most
+configurations, sometimes by a large factor (R4, R5); the nesting family N
+has the same number of locations as CASAAL. The growth in the R family comes
+from Spot's automaton for the conjunction of $k$ clocked-LTL clauses, before
+relaxation; R6--R8 exceed the 600-second limit. Construction time is below
+one second for every completed configuration except R4 (3.4~s), N6
+(1.6~s), and R5 (43~s). These numbers describe
+the unoptimized output of the verified construction; they are not a
+comparison of tools; reducing these sizes by post-processing is left to
+follow-up work.
+
+\subsection{Language checks with TChecker}
+For a formula $\varphi$, let $O$ and $O'$ be $\mathsf{compile}(\varphi)$ and
+$\mathsf{compile}(\neg\varphi)$, and $C$, $C'$ CASAAL's automata for
+$\varphi$ and $\neg\varphi$. TChecker~0.8~\cite{tchecker} decides the
+emptiness of the products $P_1=O\times C'$, $P_2=C\times O'$, and
+$S=O\times O'$, built over infinite words with one event per position,
+strictly increasing and divergent timestamps, and clocks starting at~0.
+$P_1$ and $P_2$ empty mean that $O$ is disjoint from $C'$ and $C$ from $O'$;
+if CASAAL's two automata are complementary, which is not checked, this gives
+$L(C)\subseteq L(O)$ and $L(C')\subseteq L(O')$. The checks therefore
+establish inclusions, not equality. $S$ empty means that our automata for
+$\varphi$ and $\neg\varphi$ never accept the same word. A fourth product
+$O\times C$ is a sanity check: it must be non-empty when $\varphi$ is
+satisfiable.
+
+On the benchmark configurations, $P_1$, $P_2$, and $S$ are empty for every
+configuration that completes within the limits (F1--F14 except the hatted F3
+and F13, which CASAAL cannot express, R1--R3, and N1--N4); for F3 and F13
+only $S$ is checked, and it is empty. For R4, R5, N5, and N6 the three checks exceed
+600~s and are inconclusive; R6--R8 produce no automaton within the limit.
+For N7 and N8, $\mathit{compile}(\varphi)$ is built (26~s and 101~s), but $P_1$
+exceeds 600~s and the automaton for $\neg\varphi$ is not built within the
+limit, so $P_2$ and $S$ are not run; they are inconclusive.
+The sanity product is non-empty in every completed case.
+
+The artifact also contains 100 random formulas of depth at most three over
+three propositions, generated with their CASAAL automata. For 99 of them,
+$P_1$, $P_2$, and $S$ are empty, with no timeout; for five of these, the
+sanity product is empty as well, and inspection shows that each of these
+five formulas is unsatisfiable under mutual exclusion (for example
+$q\land\Diamond_{>2}p\land r$). The remaining formula, X74, is
+$\Diamond(q\land r)\Rightarrow\neg p$, for which $P_1$ is non-empty. Its
+negation $\Diamond(q\land r)\land p$ is unsatisfiable under mutual
+exclusion, and our automaton for it has no accepting location. CASAAL's
+printed automaton for the negation has states labeled with the pending
+eventuality $\mathsf F(q\land r)$ but no acceptance mark, and the conversion
+script reads an automaton without marks as accepting every run; the same
+behavior appears on $\mathsf F q\land\mathsf G\neg q$. We therefore report
+X74 as inconclusive: it reflects how acceptance is printed and read, not a
+disagreement that the products can establish.
+
+\subsection{Agreement on ultimately periodic words}
+The TChecker checks establish inclusions and time out on the larger
+configurations, so we add a test of equality on finitely many words. For each
+configuration we draw random ultimately periodic timed words $uv^\omega$ (a
+prefix of 0--4 and a loop of 1--5 events, integer timestamps in half units,
+strictly increasing and divergent; half of the words follow the order of the
+propositions of the formula), and compare three verdicts: the formula under the
+pointwise semantics above, evaluated by an independent Python implementation;
+acceptance by $\mathsf{compile}(f)$; and acceptance by CASAAL's automaton.
+Clocks of CASAAL start at 0; for $\mathsf{compile}(f)$ initial clock values
+are tried on a grid when it has at most three clocks, since the theorem
+quantifies them existentially. On the 28 benchmark configurations that build
+(400 words each, 11{,}200 in all, 4{,}495 satisfying the formula) and on the
+100 random formulas (150 words each, 15{,}000 in all, 8{,}273 satisfying
+it), the three verdicts agree on every word; CASAAL is included on 26 of the
+benchmark configurations (not on the hatted F3 and F13) and on all random
+formulas. As a negative control, the same checker finds disagreements for F1
+against the formulas with bound 4 instead of 5 (11 of 300 words) and with a
+strict bound (5 of 300). The test has little weight for some formulas:
+no word of N8 satisfies the formula among the random ones, so for N5--N8 we
+added five hand-built words each (accepted and rejected; all agree), and nine
+random formulas have fewer than five satisfying and fourteen fewer than five
+violating words. The words are finitely many and short; this is a test, not a
+proof of equality.
+
+\subsection{Backend contract}
+Theorem \Rocqid{MTL_to_TBA_correct_with} assumes that the propositional
+automaton accepts exactly the models of $\T(f)$. For each configuration we
+saved the formula given to Spot and the LBTT automaton $A$ it returned, and
+checked the contract with Spot's \texttt{autfilt}, using an independent
+translator, ltl2ba~1.3: $A\times\mathrm{ltl2ba}(\neg\T(f))$ and
+$\overline{A}\times\mathrm{ltl2ba}(\T(f))$ must both be empty. The contract
+holds on 28 of the 31 configurations; for R7 the check exceeds 600~s, for N8
+ltl2ba exceeds 300~s, and for R8 Spot does not finish. On every configuration
+where Spot produced an automaton, the number of states and transitions read by
+the LBTT reader of \texttt{mtl2tba} equals the number reported by
+\texttt{autfilt} on the same file. These checks test the contract on these
+inputs; they do not prove it, and they use Spot's own tools for part of the
+check.
+
+\subsection{Hatted operators}
+F3 and F13 use the hatted operators of Section~\ref{sec:logic}. CASAAL has no
+hatted operator; its closest encoding of F3,
+$\Box(e\Rightarrow\Next\Box_{\le2}\neg e)$, measures the window from the next
+event rather than from the triggering one
+(Fig.~\ref{fig:hat-reference}) and is not equivalent, so we do not compare
+the two languages. The time reference is visible in the automata. Under mutual exclusion the
+non-strict window of the unhatted F3b contains the triggering event, so F3b
+forbids $e$ altogether: $\mathsf{compile}(f)$ has one location, one
+transition, and no clock. The window of F3 starts after the triggering event
+but is measured from its timestamp, and $\mathsf{compile}(f)$ has two
+locations, five transitions, and one clock $x$, reset on each $e$; after
+an $e$, a further $e$ is accepted only with the guard $x>2$.
+
+\subsection{Threats to validity}
+The configurations and random formulas are small and of our choosing; the
+R family shows that the size of Spot's automaton grows quickly with the
+number of conjuncts. The CASAAL automata were produced earlier and not
+regenerated; CASAAL's integer bounds, nondecreasing time, and acceptance
+printing differ from our model, and the inclusions depend on the unchecked
+complementarity of its automata. The TChecker products, the word-level test,
+and the conversion scripts are unverified code. Timeouts are reported as
+inconclusive.

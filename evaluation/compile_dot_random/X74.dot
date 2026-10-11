@@ -1,0 +1,15 @@
+digraph TBA {
+  rankdir=LR;
+  node [shape=circle];
+  init [shape=point];
+  init -> L0;
+  L0 [shape=doublecircle, label="L0"];
+  L1 [shape=doublecircle, label="L1"];
+  L2 [shape=doublecircle, label="L2"];
+  L0 -> L1 [label="q,r,other"];
+  L0 -> L2 [label="p"];
+  L0 -> L2 [label="p"];
+  L1 -> L1 [label="any"];
+  L2 -> L2 [label="p,r,other"];
+  L2 -> L2 [label="p,q,other"];
+}

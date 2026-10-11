@@ -1,0 +1,1 @@
+(p | X(((x_le_5 & unch_x & 1) U (x_le_5 & p)))) & (not_p & (0 | (rst_y & X(not_p W (y_ge_2 | (0 & not_p))))))

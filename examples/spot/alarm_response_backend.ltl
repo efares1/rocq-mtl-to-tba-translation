@@ -1,0 +1,1 @@
+G (not_alarm_prop | handled | X ((clock_le_3 & unch_clock) U (clock_le_3 & handled)))

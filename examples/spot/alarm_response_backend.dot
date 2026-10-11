@@ -1,0 +1,17 @@
+digraph "G(handled | not_alarm_prop | X((clock_le_3 & unch_clock) U (clock_le_3 & handled)))" {
+  rankdir=LR
+  label="[Büchi]"
+  labelloc="t"
+  node [shape="circle"]
+  I [label="", style=invis, width=0]
+  I -> 0
+  0 [label="0", peripheries=2]
+  0 -> 0 [label="handled | not_alarm_prop"]
+  0 -> 1 [label="!handled & !not_alarm_prop"]
+  1 [label="1", peripheries=2]
+  1 -> 0 [label="clock_le_3 & handled"]
+  1 -> 2 [label="clock_le_3 & !handled & unch_clock"]
+  2 [label="2"]
+  2 -> 0 [label="clock_le_3 & handled"]
+  2 -> 2 [label="clock_le_3 & !handled & unch_clock"]
+}

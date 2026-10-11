@@ -1,0 +1,108 @@
+\subsection{Worked example: bounded eventuality with an exclusion window}
+Let
+\[
+  f=(\Eventually_{\le5}p)\land(\Always_{<2}\neg p).
+\]
+It requires $p$ to be false at the origin and until age two, then true by age
+five. Figure~\ref{fig:translation-reference-tba} shows a hand-simplified
+equivalent one-clock TBA, not the syntax-directed output, which assigns
+separate clocks to the two distinct timed subformulas. The steps below show
+the clocked-LTL translation and timed reinterpretation. This is a construction
+illustration: the saved Spot graph and its two-clock TBA transcription are not
+covered by the proved Rocq backend contract. The mechanically verified
+concrete instance is the alarm-response example in
+Section~\ref{sec:alarm-example}.
+
+\begin{figure}[t]
+\centering
+\input{figures/fig_tba_example}
+\caption{Hand-simplified equivalent event-guarded TBA for $f$. The initial
+transition requires $\neg p$ and resets $x$; in the waiting location,
+$x\le5$, and acceptance also requires $x\ge2$. Thus $p$ first holds at age
+in $[2,5]$.}
+\label{fig:translation-reference-tba}
+\end{figure}
+
+\begin{enumerate}[label=Step~\arabic*:,leftmargin=*]
+\item The formula is in negation normal form. Expanding the derived operators
+and applying the timed-operator identities gives
+\[
+\begin{aligned}
+f
+ &= (\top\Until_{\le5}p)\land(\bot\Release_{<2}\neg p)\\
+ &= \bigl(p\lor(\top\land\top\hUntil_{\le5}p)\bigr)\\
+ &\qquad\land\bigl(\neg p\land(\bot\lor\bot\hRelease_{<2}\neg p)\bigr).
+\end{aligned}
+\]
+These current-position cases follow Eqs.~\eqref{eq:derive-ule} and
+\eqref{eq:derive-rle}.
+
+\item The two distinct primitive timed subformulas receive clocks $x$ and
+$y$, respectively. Their clocked-LTL translation is
+\begin{align*}
+\Phi_U={}&p\lor\bigl(\top\land\Next\Bigl(
+  ((x\le5)\land\Unch(x)\land\top)\Until\\[-1mm]
+&\qquad((x\le5)\land p)\Bigr)\bigr),\\[-1mm]
+\Phi_R={}&\neg p\land\bigl(\bot\lor(\Reset(y)\land\\[-1mm]
+&\qquad\Next(\neg p\WeakUntil((y\ge2)\lor(\bot\land\neg p))))\bigr),\\[-1mm]
+\T(f)={}&\Phi_U\land\Phi_R.
+\end{align*}
+The Until preserves $x$; the Release test $y\ge2$ complements the source
+bound $<2$, allowing $p$ from age two.
+
+\item The saved Spot 2.16 graph for $\T(f)$ is redrawn on the left of
+Fig.~\ref{fig:translation-steps45}. Clock guards, reset and preservation
+markers, and action atoms are independent propositions to the backend. In
+particular, $p=\mathsf{LAct}(p)$ and $\neg p=\mathsf{LNAct}(p)$ are distinct
+atoms, while $!p$ is the negated literal of $\mathsf{LAct}(p)$; a backend cube
+may contain both $p$ and $\neg p$. Timed reinterpretation imposes action
+consistency, so some backend edges have no realizable timed event.
+
+\item Relaxation removes negative literals over extended clock atoms. Reset
+completion resets the preservation clock $x$ unless $\Unch(x)$ is present;
+the restart clock $y$ is reset exactly when $\Reset(y)$ is present. The right
+side of Fig.~\ref{fig:translation-steps45} shows the same state graph after
+these operations. Edge identifiers replace dense labels; Table~\ref{tab:worked-translation-edges}
+gives each Spot cube and the corresponding event condition, surviving clock
+guard, and completed reset set. The table retains unsatisfiable action cubes
+to make the propositional-to-timed boundary visible; removing them would be a
+subsequent simplification.
+\end{enumerate}
+
+\begin{figure*}[!t]
+\centering
+\resizebox{\textwidth}{!}{\input{figures/fig_steps45}}
+\caption{The saved Spot 2.16 graph (redrawn, left) and its hand-derived
+reset-completed TBA (right; same state IDs). Edge identifiers are expanded in
+Table~\ref{tab:worked-translation-edges}. This graph-to-TBA illustration is
+not the formally verified alarm-response backend instance.}
+\label{fig:translation-steps45}
+\end{figure*}
+
+\begin{table*}[!t]
+\centering
+\caption{Edge key for Fig.~\ref{fig:translation-steps45}. $P=\mathsf{LAct}(p)$,
+$N=\mathsf{LNAct}(p)$, $n=\neg\mathsf{LAct}(p)$, $X=(x\le5)$,
+$Y=(y\ge2)$, $U=\mathsf{LUnch}(x)$, and $R=\mathsf{LRst}(y)$. In the
+timed interpretation, $P$ means event $p$ and both $N$ and $n$ mean event
+$\neg p$. Negative $Y$ literals are removed by relaxation.}
+\label{tab:worked-translation-edges}
+\footnotesize
+\begin{tabular}{@{}c c c p{0.37\textwidth} p{0.45\textwidth}@{}}
+\toprule
+Edge & From & To & Spot propositional cube & Timed event; guard; reset set\\
+\midrule
+$e_1$ & 2 & 3 & $N\land n\land R$ & $\neg p$; $\top$; $\{x,y\}$\\
+$e_2$ & 2 & 1 & $N\land P\land R$ & $p\land\neg p$ (unrealizable); $\top$; $\{x,y\}$\\
+$e_3$ & 3 & 3 & $N\land n\land U\land X\land\neg Y$ & $\neg p$; $x\le5$; $\varnothing$\\
+$e_4$ & 3 & 1 & $N\land P\land X\land\neg Y$ & $p\land\neg p$ (unrealizable); $x\le5$; $\{x\}$\\
+$e_5$ & 3 & 4 & $n\land U\land X\land Y$ & $\neg p$; $x\le5\land y\ge2$; $\varnothing$\\
+$e_6$ & 3 & 0 & $P\land X\land Y$ & $p$; $x\le5\land y\ge2$; $\{x\}$\\
+$e_7$ & 1 & 1 & $N\land\neg Y$ & $\neg p$; $\top$; $\{x\}$\\
+$e_8$ & 1 & 0 & $Y$ & any event; $y\ge2$; $\{x\}$\\
+$e_9$ & 4 & 4 & $n\land U\land X$ & $\neg p$; $x\le5$; $\varnothing$\\
+$e_{10}$ & 4 & 0 & $P\land X$ & $p$; $x\le5$; $\{x\}$\\
+$e_{11}$ & 0 & 0 & $\top$ & any event; $\top$; $\{x\}$\\
+\bottomrule
+\end{tabular}
+\end{table*}

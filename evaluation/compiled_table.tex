@@ -1,0 +1,44 @@
+\begin{table}[t]
+\centering
+\caption{Automaton $\mathsf{compile}(f)$ before any optimization: locations/transitions/clocks (L/T/X), the transitions after grouping edges with the same source, target, guard, and resets into one (Grp.\ T; a count, not a transformation), CASAAL output with mutually exclusive events (locations/symbolic transitions/clocks; n/a: no exact CASAAL encoding), TChecker products $P_1,P_2,S$ (``empty'': all three empty), and the tested backend contract.}
+\label{tab:compiled}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrcc@{}}
+\toprule
+ID & L/T/X & Grp.\ T & CASAAL & $P_1,P_2,S$ & Backend\\
+\midrule
+F1 & 3/7/1 & 6 & 2/4/1 & empty & yes\\
+F2 & 2/5/1 & 5 & 1/1/0 & empty & yes\\
+F3 & 2/5/1 & 5 & n/a & S only & yes\\
+F3b & 1/1/0 & 1 & 1/1/0 & empty & yes\\
+F4 & 3/7/1 & 6 & 2/4/1 & empty & yes\\
+F5 & 7/38/1 & 34 & 4/15/1 & empty & yes\\
+F6 & 7/38/1 & 34 & 4/15/1 & empty & yes\\
+F7 & 3/6/1 & 6 & 2/4/1 & empty & yes\\
+F8 & 5/15/1 & 15 & 2/4/1 & empty & yes\\
+F9 & 4/9/2 & 9 & 4/9/2 & empty & yes\\
+F10 & 5/13/3 & 12 & 5/12/3 & empty & yes\\
+F11 & 5/11/2 & 11 & 4/7/2 & empty & yes\\
+F12 & 5/23/2 & 23 & 3/9/2 & empty & yes\\
+F13 & 6/23/2 & 23 & n/a & S only & yes\\
+F14 & 8/38/2 & 29 & 8/18/2 & empty & yes\\
+R1 & 3/7/1 & 6 & 2/4/1 & empty & yes\\
+R2 & 8/45/2 & 32 & 4/12/2 & empty & yes\\
+R3 & 20/275/3 & 160 & 8/32/3 & empty & yes\\
+R4 & 48/1625/4 & 768 & 16/80/4 & timeout & yes\\
+R5 & 112/9375/5 & 3584 & 32/192/5 & timeout & yes\\
+R6 & timeout & -- & 64/448/6 & -- & yes\\
+R7 & timeout & -- & 128/1024/7 & -- & check timeout\\
+R8 & timeout & -- & 256/2304/8 & -- & tool timeout\\
+N1 & 3/5/1 & 5 & 3/5/1 & empty & yes\\
+N2 & 4/11/2 & 9 & 4/7/2 & empty & yes\\
+N3 & 5/21/3 & 14 & 5/9/3 & empty & yes\\
+N4 & 6/36/4 & 20 & 6/11/4 & empty & yes\\
+N5 & 7/57/5 & 27 & 7/13/5 & timeout & yes\\
+N6 & 8/85/6 & 35 & 8/15/6 & timeout & yes\\
+N7 & 9/121/7 & 44 & 9/17/7 & timeout & yes\\
+N8 & 10/166/8 & 54 & 10/19/8 & timeout & ltl2ba timeout\\
+\bottomrule
+\end{tabular}
+\end{table}

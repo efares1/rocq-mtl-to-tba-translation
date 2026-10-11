@@ -1,0 +1,9 @@
+The Rocq Prover, version 9.0.1
+2026-10-11T04:39Z
+80b862aaa50cbbfee610267acdd7ed9f01604e95142f297d5b0bdf9ad9cebdb3  CheckAssumptions.v
+44c8458a079f70f1801f3e02009bd6deceb1e4ef5f4e02a16433461461422531  EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v
+21a7e0f9104fa6ad812657dd61e50b867c491b787adaa875cd75bbcb73fb9b37  MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.v
+5c78f73e6ad78beb8f14aee2693632227e4a493376990881ac235f9ae4579ee3  OverlappingResponse_Example.v
+make exit: 0
+assumptions exit: 0
+coqchk exit: 0

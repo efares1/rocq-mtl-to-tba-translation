@@ -1,0 +1,168 @@
+EncodingCorrect_proved
+     : EncodingCorrect
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+canonical_encoding_all
+     : forall (root : mtl) (w : timed_word),
+       well_formed root ->
+       forall (path : Path) (f : mtl),
+       node_at root path = Some f ->
+       forall i : nat,
+       msat w i f <-> lsat (canonical_ext root w) i (T_at path f)
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+MTL_to_TBA_correct
+     : forall (f : mtl) (w : timed_word),
+       well_formed f -> msat w 0 f <-> TBA_accepts (compile f) w
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+LTL_TO_BUCHI_CORRECT :
+  forall (root : mtl) (f : ltl root),
+  {A : PBuchi root | forall s : pword root, PBA_accepts A s <-> psat s 0 f}
+MTL_to_TBA_correct_with
+     : forall (f : mtl) (A : PBuchi f) (w : timed_word),
+       (forall s : pword f, PBA_accepts A s <-> psat s 0 (T f)) ->
+       well_formed f -> msat w 0 f <-> TBA_accepts (compile_with A) w
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+alarm_response_tba_correct_with
+     : forall (A : PBuchi alarm_response) (w : timed_word),
+       alarm_response_backend_contract A ->
+       msat w 0 alarm_response <-> TBA_accepts (compile_with A) w
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+alarm_response_spot_backend_contract
+     : forall s : pword alarm_response,
+       PBA_accepts alarm_response_spot_backend s <->
+       psat s 0 (T alarm_response)
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+alarm_response_spot_tba_correct
+     : forall w : timed_word,
+       msat w 0 alarm_response <-> TBA_accepts alarm_response_spot_tba w
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+alarm_response_trace_violates
+     : ~ msat alarm_response_trace 0 alarm_response
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+alarm_overlap_trace_satisfies
+     : msat alarm_overlap_trace 0 alarm_response
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+alarm_overlap_trace_accepted_by_spot_tba
+     : TBA_accepts alarm_response_spot_tba alarm_overlap_trace
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+alarm_response_trace_rejected_by_any_correct_backend
+     : forall A : PBuchi alarm_response,
+       alarm_response_backend_contract A ->
+       ~ TBA_accepts (compile_with A) alarm_response_trace
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+alarm_response_trace_rejected_by_spot_tba
+     : ~ TBA_accepts alarm_response_spot_tba alarm_response_trace
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P

@@ -1,0 +1,69 @@
+\begin{tikzpicture}[
+  x=1cm,y=1cm,
+  lab/.style={font=\small,align=center,fill=white,inner sep=1.5pt}
+]
+% Edge identifiers refer to Table~\ref{tab:worked-translation-edges}.
+\begin{scope}[xshift=0cm]
+  \node[fmnote,font=\normalsize\bfseries] at (2.4,6.0) {Spot output};
+  \node[fmstate] (l0) at (0.0,4.8) {$2$};
+  \node[fmstate] (l1) at (0.0,2.4) {$3$};
+  \node[fmaccept] (l2) at (4.8,4.8) {$1$};
+  \node[fmstate] (l3) at (4.8,2.4) {$4$};
+  \node[fmaccept] (l4) at (2.4,0.0) {$0$};
+  \draw[fmedge] (-1.0,4.8) -- (l0);
+  \draw[fmedge] (l0) -- (l1);
+  \node[lab,anchor=east] at (-0.18,4.05) {$e_1$};
+  \draw[fmedge] (l0) -- (l2);
+  \node[lab] at (2.4,5.08) {$e_2$};
+  \draw[fmedge] (l1) edge[loop left,looseness=5.5] (l1);
+  \node[lab,left,xshift=-3pt] at (l1) {$e_3$};
+  \draw[fmedge] (l1) -- (l2);
+  \node[lab] at (2.4,4.35) {$e_4$};
+  \draw[fmedge] (l1) -- (l3);
+  \node[lab] at (2.4,1.88) {$e_5$};
+  \draw[fmedge] (l1) -- (l4);
+  \node[lab] at (0.75,0.88) {$e_6$};
+  \draw[fmedge] (l2) edge[loop right,looseness=5.5] (l2);
+  \node[lab,right,xshift=3pt] at (l2) {$e_7$};
+  \draw[fmedge] (l2) to[out=-15,in=10,looseness=1.3] (l4);
+  \node[lab,right] at (6.1,2.55) {$e_8$};
+  \draw[fmedge] (l3) edge[loop right,looseness=5.5] (l3);
+  \node[lab,right,xshift=8pt] at (l3) {$e_9$};
+  \draw[fmedge] (l3) -- (l4);
+  \node[lab] at (4.05,1.32) {$e_{10}$};
+  \draw[fmedge] (l4) edge[loop below,looseness=5] (l4);
+  \node[lab,below] at (l4) {$e_{11}$};
+\end{scope}
+
+\begin{scope}[xshift=9.6cm]
+  \node[fmnote,font=\normalsize\bfseries] at (2.4,6.0) {Reset-completed TBA};
+  \node[fmstate] (r0) at (0.0,4.8) {$2$};
+  \node[fmstate] (r1) at (0.0,2.4) {$3$};
+  \node[fmaccept] (r2) at (4.8,4.8) {$1$};
+  \node[fmstate] (r3) at (4.8,2.4) {$4$};
+  \node[fmaccept] (r4) at (2.4,0.0) {$0$};
+  \draw[fmedge] (-1.0,4.8) -- (r0);
+  \draw[fmedge] (r0) -- (r1);
+  \node[lab,anchor=east] at (-0.18,4.05) {$e_1$};
+  \draw[fmedge] (r0) -- (r2);
+  \node[lab] at (2.4,5.08) {$e_2$};
+  \draw[fmedge] (r1) edge[loop left,looseness=5.5] (r1);
+  \node[lab,left,xshift=-3pt] at (r1) {$e_3$};
+  \draw[fmedge] (r1) -- (r2);
+  \node[lab] at (2.4,4.35) {$e_4$};
+  \draw[fmedge] (r1) -- (r3);
+  \node[lab] at (2.4,1.88) {$e_5$};
+  \draw[fmedge] (r1) -- (r4);
+  \node[lab] at (0.75,0.88) {$e_6$};
+  \draw[fmedge] (r2) edge[loop right,looseness=5.5] (r2);
+  \node[lab,right,xshift=3pt] at (r2) {$e_7$};
+  \draw[fmedge] (r2) to[out=-15,in=10,looseness=1.3] (r4);
+  \node[lab,right] at (6.1,2.55) {$e_8$};
+  \draw[fmedge] (r3) edge[loop right,looseness=5.5] (r3);
+  \node[lab,right,xshift=8pt] at (r3) {$e_9$};
+  \draw[fmedge] (r3) -- (r4);
+  \node[lab] at (4.05,1.32) {$e_{10}$};
+  \draw[fmedge] (r4) edge[loop below,looseness=5] (r4);
+  \node[lab,below] at (r4) {$e_{11}$};
+\end{scope}
+\end{tikzpicture}

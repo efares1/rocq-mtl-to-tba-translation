@@ -1,0 +1,7 @@
+# Rocq foundation reused unchanged by the translation article and by the
+# follow-up optimization/export development: digests of the shared files.
+# Unified on 2026-10-11.
+# Check with: bash scripts/check_shared_foundation.sh [<other-project-root>]
+shared-foundation-id: mtl0inf-tba-foundation-2026-10-11
+21a7e0f9104fa6ad812657dd61e50b867c491b787adaa875cd75bbcb73fb9b37  proof/MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.v
+44c8458a079f70f1801f3e02009bd6deceb1e4ef5f4e02a16433461461422531  proof/EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v

@@ -1,0 +1,32 @@
+# build products
+build/
+_build/
+tmp/
+*.aux
+*.log
+*.blg
+*.bbl
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+# Rocq / OCaml objects
+*.vo
+*.vos
+*.vok
+*.glob
+.*.aux
+.lia.cache
+.nra.cache
+*.cmi
+*.cmo
+*.cmx
+*.o
+*.exe
+# local / personal
+.agents/
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini

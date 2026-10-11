@@ -1,0 +1,10 @@
+\begin{tikzpicture}[node distance=22mm]
+  \node[fmstate] (q0) {$q_{\mathit{init}}$};
+  \node[fmstate,right=of q0] (q1) {$q_{\mathit{wait}}$};
+  \node[fmaccept,right=of q1] (q2) {$q_{\mathit{acc}}$};
+  \draw[fmedge] ([xshift=-8mm]q0.west) -- (q0.west);
+  \draw[fmedge] (q0) -- node[fmlabel,above] {$\neg p\;/\;\mathsf{rst}(x)$} (q1);
+  \draw[fmedge] (q1) edge[loop above] node[fmlabel] {$x\le5,\;\neg p$} (q1);
+  \draw[fmedge] (q1) -- node[fmlabel,above] {$2\le x\le5,\;p$} (q2);
+  \draw[fmedge] (q2) edge[loop above] node[fmlabel] {$\top$} (q2);
+\end{tikzpicture}
