@@ -22,6 +22,11 @@ code extracted from the Rocq definitions; the parser, the call to Spot, the
 LBTT reader, the printers, and extraction itself are not verified. The tool is
 run with the options \texttt{-noweak -norecur}, so that the clocked-LTL
 formula is exactly $\T(f)$ as defined in Section~\ref{sec:translation}.
+The negated event atom $\mathsf{LNAct}(a)$ is printed for Spot as the negated
+literal \texttt{!"a"} of the atom of $a$ (option \texttt{-explicit-neg}, the
+default; \texttt{-indep-neg} prints it as a separate atom), and
+\texttt{-compile-only} stops after reset completion, so that the reported time is
+that of $\mathsf{compile}(f)$.
 Measurements were taken on an Intel Core i7-8650U (1.9~GHz, 11.7~GB RAM) under
 Ubuntu~26.04 in WSL~2, with a limit of 600~s per tool run and per TChecker
 check (120~s for random formulas); the backend-contract runs of Spot and
@@ -94,14 +99,23 @@ configurations, sometimes by a large factor (R4, R5); the nesting family N
 has the same number of locations as CASAAL. The growth in the R family appears
 to come from Spot's automaton for the conjunction of $k$ clocked-LTL clauses,
 before relaxation (Spot's automata for R4--R6 have 768, 3{,}584, and 16{,}384
-transitions); R6--R8 exceed the 600~s limit. For R6, Spot alone builds its
-256-state automaton in 54~s, so the time goes to later stages (reading,
-relaxation, reset completion, or printing); we recorded no per-stage times. Construction time is below
-one second for every completed configuration except R4 (3.4~s), N6
-(1.6~s), R5 (43~s), N7 (26~s), and N8 (101~s). These numbers describe
-the unoptimized output of the extracted construction; they are not a
-comparison of tools. Reducing these sizes by post-processing is left to
-follow-up work.
+transitions). Spot's translation dominates the construction time: for R4 to
+R7, Spot takes 0.12, 2.1, 5.4, and 90~s of a total (parsing, Spot,
+\texttt{compile}) of 0.18, 2.2, 6.1, and 96~s, and the construction proper
+(relaxation and reset completion) takes at most 6~s (R7;
+\path{evaluation/stage_times.tsv}). For R8, Spot does not finish within
+300~s. Constructing $\mathsf{compile}(f)$ takes less than one second for every configuration except R5
+(3.0~s), R6 (9.2~s), R7 (113~s), N6 (1.4~s), N7 (16~s), and N8 (85~s). These numbers describe the unoptimized output of the extracted
+construction; they are not a comparison of tools. Reducing these sizes by
+post-processing is left to follow-up work.
+
+Printing the negated event atom explicitly does not change R and N, whose
+formulas contain no negated event, and reduces F11--F14 (for example F11 from
+5/11/2 to 4/7/2). On the 100 random formulas it changes 26 automata, all
+smaller: the total of locations falls from 793 to 660, that of transitions from
+3{,}681 to 2{,}305, and that of clocks from 163 to 159. The independent
+printing leaves cubes that require both $a$ and $\neg a$, which no
+one-event-per-position word satisfies; the explicit printing does not produce them.
 
 \subsection{Language checks with TChecker}
 For a formula $\varphi$, let $O$ and $O'$ be $\mathsf{compile}(\varphi)$ and
@@ -123,25 +137,36 @@ satisfiable.
 On the benchmark configurations, $P_1$, $P_2$, and $S$ are empty for every
 configuration that completes within the limits (F1--F14 except the hatted F3
 and F13, which CASAAL cannot express, R1--R3, and N1--N4); for F3 and F13
-only $S$ is checked, and it is empty. For R5 and N6 the three checks exceed 600~s. At 1{,}800~s, run singly, $P_2$ of R4
+only $S$ is checked, and it is empty. For R4--R7 and N5--N7 the three checks exceed 600~s. At 1{,}800~s, run singly, $P_2$ of R4
 is empty, while $P_1$, $S$ of R4 and all three checks of N5 still time out (which
-may also mean memory exhaustion). R6--R8 produce no automaton within the limit.
-For N7 and N8, $O$ is built (26~s and 101~s), but $P_1$ exceeds 600~s and $O'$ is
+may also mean memory exhaustion). For R8 no automaton is built within the limit.
+For N8, $O$ is built (85~s), but $P_1$ exceeds 600~s and $O'$ is
 not built within the limit, so $P_2$ and $S$ are not run (inconclusive).
 The sanity product is non-empty in every completed benchmark configuration.
 
 The artifact also contains 100 random formulas of depth at most three over
-three propositions, generated with their CASAAL automata. For 99 of them,
+three propositions, generated with their CASAAL automata. For all 100 of them,
 $P_1$, $P_2$, and $S$ are empty, with no timeout; for five of these, the
 sanity product is empty as well, and inspection shows that each of these
 five formulas is unsatisfiable under mutual exclusion (for example
-$q\land\Diamond_{>2}p\land r$), so the other 94 passes are non-vacuous. The remaining formula, X74, is $\Diamond(q\land r)\Rightarrow\neg p$, for which
-$P_1$ is non-empty. Its negation $\Diamond(q\land r)\land p$ is unsatisfiable
+$q\land\Diamond_{>2}p\land r$), so the other 95 passes are non-vacuous.
+
+One formula, X74 $=\Diamond(q\land r)\Rightarrow\neg p$, first gave a
+non-empty $P_1$. Its negation $\Diamond(q\land r)\land p$ is unsatisfiable
 under mutual exclusion, and our automaton for it has no accepting location.
-CASAAL's printed automaton for the negation has no acceptance mark, and the
-conversion script reads an automaton without marks as accepting every run (as for $\mathsf F q\land\mathsf G\neg q$). We report X74 as
-inconclusive; inspection indicates that it reflects how acceptance is printed
-and read, not a disagreement that the products can establish.
+CASAAL prints its automaton for the negation without an acceptance mark, and
+the conversion script read an automaton without marks as accepting every run.
+The state labels of that automaton show an obligation $\mathsf F(q\land r)$
+that no transition discharges. The converter now reads an automaton without
+marks as follows: a state whose label contains an unbounded eventuality
+($\mathsf F$ or $\mathsf U$ without an upper bound) is not accepting, and the
+language is empty if no state is accepting; an automaton without such labels
+keeps the previous reading. This changes the verdict of X74 only; the other
+15 of the 16 affected CASAAL automata, and all other formulas, give the same
+results as before. The reading is our interpretation of CASAAL's output,
+checked on X74 and by the agreement of the other 15 cases, not a documented
+convention of the tool; a regression test is in the artifact
+(\path{evaluation/test_tck_product_acceptance.py}).
 
 \subsection{Agreement on ultimately periodic words}
 The TChecker checks establish inclusions and time out on the larger
@@ -155,8 +180,8 @@ against, the Rocq definitions);
 acceptance by $\mathsf{compile}(f)$; and acceptance by CASAAL's automaton.
 Clocks of CASAAL start at 0; for $\mathsf{compile}(f)$ initial clock values
 are tried on a grid when it has at most three clocks, since the theorem
-quantifies them existentially; with more clocks, all clocks start at~0. On the 28 benchmark configurations that build
-(400 words each, 11{,}200 in all, 4{,}495 satisfying the formula) and on the
+quantifies them existentially; with more clocks, all clocks start at~0. On 28 benchmark configurations (all but R6--R8;
+400 words each, 11{,}200 in all, 4{,}495 satisfying the formula) and on the
 100 random formulas (150 words each, 15{,}000 in all, 8{,}273 satisfying
 it), the semantics and $\mathsf{compile}(f)$ agree on every word. CASAAL is included on 26 of the
 28 benchmark configurations (not on the hatted F3 and F13) and on all random

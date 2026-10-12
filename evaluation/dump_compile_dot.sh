@@ -13,10 +13,10 @@ dump() {  # <formulas file> <id column> <formula column> <out dir> <skip-regex>
     [ -z "$id" ] && continue
     [[ -n "$5" && "$id" =~ $5 ]] && continue
     d=$(mktemp -d); cd "$d"
-    timeout "$LIMIT" "$EXE" -noweak -norecur -nopdf -tba -o c "$f" > /dev/null 2>&1
+    timeout "$LIMIT" "$EXE" -noweak -norecur -compile-only -nopdf -tba -o c "$f" > /dev/null 2>&1
     [ -s c_tba.dot ] && cp c_tba.dot "$4/$id.dot"
     cd /; rm -rf "$d"
   done
 }
-dump "$HERE/formulas.tsv" 0 2 "$HERE/compile_dot" '^R[678]$'
+dump "$HERE/formulas.tsv" 0 2 "$HERE/compile_dot" ''
 dump "$HERE/random_formulas.tsv" 0 1 "$HERE/compile_dot_random" ''

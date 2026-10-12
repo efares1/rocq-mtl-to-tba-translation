@@ -1,9 +1,11 @@
-# this article — evaluation report (2026-10-11)
+# this article — evaluation report (re-run 2026-10-12)
 
-All results below are **fresh** (run on 2026-10-11) unless marked otherwise.
+All results below are **fresh** (run on 2026-10-12, after the change of the
+printing of negated event atoms and of the contract; see §8) unless marked
+otherwise. The previous report (2026-10-11) is in the git history.
 Object evaluated: `compile(f)` = clocked-LTL translation T, Spot 2.16, LBTT
 reader, relaxation, reset completion, **before any optimization**, produced by
-`mtl2tba -noweak -norecur -tba` (tool built from `tool/` with dune, OCaml 5.4.0,
+`mtl2tba -noweak -norecur -tba -compile-only` (tool built from `tool/` with dune, OCaml 5.4.0,
 WSL 2 Ubuntu 26.04, i7-8650U). `-noweak -norecur` make the clocked-LTL formula
 exactly the T(f) of the article (the default front end applies two further
 rewritings proved in the follow-up development). An earlier run with the
@@ -15,16 +17,21 @@ Raw data: `evaluation/compiled_bench.tsv`, `compiled_random.tsv`,
 
 ## 1. Sizes vs CASAAL (31 configurations)
 
-- Completed: 28 of 31 (`compile(f)` not produced within 600 s for R6, R7, R8;
-  N7, N8 built in 26 s and 101 s, run 2026-10-11 — see §5).
+- Completed: 30 of 31 (`compile(f)` is not produced for R8: Spot does not
+  finish within the limit; R6 and R7 are now built, 256/53,125/6 and
+  576/296,875/7, because `-compile-only` skips optimization and export).
+  Their dot files (4 MB and 26 MB) are not committed; regenerate with
+  `evaluation/dump_compile_dot.sh`.
 - Clocks equal to CASAAL's (mutually exclusive events) on every exactly
   encoded configuration except F2 (ours 1, CASAAL 0: under mutual exclusion
   □(p → □≤3 q) forbids p, CASAAL builds a 1-state automaton).
-- Locations: equal on F9, F10, F14, N1–N6; larger elsewhere
-  (e.g. F5 7 vs 4, R3 20 vs 8, R4 48 vs 16, R5 112 vs 32).
+- Locations: equal on F3b, F9, F10, F11, N1–N8; smaller on F14 (7 vs 8);
+  larger elsewhere (e.g. F5 7 vs 4, R3 20 vs 8, R4 48 vs 16, R5 112 vs 32).
 - Transitions are not comparable one to one (Spot cubes vs CASAAL Boolean
   labels): R4 1,625 vs 80 symbolic.
-- Construction time < 1 s except R4 3.42 s, N6 1.62 s, R5 43.3 s.
+- Construction time of compile(f) (`-compile-only`) < 1 s except R5 3.0 s,
+  R6 9.2 s, R7 112.5 s, N6 1.4 s, N7 15.5 s, N8 84.8 s. Per stage
+  (`stage_times.tsv`): Spot dominates (R7: Spot 90 s of 96 s; compile 6 s).
 - The task description's figure "R4: 16 states / 625 transitions" refers to the
   default front end with weak until; with the article's T(f) the numbers are
   48 / 1,625 / 4.
@@ -35,9 +42,9 @@ Raw data: `evaluation/compiled_bench.tsv`, `compiled_random.tsv`,
 |---|---|
 | P1, P2, S empty; C non-empty | F1, F2, F3b, F4–F12, F14, R1–R3, N1–N4 (20) |
 | only S checked (hatted, no exact CASAAL encoding), S empty | F3, F13 |
-| P1, P2, S timeout (600 s); C non-empty | R4, R5, N5, N6 |
-| no automaton within 600 s | R6, R7, R8 |
-| compile(f) built; P1 timeout (600 s); automaton for ¬φ not built within 600 s (P2, S not run); C non-empty | N7, N8 |
+| P1, P2, S timeout (600 s); C non-empty | R4–R7, N5–N7 |
+| no automaton (Spot does not finish) | R8 |
+| compile(f) built; P1 timeout (600 s); automaton for ¬φ not built within the limit (P2, S not run); C non-empty | N8 |
 
 No check returned NONEMPTY for P1, P2, or S on the benchmark set.
 Interpretation: inclusions L(C) ⊆ L(O), L(C′) ⊆ L(O′) only if CASAAL's φ and
@@ -45,35 +52,38 @@ Interpretation: inclusions L(C) ⊆ L(O), L(C′) ⊆ L(O′) only if CASAAL's �
 
 ## 3. Random formulas (100, depth ≤ 3, three propositions; limit 120 s)
 
-- 99: P1, P2, S empty, no timeout (the archived run with the default front
-  end had 95 complete + 4 partially timed out).
-- 5 of these 99 have an empty sanity product C; all five are unsatisfiable
+- 100: P1, P2, S empty, no timeout (X74 was NONEMPTY for P1 before the
+  acceptance convention for unmarked CASAAL automata was fixed, see below).
+- 5 of these 100 have an empty sanity product C; all five are unsatisfiable
   under mutual exclusion (checked by hand: X25 `false U>2 …`; X32 requires p and
   q at one position; X43 r∧(r∧p ∨ q); X71 r∧(¬r∨p) with □≤1 r; X96 q∧…∧r).
-- X74 = ◇(q∧r) → ¬p: P1 NONEMPTY, P2 and S empty. Explanation in
-  `CASAAL_COMPARISON_METHODOLOGY.md`: the negation is unsatisfiable; CASAAL's
-  printed automaton has no acceptance mark, which the converter reads as
-  "accept all". Reported as inconclusive.
+- X74 = ◇(q∧r) → ¬p: P1 was NONEMPTY because the converter read CASAAL's
+  unmarked automaton for the (unsatisfiable) negation as "accept all". The
+  converter now treats states with a pending unbounded eventuality as
+  non-accepting (`tck_product.py`; test `test_tck_product_acceptance.py`);
+  X74 is now empty for P1, P2 and S. The other 99 rows are unchanged.
+  Details in `CASAAL_COMPARISON_METHODOLOGY.md`.
 
 ## 4. Backend contract (Spot / ltl2ba 1.3 / autfilt / LBTT reader)
 
-- Contract `A ≡ T(f)` confirmed (both emptiness checks) on 28/31.
+- Contract `A ≡ T(f)` confirmed (both emptiness checks) on 28/31, on action-
+  consistent words (`!"a"` printing; Spot's automata for R and N have the
+  same sizes as before).
 - R7: equivalence check > 600 s; R8: Spot > 300 s; N8: ltl2ba > 300 s.
 - LBTT reader counts = autfilt counts on 30/30 automata produced.
 - These are tests on these inputs, partly using Spot's own tools.
 
 ## 5. Incidents
 
-The first TChecker benchmark run was interrupted by system memory pressure
-while N7 was being checked (N1–N6 had completed). N7 and N8 were run
-separately on 2026-10-11 (`ONLY="N7 N8" LIMIT=600 SET=bench bash
-run_compiled_eval.sh`, rows appended to `compiled_bench.tsv`; raw rows in
-`compiled_bench_only.tsv`). Results: N7 9/121/7 (26 s), N8 10/166/8 (101 s);
-P1 exceeds 600 s for both; the automaton for ¬φ is not built within 600 s, so
-P2 and S are not run; C is non-empty. Both are inconclusive, like N5 and N6.
+The 2026-10-12 run was a single `bash evaluation/run_all.sh` (steps: build,
+dump, lasso, random, spot, bench) followed by `STEPS=stage`. N7: 9/121/7
+(15.5 s), P1, P2, S all time out (600 s); N8: 10/166/8 (84.8 s), P1 times out
+and the automaton for ¬φ is not built within the limit. All are inconclusive,
+like R4–R7, N5, N6. `compiled_bench_only.tsv` and the long runs
+(`long_R4.tsv`, `long_N5.tsv`, 1800 s, 2026-10-11/12) are from the previous
+run; the automata of R4 and N5 are unchanged, so those results still apply.
 
-The random-formula set was run separately (same script, parallel copy,
-`compiled_random.tsv`).
+The random-formula set was run by the same script (`compiled_random.tsv`).
 
 ## 6. Not re-run
 
@@ -101,7 +111,27 @@ this article).
   ≤ 3 clocks, otherwise 0; time scaled by 2; independent evaluator written
   for this test, unverified.
 - Spot level: the tool has an option `-spot-level` (small | high | medium |
-  low | any); the default (`small`) is unchanged. `low` gives identical
+  low | any); the default (`small`) is unchanged. `low` gave identical
   `compile(f)` sizes on all but F5, F6, F8, F10, F11 (2–4 transitions more)
-  and cuts the construction time of N8 from 101 s to 2.5 s
-  (`evaluation/spot_low_timing.tsv`).
+  and cut the construction time of N8 from 101 s to 2.5 s
+  (`evaluation/spot_low_timing.tsv`; measured 2026-10-11 with the previous
+  printing of negated atoms, not repeated).
+
+## 8. Change of 2026-10-12: explicit negation and action-consistent contract
+
+- Tool: `-explicit-neg` (default) prints `LNAct(a)` for Spot as `!"a"` (the
+  negated literal of the atom of `a`); `-indep-neg` is the previous printing.
+  `-compile-only` stops after reset completion.
+- Proof: the backend contract is required on action-consistent propositional
+  words only (`action_consistent`, `word_of_action_consistent`); `LNAct` stays
+  an atom of the Rocq LTL. Rocq 9.0.1: compiles, `Print Assumptions` and
+  coqchk unchanged (axiom `LTL_TO_BUCHI_CORRECT`, premise weakened).
+- Effect on `compile(f)`: R and N unchanged (no negated event); F11
+  5/11/2 → 4/7/2, F12 5/23/2 → 4/13/2, F13 6/23/2 → 4/9/2, F14 8/38/2 →
+  7/31/2. Random: 26 of 100 smaller, none larger; locations 793 → 660,
+  transitions 3,681 → 2,305, clocks 163 → 159.
+- Results unchanged in kind: TChecker verdicts (all empty where completed),
+  word-level test (0 disagreements; 11,200 + 15,000 words), backend contract
+  (28/31).
+- Abstract counts: TChecker checks complete on 22 of the 31 benchmarks
+  (20 against CASAAL, F3 and F13 self-consistency only).

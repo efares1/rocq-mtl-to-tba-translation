@@ -23,10 +23,18 @@ time, 2026-10-11 22:02 to 2026-10-12 00:54 (+04). R4: P2 empty; P1 and S timed o
 product non-empty. N5: P1, P2, S timed out; sanity product non-empty. A timeout may also
 reflect memory exhaustion of the checker; the two are not distinguished.
 
+## Re-run of 2026-10-12
+After the change of the printing of negated event atoms (`-explicit-neg`) and of the
+backend contract (action-consistent words), the tool-dependent evaluation was repeated
+with `evaluation/run_all.sh` (build, dump, lasso, random, spot, bench; then `STEPS=stage`):
+start 2026-10-12 10:53, bench 11:48 to 16:22 (+04), stage 16:23 to 16:35. Rocq files:
+`output/rocq/build_info.txt` (regenerated). The long runs above (R4, N5) were not repeated;
+their automata are unchanged. Report: `PAPER1_EVALUATION_REPORT.md`, section 8.
+
 ## PDF (as in the commit)
 | File | Pages | SHA-256 |
 |---|---|---|
-| `paper1.pdf` | 16 | `398343f9cd57bcfa3b60476c6b7003160427dd035a0398d142eae014fe5d1b4f` |
+| `paper1.pdf` | 17 | `83ab2aa460428099f7bd11491a100d588cda5580b37b8988ad8aa71a7a2b0ed2` |
 
 Rebuild with `build-ieee-access.ps1` (Windows, MiKTeX). PDF byte hashes depend on build
 timestamps; the page count and extracted text are stable.

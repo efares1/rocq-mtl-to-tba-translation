@@ -1,32 +1,32 @@
 id	formula	locs	trans	clocks	time_s	P1	P2	S	C
-F1	[](p -> <>[<=5] q)	3	7	1	0.12	empty	empty	empty	NONEMPTY
-F2	[](p -> [][<=3] q)	2	5	1	0.13	empty	empty	empty	NONEMPTY
+F1	[](p -> <>[<=5] q)	3	7	1	0.15	empty	empty	empty	NONEMPTY
+F2	[](p -> [][<=3] q)	2	5	1	0.12	empty	empty	empty	NONEMPTY
 F3	[](e -> ^[][<=2] !e)	2	5	1	0.12	-	-	empty	-
-F3b	[](e -> [][<=2] !e)	1	1	0	0.12	empty	empty	empty	NONEMPTY
+F3b	[](e -> [][<=2] !e)	1	1	0	0.11	empty	empty	empty	NONEMPTY
 F4	[](p -> (p U[<=4] q))	3	7	1	0.12	empty	empty	empty	NONEMPTY
 F5	[](p -> <>[>=2] q)	7	38	1	0.12	empty	empty	empty	NONEMPTY
 F6	[](p -> <>[>2] q)	7	38	1	0.12	empty	empty	empty	NONEMPTY
-F7	[]<>[<=5] p	3	6	1	0.12	empty	empty	empty	NONEMPTY
+F7	[]<>[<=5] p	3	6	1	0.11	empty	empty	empty	NONEMPTY
 F8	[]<>[>=2] p	5	15	1	0.12	empty	empty	empty	NONEMPTY
 F9	<>[<=5](p U[<=2] q)	4	9	2	0.12	empty	empty	empty	NONEMPTY
 F10	<>[<=5](([][<=3] (p | q)) U[<=2] q)	5	13	3	0.12	empty	empty	empty	NONEMPTY
-F11	(<>[<=5] p) & ([][<2] !p)	5	11	2	0.12	empty	empty	empty	NONEMPTY
-F12	[](p -> (<>[<=5] q & [][<2] !q))	5	23	2	0.12	empty	empty	empty	NONEMPTY
-F13	e & [](e -> (^[][<2] !e & ^<>[<=2] e))	6	23	2	0.12	-	-	empty	-
-F14	[](e1 -> (<>[<2](e2 & <>[<3] e3) | [](!e2 & !e3)))	8	38	2	0.12	empty	empty	empty	NONEMPTY
+F11	(<>[<=5] p) & ([][<2] !p)	4	7	2	0.12	empty	empty	empty	NONEMPTY
+F12	[](p -> (<>[<=5] q & [][<2] !q))	4	13	2	0.12	empty	empty	empty	NONEMPTY
+F13	e & [](e -> (^[][<2] !e & ^<>[<=2] e))	4	9	2	0.12	-	-	empty	-
+F14	[](e1 -> (<>[<2](e2 & <>[<3] e3) | [](!e2 & !e3)))	7	31	2	0.12	empty	empty	empty	NONEMPTY
 R1	[](a1 -> <>[<=5] b1)	3	7	1	0.12	empty	empty	empty	NONEMPTY
-R2	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2)	8	45	2	0.13	empty	empty	empty	NONEMPTY
-R3	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3)	20	275	3	0.32	empty	empty	empty	NONEMPTY
-R4	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4)	48	1625	4	3.42	timeout	timeout	timeout	NONEMPTY
-R5	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5)	112	9375	5	43.30	timeout	timeout	timeout	NONEMPTY
-R6	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5) & [](a6 -> <>[<=5] b6)					tool timeout			
-R7	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5) & [](a6 -> <>[<=5] b6) & [](a7 -> <>[<=5] b7)					tool timeout			
+R2	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2)	8	45	2	0.12	empty	empty	empty	NONEMPTY
+R3	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3)	20	275	3	0.12	empty	empty	empty	NONEMPTY
+R4	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4)	48	1625	4	0.32	timeout	timeout	timeout	NONEMPTY
+R5	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5)	112	9375	5	3.02	timeout	timeout	timeout	NONEMPTY
+R6	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5) & [](a6 -> <>[<=5] b6)	256	53125	6	9.17	timeout	timeout	timeout	NONEMPTY
+R7	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5) & [](a6 -> <>[<=5] b6) & [](a7 -> <>[<=5] b7)	576	296875	7	112.52	timeout	timeout	timeout	NONEMPTY
 R8	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4) & [](a5 -> <>[<=5] b5) & [](a6 -> <>[<=5] b6) & [](a7 -> <>[<=5] b7) & [](a8 -> <>[<=5] b8)					tool timeout			
 N1	<>[<=5] p1	3	5	1	0.12	empty	empty	empty	NONEMPTY
 N2	<>[<=5](p1 & <>[<=5] p2)	4	11	2	0.12	empty	empty	empty	NONEMPTY
 N3	<>[<=5](p1 & <>[<=5](p2 & <>[<=5] p3))	5	21	3	0.12	empty	empty	empty	NONEMPTY
 N4	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5] p4)))	6	36	4	0.12	empty	empty	empty	NONEMPTY
 N5	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5] p5))))	7	57	5	0.32	timeout	timeout	timeout	NONEMPTY
-N6	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5](p5 & <>[<=5] p6)))))	8	85	6	1.62	timeout	timeout	timeout	NONEMPTY
-N7	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5](p5 & <>[<=5](p6 & <>[<=5] p7))))))	9	121	7	26.49	timeout	tool-timeout	tool-timeout	NONEMPTY
-N8	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5](p5 & <>[<=5](p6 & <>[<=5](p7 & <>[<=5] p8)))))))	10	166	8	101.31	timeout	tool-timeout	tool-timeout	NONEMPTY
+N6	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5](p5 & <>[<=5] p6)))))	8	85	6	1.37	timeout	timeout	timeout	NONEMPTY
+N7	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5](p5 & <>[<=5](p6 & <>[<=5] p7))))))	9	121	7	15.54	timeout	timeout	timeout	NONEMPTY
+N8	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5](p5 & <>[<=5](p6 & <>[<=5](p7 & <>[<=5] p8)))))))	10	166	8	84.77	timeout	tool-timeout	tool-timeout	NONEMPTY

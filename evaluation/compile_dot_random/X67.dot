@@ -20,8 +20,8 @@ digraph TBA {
   L1 -> L5 [label="r\nx2 := 0"];
   L1 -> L6 [label="r\nx2 := 0"];
   L2 -> L1 [label="x2 <= 3\nr\nx0, x2 := 0"];
-  L2 -> L2 [label="x2 <= 3\nr"];
   L2 -> L2 [label="x2 <= 3\nq"];
+  L2 -> L2 [label="x2 <= 3\nr"];
   L3 -> L3 [label="any\nx2 := 0"];
   L4 -> L3 [label="q,r,other\nx2 := 0"];
   L4 -> L3 [label="p,r,other\nx2 := 0"];

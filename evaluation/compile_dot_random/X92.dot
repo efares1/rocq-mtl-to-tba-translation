@@ -7,15 +7,15 @@ digraph TBA {
   L1 [shape=doublecircle, label="L1"];
   L2 [shape=circle, label="L2"];
   L3 [shape=circle, label="L3"];
-  L0 -> L1 [label="p,other\nx0 := 0"];
   L0 -> L1 [label="p\nx0 := 0"];
+  L0 -> L1 [label="p,other\nx0 := 0"];
   L0 -> L2 [label="r\nx0 := 0"];
-  L0 -> L3 [label="r\nx0 := 0"];
   L1 -> L1 [label="any\nx0 := 0"];
   L2 -> L1 [label="p\nx0 := 0"];
-  L2 -> L2 [label="r,other\nx0 := 0"];
-  L3 -> L1 [label="x0 <= 2\np,other\nx0 := 0"];
-  L3 -> L1 [label="x0 <= 2\np\nx0 := 0"];
-  L3 -> L2 [label="x0 <= 2\nr\nx0 := 0"];
-  L3 -> L3 [label="x0 <= 2\nr"];
+  L2 -> L1 [label="x0 <= 2\np,other\nx0 := 0"];
+  L2 -> L2 [label="x0 <= 2\nr"];
+  L2 -> L3 [label="r\nx0 := 0"];
+  L2 -> L3 [label="r,other\nx0 := 0"];
+  L3 -> L1 [label="p\nx0 := 0"];
+  L3 -> L3 [label="r,other\nx0 := 0"];
 }

@@ -25,7 +25,7 @@ LIMIT=${LIMIT:-600}
 SET=${SET:-all}
 # The Article 1 theorem covers compile(f) without the recur and weak-until
 # rewritings, which are proved separately (follow-up development).
-OPTS=${OPTS:-"-noweak -norecur"}
+OPTS=${OPTS:-"-noweak -norecur -compile-only"}
 W=$(mktemp -d)
 
 check() {

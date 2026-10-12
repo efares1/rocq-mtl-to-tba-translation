@@ -1,101 +1,101 @@
 id	formula	locs	trans	clocks	time_s	P1	P2	S	C
-X1	[][>=2] ([] ((q) & (q)))	3	5	1	0.25	empty	empty	empty	NONEMPTY
+X1	[][>=2] ([] ((q) & (q)))	3	5	1	0.12	empty	empty	empty	NONEMPTY
 X2	(p) U[<2] (<>[>=2] (p))	7	15	2	0.24	empty	empty	empty	NONEMPTY
-X3	[][<3] (<>[<=1] ((p) & (!r)))	6	23	2	0.27	empty	empty	empty	NONEMPTY
-X4	([][>1] ((p) U[>=2] (!r))) U[>=1] (!(p))	39	191	3	0.53	empty	empty	empty	NONEMPTY
-X5	(((q) U[<=2] (r)) U[>=2] ([] (q))) | (!r)	14	49	2	0.23	empty	empty	empty	NONEMPTY
-X6	<>[<3] ((!p) | (<>[>1] (r)))	7	17	2	0.13	empty	empty	empty	NONEMPTY
-X7	<>[>=2] ((<>[>1] (r)) -> (<> (r)))	8	28	2	0.39	empty	empty	empty	NONEMPTY
-X8	<>[>1] (<> (!(q)))	6	12	1	0.13	empty	empty	empty	NONEMPTY
-X9	!([][>1] (!(p)))	6	12	1	0.25	empty	empty	empty	NONEMPTY
+X3	[][<3] (<>[<=1] ((p) & (!r)))	6	23	2	0.12	empty	empty	empty	NONEMPTY
+X4	([][>1] ((p) U[>=2] (!r))) U[>=1] (!(p))	14	43	3	0.12	empty	empty	empty	NONEMPTY
+X5	(((q) U[<=2] (r)) U[>=2] ([] (q))) | (!r)	13	41	2	0.12	empty	empty	empty	NONEMPTY
+X6	<>[<3] ((!p) | (<>[>1] (r)))	7	17	2	0.12	empty	empty	empty	NONEMPTY
+X7	<>[>=2] ((<>[>1] (r)) -> (<> (r)))	2	2	2	0.12	empty	empty	empty	NONEMPTY
+X8	<>[>1] (<> (!(q)))	6	12	1	0.12	empty	empty	empty	NONEMPTY
+X9	!([][>1] (!(p)))	6	12	1	0.12	empty	empty	empty	NONEMPTY
 X10	(r) -> ([][<=1] (q))	3	5	1	0.12	empty	empty	empty	NONEMPTY
-X11	((q) & (q)) | (([][>=1] (p)) U[<2] (!(p)))	6	16	2	0.13	empty	empty	empty	NONEMPTY
-X12	<>[>=2] (<>[<=2] ((p) & (p)))	6	14	2	0.14	empty	empty	empty	NONEMPTY
-X13	(!(r)) U[<=1] (((q) & (q)) | ((q) U[<2] (!p)))	3	7	2	0.14	empty	empty	empty	NONEMPTY
-X14	(([] (r)) -> (!(p))) -> (r)	2	2	0	0.16	empty	empty	empty	NONEMPTY
-X15	!(((q) & (p)) U[>=1] ([][<=1] (r)))	7	35	2	0.13	empty	empty	empty	NONEMPTY
-X16	[][<2] (!r)	3	4	1	0.13	empty	empty	empty	NONEMPTY
-X17	<>[>1] (((r) -> (!q)) -> (!(r)))	6	21	1	0.12	empty	empty	empty	NONEMPTY
-X18	((!(r)) & ([][<=1] (p))) -> ([][<3] (!p))	3	6	1	0.14	empty	empty	empty	NONEMPTY
+X11	((q) & (q)) | (([][>=1] (p)) U[<2] (!(p)))	5	10	2	0.12	empty	empty	empty	NONEMPTY
+X12	<>[>=2] (<>[<=2] ((p) & (p)))	6	14	2	0.12	empty	empty	empty	NONEMPTY
+X13	(!(r)) U[<=1] (((q) & (q)) | ((q) U[<2] (!p)))	3	7	2	0.12	empty	empty	empty	NONEMPTY
+X14	(([] (r)) -> (!(p))) -> (r)	2	2	0	0.12	empty	empty	empty	NONEMPTY
+X15	!(((q) & (p)) U[>=1] ([][<=1] (r)))	7	35	2	0.11	empty	empty	empty	NONEMPTY
+X16	[][<2] (!r)	3	4	1	0.12	empty	empty	empty	NONEMPTY
+X17	<>[>1] (((r) -> (!q)) -> (!(r)))	6	17	1	0.12	empty	empty	empty	NONEMPTY
+X18	((!(r)) & ([][<=1] (p))) -> ([][<3] (!p))	3	6	1	0.12	empty	empty	empty	NONEMPTY
 X19	<>[>2] (<>[<2] (q))	6	14	2	0.12	empty	empty	empty	NONEMPTY
-X20	(q) & ([][<=1] ((!p) & (!r)))	3	4	1	0.13	empty	empty	empty	NONEMPTY
-X21	!(<>[>1] ([][<=2] (r)))	5	12	2	0.14	empty	empty	empty	NONEMPTY
+X20	(q) & ([][<=1] ((!p) & (!r)))	3	4	1	0.12	empty	empty	empty	NONEMPTY
+X21	!(<>[>1] ([][<=2] (r)))	5	12	2	0.12	empty	empty	empty	NONEMPTY
 X22	(((!q) | (p)) U[<2] (!(!r))) & (p)	3	6	1	0.12	empty	empty	empty	NONEMPTY
 X23	<>[<=3] (p)	3	5	1	0.12	empty	empty	empty	NONEMPTY
 X24	(((p) U[>1] (!r)) | ((r) U[<=2] (q))) | (r)	7	17	2	0.12	empty	empty	empty	NONEMPTY
-X25	(!((r) -> (r))) U[>2] ((q) -> ([][<3] (r)))	8	22	2	0.12	empty	empty	empty	empty
+X25	(!((r) -> (r))) U[>2] ((q) -> ([][<3] (r)))	1	0	0	0.12	empty	empty	empty	empty
 X26	([] (p)) -> (q)	3	6	0	0.12	empty	empty	empty	NONEMPTY
-X27	[][<=3] (((q) | (!q)) U[<2] ((r) -> (!r)))	6	23	2	0.12	empty	empty	empty	NONEMPTY
+X27	[][<=3] (((q) | (!q)) U[<2] ((r) -> (!r)))	6	16	2	0.13	empty	empty	empty	NONEMPTY
 X28	<>[>=2] (<> ((q) | (r)))	6	17	1	0.12	empty	empty	empty	NONEMPTY
-X29	([][<=1] ((r) | (p))) U[>=2] ((!r) U[<=1] ((!r) | (r)))	8	33	3	0.12	empty	empty	empty	NONEMPTY
+X29	([][<=1] ((r) | (p))) U[>=2] ((!r) U[<=1] ((!r) | (r)))	4	11	3	0.12	empty	empty	empty	NONEMPTY
 X30	([][>=2] ([][<3] (q))) | (!q)	4	7	2	0.12	empty	empty	empty	NONEMPTY
-X31	((<>[>1] (!p)) | ((p) & (r))) U[<=2] ((<>[>2] (p)) | (!(r)))	24	129	3	0.42	empty	empty	empty	NONEMPTY
-X32	[][<=2] ((<>[<=1] (q)) & ((p) & (p)))	6	16	2	0.12	empty	empty	empty	empty
+X31	((<>[>1] (!p)) | ((p) & (r))) U[<=2] ((<>[>2] (p)) | (!(r)))	19	77	3	0.12	empty	empty	empty	NONEMPTY
+X32	[][<=2] ((<>[<=1] (q)) & ((p) & (p)))	6	16	2	0.15	empty	empty	empty	empty
 X33	<>[>1] (!((p) & (q)))	6	17	1	0.12	empty	empty	empty	NONEMPTY
-X34	!(<>[>2] ((q) U[<2] (r)))	3	8	2	0.12	empty	empty	empty	NONEMPTY
-X35	(<>[>1] (q)) U[>2] (((r) -> (r)) U[>=1] (r))	92	863	3	13.64	empty	empty	empty	NONEMPTY
+X34	!(<>[>2] ((q) U[<2] (r)))	3	8	2	0.13	empty	empty	empty	NONEMPTY
+X35	(<>[>1] (q)) U[>2] (((r) -> (r)) U[>=1] (r))	52	323	3	0.42	empty	empty	empty	NONEMPTY
 X36	[] (<>[<2] ((!r) U[<=3] (r)))	5	13	2	0.12	empty	empty	empty	NONEMPTY
 X37	(q) U[<2] (!(r))	3	5	1	0.12	empty	empty	empty	NONEMPTY
-X38	[] (<>[>1] ([][>=2] (q)))	3	8	2	0.12	empty	empty	empty	NONEMPTY
+X38	[] (<>[>1] ([][>=2] (q)))	3	8	2	0.13	empty	empty	empty	NONEMPTY
 X39	([] (p)) & (!r)	2	2	0	0.12	empty	empty	empty	NONEMPTY
 X40	[][>=2] (((r) | (q)) -> (r))	3	8	1	0.12	empty	empty	empty	NONEMPTY
-X41	(q) U[<=2] (!((r) -> (q)))	3	7	1	0.12	empty	empty	empty	NONEMPTY
-X42	(((r) -> (r)) -> (<>[>=1] (q))) -> (((p) | (!p)) | (<>[<2] (r)))	5	12	2	0.12	empty	empty	empty	NONEMPTY
-X43	((r) & ((p) U[>2] (!r))) & (((r) & (p)) U[<=2] (q))	12	38	2	0.12	empty	empty	empty	empty
-X44	([][<3] ([][<2] (p))) | (((p) & (!p)) & ([][<=3] (r)))	5	10	3	0.12	empty	empty	empty	NONEMPTY
-X45	(<> ((q) & (q))) & (((p) U[<2] (q)) | ((r) U[>2] (p)))	12	37	2	0.12	empty	empty	empty	NONEMPTY
-X46	<>[<2] ((<>[>1] (p)) -> ((p) U[<=1] (r)))	7	22	3	0.12	empty	empty	empty	NONEMPTY
+X41	(q) U[<=2] (!((r) -> (q)))	3	5	1	0.11	empty	empty	empty	NONEMPTY
+X42	(((r) -> (r)) -> (<>[>=1] (q))) -> (((p) | (!p)) | (<>[<2] (r)))	1	1	2	0.12	empty	empty	empty	NONEMPTY
+X43	((r) & ((p) U[>2] (!r))) & (((r) & (p)) U[<=2] (q))	11	33	2	0.12	empty	empty	empty	empty
+X44	([][<3] ([][<2] (p))) | (((p) & (!p)) & ([][<=3] (r)))	4	7	2	0.12	empty	empty	empty	NONEMPTY
+X45	(<> ((q) & (q))) & (((p) U[<2] (q)) | ((r) U[>2] (p)))	12	37	2	0.13	empty	empty	empty	NONEMPTY
+X46	<>[<2] ((<>[>1] (p)) -> ((p) U[<=1] (r)))	7	22	3	0.13	empty	empty	empty	NONEMPTY
 X47	!((!p) & (<>[<3] (q)))	3	5	1	0.12	empty	empty	empty	NONEMPTY
-X48	[][<3] ([][<2] (r))	4	7	2	0.14	empty	empty	empty	NONEMPTY
+X48	[][<3] ([][<2] (r))	4	7	2	0.12	empty	empty	empty	NONEMPTY
 X49	<>[<=2] (([][>2] (!r)) | (<>[<2] (!p)))	8	31	3	0.12	empty	empty	empty	NONEMPTY
-X50	(((r) -> (r)) -> (!q)) -> (([][<3] (q)) -> ([] (!p)))	4	11	1	0.12	empty	empty	empty	NONEMPTY
-X51	(((!q) -> (r)) U (<>[<=2] (q))) -> (r)	4	8	1	0.12	empty	empty	empty	NONEMPTY
-X52	(!(r)) U[>=2] (((r) U[<=3] (!p)) | ((!r) | (p)))	6	16	2	0.12	empty	empty	empty	NONEMPTY
-X53	(p) -> (((q) U[<=1] (p)) | ((q) -> (r)))	3	8	1	0.13	empty	empty	empty	NONEMPTY
+X50	(((r) -> (r)) -> (!q)) -> (([][<3] (q)) -> ([] (!p)))	1	1	1	0.12	empty	empty	empty	NONEMPTY
+X51	(((!q) -> (r)) U (<>[<=2] (q))) -> (r)	3	5	1	0.12	empty	empty	empty	NONEMPTY
+X52	(!(r)) U[>=2] (((r) U[<=3] (!p)) | ((!r) | (p)))	3	4	2	0.12	empty	empty	empty	NONEMPTY
+X53	(p) -> (((q) U[<=1] (p)) | ((q) -> (r)))	1	1	1	0.12	empty	empty	empty	NONEMPTY
 X54	[][>2] (!r)	3	5	1	0.12	empty	empty	empty	NONEMPTY
 X55	([] (q)) & (!((!q) U[>1] (r)))	1	1	1	0.12	empty	empty	empty	NONEMPTY
-X56	[][<2] (!(<>[>2] (q)))	3	5	2	0.12	empty	empty	empty	NONEMPTY
-X57	(<> (p)) | (((q) & (!q)) U[<2] ((!p) U[>=1] (!p)))	5	11	2	0.12	empty	empty	empty	NONEMPTY
+X56	[][<2] (!(<>[>2] (q)))	3	5	2	0.13	empty	empty	empty	NONEMPTY
+X57	(<> (p)) | (((q) & (!q)) U[<2] ((!p) U[>=1] (!p)))	3	6	2	0.12	empty	empty	empty	NONEMPTY
 X58	!(([][<=1] (q)) U[<3] ((q) | (!p)))	2	2	1	0.12	empty	empty	empty	NONEMPTY
 X59	<>[<3] ([][>=1] (<>[<2] (q)))	7	22	3	0.12	empty	empty	empty	NONEMPTY
-X60	[][>=1] (!q)	3	5	1	0.12	empty	empty	empty	NONEMPTY
+X60	[][>=1] (!q)	3	5	1	0.13	empty	empty	empty	NONEMPTY
 X61	<>[<=1] (q)	3	5	1	0.12	empty	empty	empty	NONEMPTY
-X62	(((r) -> (!q)) U[<=1] ((p) & (!p))) U[<=3] (([][>=2] (q)) -> (q))	11	63	3	0.22	empty	empty	empty	NONEMPTY
+X62	(((r) -> (!q)) U[<=1] ((p) & (!p))) U[<=3] (([][>=2] (q)) -> (q))	6	13	3	0.12	empty	empty	empty	NONEMPTY
 X63	<>[<3] ([][>2] (!(!r)))	5	13	2	0.12	empty	empty	empty	NONEMPTY
 X64	(r) & ((<>[<=1] (r)) U[<=3] (q))	5	12	2	0.12	empty	empty	empty	NONEMPTY
-X65	([][>1] (<>[>2] (p))) | (q)	8	23	2	0.12	empty	empty	empty	NONEMPTY
+X65	([][>1] (<>[>2] (p))) | (q)	8	23	2	0.13	empty	empty	empty	NONEMPTY
 X66	((<>[<=2] (q)) | ((!r) | (r))) -> (r)	2	2	0	0.12	empty	empty	empty	NONEMPTY
-X67	(([][<=2] (q)) | ((q) U (r))) U[<=3] ((r) U[>2] ((q) -> (!p)))	8	25	2	0.12	empty	empty	empty	NONEMPTY
-X68	!(<>[<=2] ([][<3] (p)))	6	16	2	0.12	empty	empty	empty	NONEMPTY
-X69	(((p) -> (q)) -> ((p) U[>1] (q))) -> ((!(r)) & (q))	4	11	1	0.13	empty	empty	empty	NONEMPTY
+X67	(([][<=2] (q)) | ((q) U (r))) U[<=3] ((r) U[>2] ((q) -> (!p)))	8	25	2	0.11	empty	empty	empty	NONEMPTY
+X68	!(<>[<=2] ([][<3] (p)))	6	16	2	0.11	empty	empty	empty	NONEMPTY
+X69	(((p) -> (q)) -> ((p) U[>1] (q))) -> ((!(r)) & (q))	4	11	1	0.12	empty	empty	empty	NONEMPTY
 X70	<>[>1] ([][<2] (<>[<=3] (q)))	16	60	3	0.12	empty	empty	empty	NONEMPTY
-X71	(((q) -> (r)) -> ((r) U[>1] (!r))) & (([][<=1] (r)) & ((!r) | (p)))	10	32	2	0.12	empty	empty	empty	empty
+X71	(((q) -> (r)) -> ((r) U[>1] (!r))) & (([][<=1] (r)) & ((!r) | (p)))	6	15	2	0.12	empty	empty	empty	empty
 X72	!((!q) -> (<>[>2] (p)))	3	5	1	0.12	empty	empty	empty	NONEMPTY
 X73	<>[>=2] (!([][<=1] (r)))	6	14	2	0.12	empty	empty	empty	NONEMPTY
-X74	(<> ((q) & (r))) -> (!(p))	3	6	0	0.12	NONEMPTY	empty	empty	NONEMPTY
-X75	<>[<=1] (<>[<=3] ((!q) U[>2] (r)))	10	27	3	0.12	empty	empty	empty	NONEMPTY
+X74	(<> ((q) & (r))) -> (!(p))	3	6	0	0.12	empty	empty	empty	NONEMPTY
+X75	<>[<=1] (<>[<=3] ((!q) U[>2] (r)))	10	27	3	0.11	empty	empty	empty	NONEMPTY
 X76	(((q) U (r)) & ([][<3] (q))) -> ((r) U[>1] (r))	5	11	2	0.12	empty	empty	empty	NONEMPTY
 X77	!(<>[<=2] (p))	3	4	1	0.12	empty	empty	empty	NONEMPTY
-X78	(!q) | (([][>=2] (r)) | ((!r) U[>1] (q)))	9	21	2	0.12	empty	empty	empty	NONEMPTY
-X79	[] (!((!p) | (!p)))	1	1	0	0.12	empty	empty	empty	NONEMPTY
+X78	(!q) | (([][>=2] (r)) | ((!r) U[>1] (q)))	9	21	2	0.11	empty	empty	empty	NONEMPTY
+X79	[] (!((!p) | (!p)))	1	1	0	0.11	empty	empty	empty	NONEMPTY
 X80	!(((r) | (p)) U[<=2] (!q))	3	8	1	0.12	empty	empty	empty	NONEMPTY
-X81	(!r) | (((r) & (p)) | ((p) U[>1] (r)))	7	17	1	0.12	empty	empty	empty	NONEMPTY
+X81	(!r) | (((r) & (p)) | ((p) U[>1] (r)))	2	3	0	0.12	empty	empty	empty	NONEMPTY
 X82	<>[<2] (p)	3	5	1	0.12	empty	empty	empty	NONEMPTY
 X83	(<>[<3] (r)) U[<3] ((<>[>=1] (q)) U[<2] (!(p)))	13	52	4	0.12	empty	empty	empty	NONEMPTY
 X84	<>[>=2] (<>[>1] (!(p)))	16	54	2	0.12	empty	empty	empty	NONEMPTY
-X85	(p) | (([][>2] (q)) & ((r) U[<=2] (!p)))	6	16	2	0.12	empty	empty	empty	NONEMPTY
-X86	([][<=2] (!(p))) U[<2] (<> (<>[>=2] (q)))	6	13	2	0.12	empty	empty	empty	NONEMPTY
+X85	(p) | (([][>2] (q)) & ((r) U[<=2] (!p)))	4	7	2	0.12	empty	empty	empty	NONEMPTY
+X86	([][<=2] (!(p))) U[<2] (<> (<>[>=2] (q)))	6	13	2	0.11	empty	empty	empty	NONEMPTY
 X87	<>[<=2] (<>[<3] ([] (q)))	5	14	2	0.12	empty	empty	empty	NONEMPTY
-X88	(((r) U[>=1] (p)) & (r)) U[>=1] (((r) | (r)) U[>2] (!p))	118	1064	3	2.53	empty	empty	empty	NONEMPTY
+X88	(((r) U[>=1] (p)) & (r)) U[>=1] (((r) | (r)) U[>2] (!p))	108	675	3	0.62	empty	empty	empty	NONEMPTY
 X89	<>[>=1] ((p) -> (<>[<2] (!p)))	6	14	2	0.12	empty	empty	empty	NONEMPTY
-X90	[] (p)	1	1	0	0.12	empty	empty	empty	NONEMPTY
+X90	[] (p)	1	1	0	0.11	empty	empty	empty	NONEMPTY
 X91	([][<=1] (<>[<=1] (!q))) & ((!(q)) & (r))	6	15	2	0.12	empty	empty	empty	NONEMPTY
-X92	<>[<=2] ((<> (p)) | (!(r)))	4	11	1	0.15	empty	empty	empty	NONEMPTY
-X93	(<>[>=1] (!(r))) -> (!((q) -> (q)))	4	8	1	0.12	empty	empty	empty	NONEMPTY
-X94	<>[<=2] (!([][<3] (q)))	4	10	2	0.12	empty	empty	empty	NONEMPTY
+X92	<>[<=2] ((<> (p)) | (!(r)))	4	11	1	0.11	empty	empty	empty	NONEMPTY
+X93	(<>[>=1] (!(r))) -> (!((q) -> (q)))	3	5	1	0.12	empty	empty	empty	NONEMPTY
+X94	<>[<=2] (!([][<3] (q)))	4	10	2	0.13	empty	empty	empty	NONEMPTY
 X95	<>[>2] ((r) -> ([] (!q)))	7	17	1	0.12	empty	empty	empty	NONEMPTY
-X96	((q) & (<>[>2] (p))) & (r)	6	12	1	0.12	empty	empty	empty	empty
-X97	[][>2] ((<>[<=1] (q)) -> ((q) | (q)))	4	11	2	0.12	empty	empty	empty	NONEMPTY
-X98	(!p) & ([][<2] (q))	3	4	1	0.12	empty	empty	empty	NONEMPTY
+X96	((q) & (<>[>2] (p))) & (r)	6	12	1	0.13	empty	empty	empty	empty
+X97	[][>2] ((<>[<=1] (q)) -> ((q) | (q)))	4	10	2	0.13	empty	empty	empty	NONEMPTY
+X98	(!p) & ([][<2] (q))	3	4	1	0.13	empty	empty	empty	NONEMPTY
 X99	(!((r) | (q))) U (<> (!q))	2	3	0	0.12	empty	empty	empty	NONEMPTY
 X100	[][>=1] (<>[>1] (r))	7	21	2	0.12	empty	empty	empty	NONEMPTY

@@ -24,7 +24,7 @@
 HERE="$(cd "$(dirname "$0")" && pwd)"
 EXE=${EXE:-"$HERE/../tool/_build/default/src/mtl2tba.exe"}
 # Article 1 scope: clocked-LTL formula T(f) without the recur and weak-until rewritings
-OPTS=${OPTS:-"-noweak -norecur"}
+OPTS=${OPTS:-"-noweak -norecur -compile-only"}
 LTL2BA=${LTL2BA:-~/tools/ltl2ba-big/ltl2ba}
 LIMIT=${LIMIT:-300}
 EQLIMIT=${EQLIMIT:-600}

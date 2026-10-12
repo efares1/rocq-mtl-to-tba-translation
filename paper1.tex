@@ -84,19 +84,20 @@ the construction and semantic model formalized here. Rocq checks all eight
 strict and non-strict primitive cases, handling shared clocks and overlapping
 activations through soundness for every clock-consistent reset trace and
 completeness via one canonical reset trace. Relaxation and reset completion are
-also checked, yielding a compositional theorem under an explicit all-words
-language-equivalence contract for the propositional B\"uchi backend. This
-contract is a premise (the convenience theorem postulates it as an axiom);
-Spot, graph import, parsing, printing, extraction, and zero-bound preprocessing
-lie outside the proof. For an alarm-response instance, we prove that a
-manually transcribed backend record satisfies the contract, that an
-overlapping-alarm trace is accepted, and that a violating trace is rejected.
-The theorem assumes real-valued bounds, strictly increasing divergent
-timestamps, and existential initial clock valuations. On 31 benchmarks and 100
-random formulas, all with integer bounds, TChecker inclusion checks against
-CASAAL complete on 22 of the 31 benchmarks, 26{,}200 random timed words agree
-with an unverified Python evaluation of the semantics, and the backend contract
-is tested against ltl2ba on 28 of the 31 benchmarks.
+also checked, yielding a compositional theorem under an explicit
+language-equivalence contract for the propositional B\"uchi backend, required
+on action-consistent words only. This contract is a premise (the convenience
+theorem postulates it as an axiom); Spot, graph import, parsing, printing,
+extraction, and zero-bound preprocessing lie outside the proof. For an
+alarm-response instance, we prove that a manually transcribed backend record
+satisfies the contract, that an overlapping-alarm trace is accepted, and that a
+violating trace is rejected. The theorem assumes real-valued bounds, strictly
+increasing divergent timestamps, and existential initial clock valuations. On
+31 benchmarks and 100 random formulas, all with integer bounds, TChecker
+checks complete on 22 benchmarks (20 inclusion checks against CASAAL, two
+self-consistency checks of hatted formulas), 26{,}200 random timed words agree with an
+unverified Python evaluation of the semantics, and the backend contract is
+tested against ltl2ba on 28 benchmarks.
 \end{abstract}
 
 \begin{keywords}
@@ -383,8 +384,12 @@ $x\sim d$, a reset atom
 $\Reset(x)$, and a preservation atom $\Unch(x)$. Under timed-word
 interpretation, the action atoms mean that the current action is $a$ or is
 different from $a$, respectively. The atom $\mathsf{LNAct}(a)$ and the
-negated literal of $\mathsf{LAct}(a)$ have the same timed-word interpretation,
-but remain distinct propositions to the unconstrained LTL backend. The reset
+negated literal of $\mathsf{LAct}(a)$ have the same timed-word interpretation.
+The tool gives $\mathsf{LNAct}(a)$ to the backend as the explicit negation of
+the quoted atom for $\mathsf{LAct}(a)$; in the Rocq development
+$\mathsf{LNAct}(a)$ remains a separate atom, and the backend contract is
+required only on the words in which it complements $\mathsf{LAct}(a)$
+(Section~\ref{sec:tba-construction}). The reset
 and preservation atoms describe the clock update at the current event. Clock
 values are read before the event's reset, matching the guard semantics of a
 timed automaton.
@@ -509,25 +514,31 @@ several activations are pending at once.
 \section{From Clocked LTL to a TBA}
 \label{sec:tba-construction}
 \subsection{LTL-to-B\"uchi contract}
-The backend treats extended atoms as independent propositions. It returns a
-propositional B\"uchi automaton (PBA) whose language is exactly that of the
-clocked-LTL formula. The theorem is stated for any such backend, deterministic
-or not.
+The backend treats the clock-related atoms as independent propositions and
+receives the negated action atom $\mathsf{LNAct}(a)$ as the negation of the
+action atom $\mathsf{LAct}(a)$. It returns a propositional B\"uchi automaton
+(PBA) whose language is exactly that of the clocked-LTL formula. The theorem is
+stated for any such backend, deterministic or not. A propositional word is
+\emph{action-consistent} when, at every position, $\mathsf{LNAct}(a)$ holds
+exactly when $\mathsf{LAct}(a)$ does not.
 \begin{assumption}[Backend correctness]
 \label{ass:backend}
-For each formula $F$ and each propositional word $s$ over its atoms,
-$\mathsf{PBA\_accepts}(A,s)$ iff $s,0\models F$, where $A$ is the backend
-automaton for $F$.
+For each formula $F$ and each action-consistent propositional word $s$ over
+its atoms, $\mathsf{PBA\_accepts}(A,s)$ iff $s,0\models F$, where $A$ is the
+backend automaton for $F$.
 \end{assumption}
-This contract ranges over all propositional words, including assignments
-that do not correspond to any clock-consistent timed word. That stronger
-scope is used by relaxation.
+This contract ranges over all action-consistent propositional words,
+including assignments of the clock-related atoms that do not correspond to any
+clock-consistent timed word. That scope is used by relaxation. A backend that
+satisfies the contract on all propositional words, for instance one that
+receives $\mathsf{LNAct}(a)$ as an independent atom, satisfies it a fortiori.
 
 \subsection{Relaxation and reset completion}
 \label{sec:reset-completion}
-The propositional backend regards every extended atom as independent. Its
-correctness contract therefore applies to all Boolean words, including
-assignments that cannot arise from any clock-consistent timed trace. Every
+The propositional backend regards every clock-related atom as independent.
+Its correctness contract therefore applies to all action-consistent Boolean
+words, including assignments of the clock-related atoms that cannot arise from
+any clock-consistent timed trace. Every
 clock-related atom in the translation occurs positively. Relaxation acts on
 each backend transition cube by removing negative literals over clock
 comparisons and reset/preservation markers, removing irrelevant
@@ -925,8 +936,8 @@ of that formula.
 For a propositional B\"uchi automaton $A$ over the extended atoms, let
 $\mathsf{compile\_with}(A)$ denote relaxation followed by reset completion.
 Its correctness premise, Assumption~\ref{ass:backend}, is language
-equivalence over \emph{all} propositional words, including valuations that
-are not clock-consistent. The single composed theorem (Figure~\ref{fig:correctness-composition}),
+equivalence over the action-consistent propositional words, including
+valuations of the clock-related atoms that are not clock-consistent. The single composed theorem (Figure~\ref{fig:correctness-composition}),
 conditional on the backend contract, is:
 \begin{theorem}[Conditional MTL-to-TBA correctness]
 \label{thm:mtl-to-tba-correct}
@@ -1143,8 +1154,9 @@ The graph is manually transcribed as
 self-loop into two cubes. Lemma
 \Rocqid{alarm_response_T_eq} matches its input to the Rocq translation;
 \Rocqid{alarm_response_spot_backend_contract} proves that the transcribed
-automaton has exactly that LTL language on all propositional words. This
-discharges the backend premise for this instance. The regeneration script
+automaton has exactly that LTL language on all propositional words, which
+implies the action-consistent contract above. This discharges the backend
+premise for this instance. The regeneration script
 requires \texttt{ltl2tgba --version} to report Spot 2.16.
 
 The resulting concrete TBA is \Rocqid{alarm_response_spot_tba}. It has initial

@@ -51,9 +51,18 @@ Neither article treats CASAAL as an optimizer baseline.
 φ = ◇(q ∧ r) → ¬p. Under mutual exclusion, ¬φ = ◇(q ∧ r) ∧ p is
 unsatisfiable; our automaton for ¬φ has no accepting location. The CASAAL
 output read by the converter has states labeled with the pending eventuality
-`F(q & r)` but no acceptance mark; the converter reads an unmarked automaton
-as accepting every infinite run, so P1 is non-empty. The same behavior was
-reproduced on F(q) ∧ G(¬q) earlier. This is an acceptance-marking / format
-issue in the comparison, not a parsing (parenthesization) problem: the
-CASAAL input and its node labels show the intended structure. Reported as
-inconclusive.
+`F(q & r)` but no acceptance mark. The converter used to read an unmarked
+automaton as accepting every infinite run, so P1 was non-empty. This was an
+acceptance-marking / format issue in the comparison, not a parsing
+(parenthesization) problem.
+
+Resolution (2026-10-12): `tck_product.py` now reads an unmarked CASAAL
+automaton as follows. A state whose label contains an unbounded eventuality
+(`F` or `U` without an upper bound, including lower-bounded `F[x>d]`,
+`U[x>=d]`) is not accepting; the other states are accepting; with no
+accepting state the language is empty. An automaton without such labels is
+read as before (every run accepting). 16 of the 260 CASAAL files are affected
+(all in `casaal_out_rand`). Rerunning the 100 random formulas changes only
+X74 (P1 now empty); the other 99 rows are unchanged. The reading is our
+interpretation of CASAAL's output, not a documented convention. Regression
+test: `evaluation/test_tck_product_acceptance.py`.

@@ -18,16 +18,18 @@ digraph TBA {
   L2 -> L2 [label="x1 <= 1\np\nx0, x2 := 0"];
   L3 -> L1 [label="x2 < 2\nr\nx0, x1, x2 := 0"];
   L3 -> L2 [label="x2 < 2\np\nx0, x1, x2 := 0"];
-  L3 -> L4 [label="other\nx0, x1, x2 := 0"];
   L3 -> L4 [label="r,other\nx0, x1, x2 := 0"];
-  L3 -> L5 [label="x0 <= 1\nany\nx1, x2 := 0"];
+  L3 -> L4 [label="r,other\nx0, x1, x2 := 0"];
   L3 -> L5 [label="x2 < 2\np,other\nx0, x1, x2 := 0"];
+  L3 -> L5 [label="x0 <= 1\nany\nx1, x2 := 0"];
   L3 -> L6 [label="x2 < 2\np,other\nx0, x1 := 0"];
   L4 -> L4 [label="r,other\nx0, x1, x2 := 0"];
+  L5 -> L4 [label="r,other\nx0, x1, x2 := 0"];
   L5 -> L4 [label="r,other\nx0, x1, x2 := 0"];
   L5 -> L5 [label="x0 <= 1\nany\nx1, x2 := 0"];
   L6 -> L1 [label="x2 < 2\nr\nx0, x1, x2 := 0"];
   L6 -> L2 [label="x2 < 2\np\nx0, x1, x2 := 0"];
+  L6 -> L5 [label="x2 < 2\np,other\nx0, x1, x2 := 0"];
   L6 -> L5 [label="x2 < 2\np,other\nx0, x1, x2 := 0"];
   L6 -> L6 [label="x2 < 2\np,other\nx0, x1 := 0"];
 }

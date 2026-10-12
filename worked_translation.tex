@@ -52,10 +52,13 @@ bound $<2$, allowing $p$ from age two.
 
 \item The saved Spot 2.16 graph for $\T(f)$ is redrawn on the left of
 Fig.~\ref{fig:translation-steps45}. Clock guards, reset and preservation
-markers, and action atoms are independent propositions to the backend. In
-particular, $p=\mathsf{LAct}(p)$ and $\neg p=\mathsf{LNAct}(p)$ are distinct
-atoms, while $!p$ is the negated literal of $\mathsf{LAct}(p)$; a backend cube
-may contain both $p$ and $\neg p$. Timed reinterpretation imposes action
+markers, and action atoms are propositions to the backend. This saved graph
+was generated with $\mathsf{LNAct}(p)$ printed as a separate atom, as with the
+tool option \texttt{-indep-neg}: $p=\mathsf{LAct}(p)$ and
+$\neg p=\mathsf{LNAct}(p)$ are distinct atoms, while $!p$ is the negated
+literal of $\mathsf{LAct}(p)$, and a backend cube may contain both $p$ and
+$\neg p$. With the default printing, which negates the atom for
+$\mathsf{LAct}(p)$, Spot's graph has no atom $\neg p$. Timed reinterpretation imposes action
 consistency, so some backend edges have no realizable timed event.
 
 \item Relaxation removes negative literals over extended clock atoms. Reset

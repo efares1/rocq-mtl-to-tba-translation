@@ -36,6 +36,7 @@ digraph TBA {
   L7 -> L7 [label="x1 <= 3\nany\nx2 := 0"];
   L8 -> L1 [label="x2 <= 1\nr,other\nx0, x1, x2 := 0"];
   L8 -> L7 [label="x2 <= 1\nany\nx1, x2 := 0"];
+  L8 -> L7 [label="x2 <= 1\nany\nx1, x2 := 0"];
   L8 -> L8 [label="x2 <= 1\nany\nx1 := 0"];
   L9 -> L6 [label="r\nx1, x2 := 0"];
   L9 -> L9 [label="other\nx1, x2 := 0"];

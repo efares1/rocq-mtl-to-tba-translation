@@ -10,7 +10,7 @@ digraph TBA {
   L0 -> L1 [label="q\nx0, x1 := 0"];
   L0 -> L2 [label="p\nx0, x1 := 0"];
   L1 -> L1 [label="any\nx0, x1 := 0"];
-  L2 -> L1 [label="x1 <= 1\nq,r,other\nx0, x1 := 0"];
   L2 -> L1 [label="x1 <= 1\nq\nx0, x1 := 0"];
+  L2 -> L1 [label="x1 <= 1\nq,r,other\nx0, x1 := 0"];
   L2 -> L2 [label="x1 <= 1\np\nx0 := 0"];
 }

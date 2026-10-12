@@ -36,6 +36,8 @@ let simp = ref false
 let check = ref ""
 let weak_until = ref true
 let all_copy_export = ref false
+let explicit_neg = ref true
+let compile_only = ref false
 
 let stats_header = String.concat "	"
   [ "formula_clocks"; "spot_states"; "spot_trans"; "spot_s";
@@ -57,10 +59,13 @@ let speclist = [
     low is much faster on deeply nested formulas and can give slightly larger \
     automata before optimization");
   ("-nopdf", Arg.Clear pdf, " do not run Graphviz to produce <base>.pdf from <base>.dot");
+  ("-explicit-neg", Arg.Set explicit_neg, " print the negated event atom !e as the negation of the quoted atom, !\"e\" (default); Spot then knows that e and !e exclude each other. The backend contract of the proof is required only on the action-consistent words (action_consistent), in which !e is the complement of e");
+  ("-indep-neg", Arg.Clear explicit_neg, " print the negated event atom !e as the independent quoted atom \"!e\" (the contract then holds on all propositional words, which is stronger than needed)");
   ("-all-copy", Arg.Set all_copy_export, " use the separately verified nondeterministic all-copy invariant split for export (experimental comparison mode)");
   ("-dot", Arg.Set_string dot_cmd, "<cmd> Graphviz command (default: dot)");
   ("-tba", Arg.Set dump_tba, " also write <base>_tba.dot and <base>_opt.dot");
   ("-check", Arg.Set_string check, "<base> also write <base>_ltl.lbt (the clocked-LTL formula, in prefix notation, by a second printer) and <base>_ba.hoa (the automaton built by the reader), for the validation of the trusted interface with Spot");
+    ("-compile-only", Arg.Set compile_only, " stop after reset completion: compute compile(f) of the article, without the optimization and the export of the follow-up development; with -tba write <base>_tba.dot, with -stats print the first seven measures (see -stats-header) and the total time");
   ("-v", Arg.Set verbose, " print the intermediate results");
   ("-stats", Arg.Set stats, " print one tab-separated line of measures (see -stats-header)");
   ("-stats-header", Arg.Unit (fun () -> print_endline stats_header; exit 0), " print the header of -stats");
@@ -179,13 +184,22 @@ let atom_name clocks = function
   | LRst x -> Printf.sprintf "rst(%s)" (clock_name clocks x)
   | LUnch x -> Printf.sprintf "unch(%s)" (clock_name clocks x)
 
-(* Every atom, including the negated event !e, is a quoted proposition for
-   Spot: the back-end treats the atoms as independent propositions, as in
-   the axiom of the Coq development. *)
+(* By default the negated event !e is printed as the negation of the quoted
+   atom, !"e", and every other atom as a quoted proposition: the contract of
+   the Coq development (action_consistent) is required only on the words in
+   which !e is the complement of e.  With -indep-neg the negated event is a
+   separate quoted atom "!e", independent of "e". *)
+let negated_event s =
+  if !explicit_neg && String.length s > 1 && s.[0] = '!'
+  then Some (String.sub s 1 (String.length s - 1)) else None
+
 let rec spot_formula nm = function
   | LTrue -> "true"
   | LFalse -> "false"
-  | LAtom a -> "\"" ^ nm a ^ "\""
+  | LAtom a ->
+    (match negated_event (nm a) with
+     | Some e -> "!\"" ^ e ^ "\""
+     | None -> "\"" ^ nm a ^ "\"")
   | LAnd (p, q) -> "(" ^ spot_formula nm p ^ " & " ^ spot_formula nm q ^ ")"
   | LOr (p, q) -> "(" ^ spot_formula nm p ^ " | " ^ spot_formula nm q ^ ")"
   | LNext p -> "X(" ^ spot_formula nm p ^ ")"
@@ -198,7 +212,10 @@ let rec spot_formula nm = function
 let rec lbt_formula nm = function
   | LTrue -> "t"
   | LFalse -> "f"
-  | LAtom a -> "\"" ^ nm a ^ "\""
+  | LAtom a ->
+    (match negated_event (nm a) with
+     | Some e -> "! \"" ^ e ^ "\""
+     | None -> "\"" ^ nm a ^ "\"")
   | LAnd (p, q) -> "& " ^ lbt_formula nm p ^ " " ^ lbt_formula nm q
   | LOr (p, q) -> "| " ^ lbt_formula nm p ^ " " ^ lbt_formula nm q
   | LNext p -> "X " ^ lbt_formula nm p
@@ -321,6 +338,14 @@ let () =
   log "clocked LTL: %s" ltl_text;
   let atom_tbl = Hashtbl.create 16 in
   List.iter (fun a -> Hashtbl.replace atom_tbl (nm a) a) (ltl_atoms root ltl);
+  (* with -explicit-neg Spot sees !e as the negation of the atom e, which
+     may then occur in its output although only !e occurs in T f *)
+  if !explicit_neg then
+    List.iter (function
+        | LNAct e ->
+          let n = Hashtbl.find event_names e in
+          if not (Hashtbl.mem atom_tbl n) then Hashtbl.replace atom_tbl n (LAct e)
+        | _ -> ()) (ltl_atoms root ltl);
   let atom_of s = match Hashtbl.find_opt atom_tbl s with
     | Some a -> a | None -> fail "unknown atom %S in the output of Spot" s in
   (* 4 *)
@@ -340,7 +365,31 @@ let () =
   (* 5 *)
   let tba = compile_with root ba in
   let (s0, t0, c0) = size_tba tba in
-  log "after reset completion: %d locations, %d transitions" s0 t0;
+    log "after reset completion: %d locations, %d transitions" s0 t0;
+  if !compile_only then begin
+    let names = {
+      Output.clock_name = clock_name clocks;
+      event_name = (fun a -> Hashtbl.find event_names a);
+      events = List.sort compare (Hashtbl.fold (fun _ i l -> i :: l) event_tbl []);
+    } in
+    if !dump_tba then
+      Out_channel.with_open_bin (!out ^ "_tba.dot")
+        (fun oc -> Output.dot_tba oc names tba);
+    let total = Unix.gettimeofday () -. t_start in
+    if !stats then
+      print_endline (String.concat "\t"
+        (List.map string_of_int
+           [ List.length clocks; lbtt.Lbtt_read.nstates;
+             List.fold_left (fun n t -> n + List.length t.Lbtt_read.cubes) 0
+               lbtt.Lbtt_read.trans ]
+         @ [ Printf.sprintf "%.3f" t_spot ]
+         @ List.map string_of_int [ s0; t0; c0 ]
+         @ [ Printf.sprintf "%.3f" total ]))
+    else
+      Printf.printf "%s: compile(f): %d locations, %d transitions, %d clocks\n"
+        !formula s0 t0 c0;
+    exit 0
+  end;
   (* 6 *)
   (* rounds until nothing changes, at most !rounds *)
   let rec fix k a =

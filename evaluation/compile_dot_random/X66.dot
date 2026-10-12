@@ -3,7 +3,7 @@ digraph TBA {
   node [shape=circle];
   init [shape=point];
   init -> L0;
-  L0 [shape=doublecircle, label="L0"];
+  L0 [shape=circle, label="L0"];
   L1 [shape=doublecircle, label="L1"];
   L0 -> L1 [label="r"];
   L1 -> L1 [label="any"];

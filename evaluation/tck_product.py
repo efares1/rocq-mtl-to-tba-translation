@@ -145,7 +145,31 @@ def from_gv(name, path, events):
         for lits in (dnf(cube) if cube not in ('', '1') else [[]]):
             add_cube(a, src, tgt, lits, accs, events)
     a.acc_labels = sorted({l for v in a.locs.values() for l in v[0]})
+    if not a.acc_labels:
+        # No acceptance mark is printed.  CASAAL then relies on the state
+        # labels: a state whose label still contains an unbounded eventuality
+        # (F or U without an interval) has an undischarged obligation, so a
+        # run that stays in such states forever is not accepting.  Accepting
+        # states are the others; if there are none, the language is empty.
+        # (Bounded operators carry their obligation in a clock guard.)
+        text = dict(re.findall(r'^\s*(\d+)\s*\[label="((?:[^"\\]|\\.)*)"\]', s, re.M))
+        pending = {n for n in nodes if UNBOUNDED_EVENTUALITY.search(text.get(n, ''))}
+        if pending:
+            lab = f'acc{a.name}_weak'
+            good = [n for n in nodes if n not in pending]
+            for n in good:
+                a.locs[n] = ([lab], None, False)
+            if not good:
+                a.locs['unreach'] = ([lab], None, False)
+            a.acc_labels = [lab]
     return a
+
+
+# F or U in a CASAAL state label that leaves an obligation which no clock
+# guard enforces: without an interval, or with a lower bound (x>d, x>=d).
+# Operators are upper case, so no look-behind is needed (`pU[x>1]!r`).
+UNBOUNDED_EVENTUALITY = re.compile(
+    r'(F|U)(?![A-Za-z\[])|(F|U)\[x\d*>')
 
 
 def add_cube(a, src, tgt, lits, accs, events):

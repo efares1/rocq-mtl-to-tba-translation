@@ -7,11 +7,11 @@ digraph TBA {
   L1 [shape=doublecircle, label="L1"];
   L2 [shape=doublecircle, label="L2"];
   L0 -> L0 [label="any\nx0, x1 := 0"];
-  L0 -> L1 [label="x1 < 2\nany\nx0 := 0"];
-  L0 -> L2 [label="q\nx0, x1 := 0"];
-  L0 -> L2 [label="q\nx0, x1 := 0"];
-  L1 -> L1 [label="x1 < 2\nany\nx0 := 0"];
-  L1 -> L2 [label="q\nx0, x1 := 0"];
-  L1 -> L2 [label="q\nx0, x1 := 0"];
-  L2 -> L2 [label="q\nx0, x1 := 0"];
+  L0 -> L1 [label="q\nx0, x1 := 0"];
+  L0 -> L1 [label="q\nx0, x1 := 0"];
+  L0 -> L2 [label="x1 < 2\nany\nx0 := 0"];
+  L1 -> L1 [label="q\nx0, x1 := 0"];
+  L2 -> L1 [label="q\nx0, x1 := 0"];
+  L2 -> L1 [label="q\nx0, x1 := 0"];
+  L2 -> L2 [label="x1 < 2\nany\nx0 := 0"];
 }

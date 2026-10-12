@@ -20,5 +20,6 @@ digraph TBA {
   L3 -> L3 [label="x0 < 3\nany\nx1 := 0"];
   L4 -> L1 [label="x1 <= 2\nq\nx0, x1 := 0"];
   L4 -> L3 [label="x1 <= 2\nany\nx0, x1 := 0"];
+  L4 -> L3 [label="x1 <= 2\nany\nx0, x1 := 0"];
   L4 -> L4 [label="x1 <= 2\nany\nx0 := 0"];
 }
