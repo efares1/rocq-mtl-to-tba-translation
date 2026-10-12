@@ -30,3 +30,7 @@ tmp/
 *.swp
 Thumbs.db
 desktop.ini
+
+# large generated automata (regenerate with evaluation/dump_compile_dot.sh)
+evaluation/compile_dot/R6.dot
+evaluation/compile_dot/R7.dot
