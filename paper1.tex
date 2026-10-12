@@ -1136,7 +1136,10 @@ $\mathsf{LUnch}(x)$ by $U$. Spot receives the exact clocked-LTL formula
 \]
 Spot 2.16's input and output are saved in
 \Rocqid{examples/spot/alarm_response_backend.ltl} and
-\Rocqid{examples/spot/alarm_response_backend.dot}~\cite{[spot]}. The generated graph has
+\Rocqid{examples/spot/alarm_response_backend.dot}~\cite{[spot]}. In these files
+$N$ is an independent atom (the tool option \texttt{-indep-neg}); the default
+printing passes $\neg A$ instead, and the contract proved below covers both,
+since it holds on all propositional words. The generated graph has
 initial state 0, accepting set $\{0,1\}$, and these transitions:
 \[
 \begin{array}{c|c|l}

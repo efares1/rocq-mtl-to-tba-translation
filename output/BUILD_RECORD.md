@@ -34,7 +34,7 @@ their automata are unchanged. Report: `PAPER1_EVALUATION_REPORT.md`, section 8.
 ## PDF (as in the commit)
 | File | Pages | SHA-256 |
 |---|---|---|
-| `paper1.pdf` | 17 | `83ab2aa460428099f7bd11491a100d588cda5580b37b8988ad8aa71a7a2b0ed2` |
+| `paper1.pdf` | 17 | `6aab76136bfffa7aba6967e671eafab8fa219cfc7164730474586654376d7b65` |
 
 Rebuild with `build-ieee-access.ps1` (Windows, MiKTeX). PDF byte hashes depend on build
 timestamps; the page count and extracted text are stable.

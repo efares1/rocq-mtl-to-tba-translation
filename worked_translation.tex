@@ -51,61 +51,34 @@ The Until clause preserves $x$; the Release test $y\ge2$ complements the source
 bound $<2$, allowing $p$ from age two.
 
 \item The saved Spot 2.16 graph for $\T(f)$ is redrawn on the left of
-Fig.~\ref{fig:translation-steps45}. Clock guards, reset and preservation
-markers, and action atoms are propositions to the backend. This saved graph
-was generated with $\mathsf{LNAct}(p)$ printed as a separate atom, as with the
-tool option \texttt{-indep-neg}: $p=\mathsf{LAct}(p)$ and
-$\neg p=\mathsf{LNAct}(p)$ are distinct atoms, while $!p$ is the negated
-literal of $\mathsf{LAct}(p)$, and a backend cube may contain both $p$ and
-$\neg p$. With the default printing, which negates the atom for
-$\mathsf{LAct}(p)$, Spot's graph has no atom $\neg p$. Timed reinterpretation imposes action
-consistency, so some backend edges have no realizable timed event.
+Fig.~\ref{fig:translation-steps45} (top). The clock guards $x\le5$ and
+$y\ge2$, the markers $\mathsf{unch}(x)$ and $\mathsf{rst}(y)$, and the action
+atom $p$ are propositions to the backend, and the negated action atom
+$\neg p=\mathsf{LNAct}(p)$ reaches Spot as the negation of the atom $p$
+(the default of the tool; Section~\ref{sec:tba-construction}). No cube of
+the graph therefore contains both $p$ and $\neg p$, and every edge is
+realizable by a timed event. The graph has four
+states and seven transitions, the size reported for F11 in
+Table~\ref{tab:compiled}.
 
-\item Relaxation removes negative literals over extended clock atoms. Reset
-completion resets the preservation clock $x$ unless $\Unch(x)$ is present;
-the restart clock $y$ is reset exactly when $\Reset(y)$ is present. The right
-side of Fig.~\ref{fig:translation-steps45} shows the same state graph after
-these operations. Edge identifiers replace dense labels; Table~\ref{tab:worked-translation-edges}
-gives each Spot cube and the corresponding event condition, surviving clock
-guard, and completed reset set. The table retains unsatisfiable action cubes
-to make the propositional-to-timed boundary visible; removing them would be a
-subsequent simplification.
+\item Relaxation removes negative literals over extended clock atoms, here
+$\neg(y\ge2)$. Reset completion resets the preservation clock $x$ unless
+$\mathsf{unch}(x)$ is present; the restart clock $y$ is reset exactly when
+$\mathsf{rst}(y)$ is present. The bottom of
+Fig.~\ref{fig:translation-steps45} shows the same state graph after these
+operations: each edge carries the event, the clock guard, and the resets. The
+event is an action ($p$ or $\neg p$), and $\top$ stands for any event.
 \end{enumerate}
 
 \begin{figure*}[!t]
 \centering
-\resizebox{\textwidth}{!}{\input{figures/fig_steps45}}
-\caption{The saved Spot 2.16 graph (redrawn, left) and its hand-derived
-reset-completed TBA (right; same state IDs). Edge identifiers are expanded in
-Table~\ref{tab:worked-translation-edges}. This graph-to-TBA illustration is
-not the formally verified alarm-response backend instance.}
+\input{figures/fig_steps45}
+\caption{The saved Spot 2.16 graph for $\T(f)$ (top, redrawn; the labels are
+propositional cubes over the action atom $p$, the clock guards, and the markers
+$\mathsf{unch}(x)$ and $\mathsf{rst}(y)$) and the reset-completed TBA obtained
+from it by hand (bottom; same state numbers). A TBA edge is labeled
+by the event, the clock guard, and, after a slash, the clocks reset; $\top$ is
+any event, and an edge without a slash resets no clock. This graph-to-TBA
+illustration is not the formally verified alarm-response backend instance.}
 \label{fig:translation-steps45}
 \end{figure*}
-
-\begin{table*}[!t]
-\centering
-\caption{Edge key for Fig.~\ref{fig:translation-steps45}. $P=\mathsf{LAct}(p)$,
-$N=\mathsf{LNAct}(p)$, $n=\neg\mathsf{LAct}(p)$, $X=(x\le5)$,
-$Y=(y\ge2)$, $U=\mathsf{LUnch}(x)$, and $R=\mathsf{LRst}(y)$. In the
-timed interpretation, $P$ means event $p$ and both $N$ and $n$ mean event
-$\neg p$. Negative $Y$ literals are removed by relaxation.}
-\label{tab:worked-translation-edges}
-\footnotesize
-\begin{tabular}{@{}c c c p{0.37\textwidth} p{0.45\textwidth}@{}}
-\toprule
-Edge & From & To & Spot propositional cube & Timed event; guard; reset set\\
-\midrule
-$e_1$ & 2 & 3 & $N\land n\land R$ & $\neg p$; $\top$; $\{x,y\}$\\
-$e_2$ & 2 & 1 & $N\land P\land R$ & $p\land\neg p$ (unrealizable); $\top$; $\{x,y\}$\\
-$e_3$ & 3 & 3 & $N\land n\land U\land X\land\neg Y$ & $\neg p$; $x\le5$; $\varnothing$\\
-$e_4$ & 3 & 1 & $N\land P\land X\land\neg Y$ & $p\land\neg p$ (unrealizable); $x\le5$; $\{x\}$\\
-$e_5$ & 3 & 4 & $n\land U\land X\land Y$ & $\neg p$; $x\le5\land y\ge2$; $\varnothing$\\
-$e_6$ & 3 & 0 & $P\land X\land Y$ & $p$; $x\le5\land y\ge2$; $\{x\}$\\
-$e_7$ & 1 & 1 & $N\land\neg Y$ & $\neg p$; $\top$; $\{x\}$\\
-$e_8$ & 1 & 0 & $Y$ & any event; $y\ge2$; $\{x\}$\\
-$e_9$ & 4 & 4 & $n\land U\land X$ & $\neg p$; $x\le5$; $\varnothing$\\
-$e_{10}$ & 4 & 0 & $P\land X$ & $p$; $x\le5$; $\{x\}$\\
-$e_{11}$ & 0 & 0 & $\top$ & any event; $\top$; $\{x\}$\\
-\bottomrule
-\end{tabular}
-\end{table*}
