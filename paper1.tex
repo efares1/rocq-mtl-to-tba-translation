@@ -73,31 +73,30 @@
 \doi{}
 
 \begin{abstract}
-Translation from real-time temporal specifications to timed automata supports
-automated analysis, but depends on preserving the specified timed-word
+Translating real-time temporal specifications into timed automata supports
+automated analysis, but only if the translation preserves the timed-word
 language. We present a Rocq-checked soundness-and-completeness development for
-the specified pointwise dense-time translation from Metric Temporal Logic
-(MTL)$_{0,\infty}$ to timed B\"uchi automata (TBAs), via clocked Linear
-Temporal Logic (LTL). Earlier work established mathematical language-preservation
-results for this fragment; to the best of our knowledge, no published
-machine-checked soundness-and-completeness development covers the particular
-construction and semantic model formalized here. Rocq checks all eight strict
-and non-strict primitive cases. The proof handles shared clocks and overlapping
-activations by separating soundness for every clock-consistent reset trace
-from completeness via one canonical reset trace and residual obligations. It
-also checks relaxation and reset completion, yielding a compositional theorem
-under an explicit all-words language-equivalence contract for the propositional
-B\"uchi backend. For an alarm-response instance, we prove that a manually
-transcribed backend record satisfies this contract and prove both an accepted
-overlapping-alarm trace and a violating trace. The theorem uses real-valued
-bounds, well-formed core formulas, strictly increasing divergent timestamps,
-and event-guarded TBAs with existential initial clock valuations; the Spot
-graph-to-record correspondence is outside the proof. On 31 benchmark
-configurations and 100 random formulas, we measure the automata produced by
-extracted code, check language inclusions against CASAAL with TChecker,
-compare the semantics with the automaton on 26{,}200 random timed words, 25{,}400 of them
-also against CASAAL, and test the backend contract with an independent
-translator.
+the pointwise dense-time translation of Metric Temporal Logic
+(MTL)$_{0,\infty}$ into timed B\"uchi automata (TBAs) via clocked Linear
+Temporal Logic. Earlier work established language preservation mathematically;
+to the best of our knowledge, no published machine-checked development covers
+the construction and semantic model formalized here. Rocq checks all eight
+strict and non-strict primitive cases, handling shared clocks and overlapping
+activations through soundness for every clock-consistent reset trace and
+completeness via one canonical reset trace. Relaxation and reset completion are
+also checked, yielding a compositional theorem under an explicit all-words
+language-equivalence contract for the propositional B\"uchi backend. This
+contract is a premise (the convenience theorem postulates it as an axiom);
+Spot, graph import, parsing, printing, extraction, and zero-bound preprocessing
+lie outside the proof. For an alarm-response instance, we prove that a
+manually transcribed backend record satisfies the contract, that an
+overlapping-alarm trace is accepted, and that a violating trace is rejected.
+The theorem assumes real-valued bounds, strictly increasing divergent
+timestamps, and existential initial clock valuations. On 31 benchmarks and 100
+random formulas, all with integer bounds, TChecker inclusion checks against
+CASAAL complete on 22 of the 31 benchmarks, 26{,}200 random timed words agree
+with an unverified Python evaluation of the semantics, and the backend contract
+is tested against ltl2ba on 28 of the 31 benchmarks.
 \end{abstract}
 
 \begin{keywords}
@@ -125,8 +124,9 @@ and co-safety fragments. Li et al. establish full-fragment
 MTL$_{0,\infty}$-to-TBA language equality and show that their best-choice
 reset policy preserves language~\cite{[BDLG14],li_spin7}. Their
 work already contains the central timed-subformula clocking and reset
-architecture. Our research result is a machine-checked proof for the specified
-construction. Table~\ref{tab:prior-construction-comparison} compares them.
+architecture. Our contribution is a machine-checked proof of the specified
+construction. Table~\ref{tab:prior-construction-comparison} compares these
+constructions.
 
 Mathematical proofs and machine-checked proofs provide different assurance.
 A proof assistant requires the syntax, timed-word semantics, clock updates,
@@ -175,15 +175,15 @@ The principal contributions are:
         reset traces;
   \item checked relaxation and reset completion, composed with an explicit
         all-propositional-words backend contract in
-        \Rocqid{MTL_to_TBA_correct_with}; and
+        \Rocqid{MTL_to_TBA_correct_with};
   \item a concrete alarm-response instance whose manually transcribed Rocq
         backend satisfies the contract, with proved accepted-overlap and
         rejected-violation traces, and an inspectable proof and assumptions
         artifact; and
-  \item an evaluation of the automaton produced by the verified
+  \item an evaluation of the automaton produced by the extracted
         construction, before any optimization: sizes against CASAAL,
-        language-inclusion checks with TChecker, and tests of the backend
-        contract (Section~\ref{sec:evaluation}).
+        language-inclusion checks with TChecker, agreement tests on random
+        timed words, and tests of the backend contract (Section~\ref{sec:evaluation}).
 \end{itemize}
 
 The result is relative to the formal model defined here: real-valued bounds,
@@ -207,8 +207,7 @@ automaton construction; Section~\ref{sec:correctness} develops the proof and
 includes the alarm-response instance in Section~\ref{sec:alarm-example};
 Section~\ref{sec:evaluation} evaluates the construction,
 Section~\ref{sec:artifact} describes the artifact and reproduction procedure,
-and Section~\ref{sec:related} discusses related work before the conclusion
-.
+and Section~\ref{sec:related} discusses related work before the conclusion.
 \section{Logic and Semantic Model}
 \label{sec:logic}
 \subsection{Pointwise MTL$_{0,\infty}$}
@@ -310,18 +309,18 @@ reduce to $\Next(p\Release q)$. For ordinary operators, the current-position
 case must also be simplified: the $\ge0$ cases are the corresponding untimed
 Until and Release operators, and the $>0$ cases reduce to
 $p\land\Next(p\Until q)$ and $p\lor\Next(p\Release q)$,
-respectively. These reductions rely on the paper's strictly increasing event
+respectively. These reductions rely on strictly increasing event
 times and must be applied before encoding a source formula as a Rocq core
 formula; the preprocessing itself is not mechanized. A zero strict
 upper bound has an empty interval: Until reduces to $\bot$ and Release to
 $\top$; strict upper-bound constructors in the core consequently require
-$d>0$. For the non-strict upper bound zero, the hatted future operators reduce
+$d>0$. For a non-strict upper bound of zero, the hatted future operators reduce
 to $\hUntil_{\le0}\equiv\bot$ and $\hRelease_{\le0}\equiv\top$, because all
 strictly future events have positive elapsed time. The derived ordinary
 operators therefore both reduce to their right operand:
 $p\Until_{\le0}q\equiv q$ and $p\Release_{\le0}q\equiv q$. These reductions
 make the boundary explicit: the mechanized domain excludes zero lower bounds
-and zero strict upper bounds, but includes non-strict upper bound zero.
+and zero strict upper bounds, but includes a non-strict upper bound of zero.
 
 \begin{figure}[t]
 \centering
@@ -332,7 +331,8 @@ timestamp.}
 \label{fig:hatted-until}
 \end{figure}
 
-This distinction is useful for sporadicity: if consecutive occurrences of
+Figure~\ref{fig:hatted-until} contrasts the two readings. The distinction is
+useful for sporadicity: if consecutive occurrences of
 $e$ must be separated by at least $\theta$, one may write
 $\Box(e\Rightarrow\widehat{\Box}_{<\theta}\neg e)$. The hatted form retains
 the triggering event as the time origin; ordinary bounded temporal
@@ -346,7 +346,7 @@ The verified target is an event-guarded TBA
 $\mathcal A=(L,\ell_0,X,E,\mathit{Acc})$. Here $L$ is a finite set of
 locations, $\ell_0$ the initial location, $X$ a finite set of clocks,
 $E\subseteq L\times\mathsf{Lab}\times\mathsf{Guard}\times 2^X\times L$
-is the set of action-labelled transitions with guards and reset sets, and
+is the set of action-labeled transitions with guards and reset sets, and
 $\mathit{Acc}\subseteq L$ the B\"uchi set. A run is a sequence
 $(\ell_i,v_i)_{i\ge0}$ starting at $\ell_0$; it follows one transition per
 event and visits $\mathit{Acc}$ infinitely often. If the selected edge at
@@ -389,7 +389,7 @@ and preservation atoms describe the clock update at the current event. Clock
 values are read before the event's reset, matching the guard semantics of a
 timed automaton.
 
-For formula $f$, let $\Clock(f)$ be its finite set of distinct primitive
+For a formula $f$, let $\Clock(f)$ be its finite set of distinct primitive
 hatted timed subformulas. The clock associated with $F\in\Clock(f)$ is
 $x=F$ itself. Clock identity uses structural equality on the Rocq MTL syntax
 tree, with bounds compared by equality in $\Real$. Constructor, operands,
@@ -420,7 +420,8 @@ For upper comparisons $\precsim\in\{\le,<\}$ and lower comparisons
 $\succsim\in\{\ge,>\}$, complements are
 $\le^{\mathrm c}=>$, $<^{\mathrm c}=\ge$, $\ge^{\mathrm c}=<$, and
 $>^{\mathrm c}=\le$. The four clause shapes, each instantiated for its
-strict and non-strict bound, give all eight primitive cases:
+strict and non-strict bound, give all eight primitive cases (Table~\ref{tab:clock-tests} lists the clock
+comparison each one uses):
 \begin{align}
 \T_\pi(p\hUntil_{\precsim d}q)
  &=\Next\bigl(((x\precsim d)\land\Unch(x)\land P)\nonumber\\
@@ -469,7 +470,7 @@ evaluation to the next event. For example,
 $\Box(e\Rightarrow\widehat{\Box}_{<\theta}\neg e)$ measures an exclusion
 window from the triggering event. The leading next in an ordinary operator
 would shift that reference, while omitting it also constrains the triggering
-event. Figure~\ref{fig:hat-reference} contrasts these readings.
+event. Fig.~\ref{fig:hat-reference} contrasts these readings.
 \begin{figure*}[t]
 \centering
 \input{figures/fig_sporadic_hat}
@@ -572,11 +573,11 @@ run remains accepting. Rocq proves this result as
 \end{proof}
 
 The role of propositional valuations, relaxation, and reset completion in
-both directions is proved once, as part of the end-to-end composition in
+both directions is proved once, as part of the composition in
 Theorem~\ref{thm:mtl-to-tba-correct}. A propositional model alone is not a
 clock-consistent timed trace.
 \input{worked_translation}
-.
+
 
 \section{Mechanized Correctness}
 \label{sec:correctness}
@@ -595,15 +596,15 @@ $\Delta_i=t_{i+1}-t_i$,
 \label{eq:clock-update}
 \end{equation}
 The value at $i$ is tested before the reset decision at $i$. The relation
-$\mathsf{same\_base}(\rho,w)$ means that projection of $\rho$ onto actions
+$\mathsf{same\_base}(\rho,w)$ means that the projection of $\rho$ onto actions
 and timestamps gives $w$.
 
 \subsection{Soundness for arbitrary reset traces}
 \label{subsec:primitive-soundness}
 The soundness direction does not select or assume the canonical policy. For
 each primitive formula $F$ at path $\pi$, the corresponding Rocq lemma
-\texttt{sound\_*} turns $\rho,i\models_{\mathrm{LTL}}\T_\pi(F)$ into
-$\ewbase(\rho),i\models_{\mathrm{MTL}}F$, assuming clock consistency and
+\texttt{sound\_*} turns $\rho,i\satL\T_\pi(F)$ into
+$\ewbase(\rho),i\satM F$, assuming clock consistency and
 induction hypotheses for its operands. The four proof families below each
 cover both the strict and non-strict comparison.
 
@@ -639,8 +640,8 @@ witness and prefix in both cases. The strong Until is essential: an infinite
 continuation with no $Q$ endpoint is not a bounded Until witness.
 
 \runinhead{Lower-bounded hatted Until.}
-Here the translation requires $\Reset(x)$ at $i$. The finite branch of
-$\Gamma$ waits for a position with $x\ge d$ (or $x>d$) and then supplies an
+Here the translation requires $\Reset(x)$ at $i$. The finite branch (the first disjunct of
+Eq.~\eqref{eq:t-huge}) waits for a position with $x\ge d$ (or $x>d$) and then supplies an
 ordinary $P\Until Q$ witness. Since subsequent resets can only make a clock
 younger, $\CVal_\rho(j,x)\le\elapsed_w(i,j)$; thus the threshold guard proves
 the required lower-bound comparison. The nested Until supplies $P$ up to the
@@ -689,8 +690,8 @@ assumption is used in any soundness family.
 \label{subsec:canonical-policy}
 Completeness must choose one clock trace for each primitive formula, even
 when activations overlap. The canonical policy preserves a reference only
-while its residual obligation is still useful. Let
-$\mathsf{elap}_w(i,j)=t_j-t_i$. For upper-bounded Until define
+while its residual obligation is still useful. Recall that
+$\elapsed_w(i,j)=t_j-t_i$. For upper-bounded Until define
 \begin{align}
 \mathsf{URes}_{\le}(i,v,d,p,q)\iff{}\\[-1mm]
 &\exists j\ge i.\;v+\elapsed_w(i,j)\le d\nonumber\\[-1mm]
@@ -717,7 +718,8 @@ These are universal residuals: every position already beyond the threshold
 must have $q$ or an earlier $p$ that discharges the obligation. Their
 strict variants keep the comparison itself strict.
 
-For a clock $x=F$, let $v=\CVal_{\rho^\star}(i,x)$. The policy is:
+For a clock $x=F$, let $v=\CVal_{\rho^\star}(i,x)$; Table~\ref{tab:canonical-policy} gives the
+policy.
 \begin{table}[t]
 \centering
 \caption{Canonical reset decision at position $i$. A preservation row gives
@@ -759,13 +761,14 @@ itself, not by an occurrence path.
 
 \subsection{Completeness for one canonical trace}
 \label{subsec:primitive-completeness}
-For every satisfying formula, completeness constructs one clock-consistent
+For every formula satisfied by $w$, completeness constructs one clock-consistent
 extension $\rho^\star$ that serves all activations of every shared clock.
 The four operator families use different invariants; strict variants replace
 each boundary test by its strict counterpart.
 
 \runinhead{Upper-bounded hatted Until.}
-Choose a future $q$ witness $j>i$ while the activation remains pending. The
+Choose the first position $j>i$ at which $q$ holds with $p$ on $[i,j)$, while
+the activation remains pending. The
 key invariant along the translated strong-Until prefix is
 \begin{equation}
 \CVal_{\rho^\star}(n,x)+\elapsed_w(n,j)\le d
@@ -779,19 +782,23 @@ $u_{i+1}+\elapsed_w(i+1,j)=\elapsed_w(i,j)$, which is within the bound for
 the chosen witness. If it preserves at $i$, the residual supplies a still
 reachable $q$ endpoint and $p$ prefix; because the current $q$ has not
 discharged that residual, its witness is strictly after $i$, and the same
-identity advances the residual inequality to $i+1$. At every intermediate
-event the policy either preserves this useful older reference or resets to a
-new reference whose MTL obligation is true. The endpoint satisfies $q$ and
-the clock comparison. An older reference is at least as old as a newer one,
-so if it still reaches the shared endpoint within $d$, the shorter
-newer-prefix obligations are covered as well. This is the invariant proved
+identity advances the residual inequality to $i+1$. Because $j$ is the first such
+position, $q$ fails at every intermediate position $n$ with $i<n<j$: otherwise
+$n$ would be an earlier witness, since $p$ holds on $[i,n)\subseteq[i,j)$. The
+invariant gives $\CVal_{\rho^\star}(n,x)+\elapsed_w(n,j)\le d$, so
+$\mathsf{URes}_{\le}$ holds at $n$ with witness $j$. Hence the policy preserves
+the reference at every intermediate position, which is what the conjunct
+$\Unch(x)$ of the translation requires; the endpoint $j$ satisfies $q$ and the
+clock comparison. A reference reset earlier has a larger age than any later
+one, so if it still reaches the shared endpoint within $d$, the obligations of
+the later activations are covered as well. This is the invariant proved
 by \Rocqid{complete_UhatLe} and \Rocqid{complete_UhatLt}.
 
 \runinhead{Lower-bounded hatted Until.}
 Whenever the formula is true at an activation, the policy resets its clock.
 Starting from $i+1$, a first position at which the canonical clock reaches
 $d$ (or strictly exceeds $d$) and has a qualifying later $q$ witness gives
-the finite branch of $\Gamma$: the clock guard supplies the lower-bound
+the finite branch (the first disjunct of Eq.~\eqref{eq:t-huge}): the clock guard supplies the lower-bound
 test, and the nested $P\Until Q$ supplies the remaining witness. Before the
 first such position, the proof maintains an active-witness invariant. At
 each $n\ge i+1$ it supplies an activation $s<n$, a witness $m\ge n$ with
@@ -799,7 +806,7 @@ $t_m-t_s\ge d$ and $w,m\models q$, $p$ at every intermediate position, and
 $\CVal_{\rho^\star}(n,x)=t_n-t_s$. Thus $p$ holds at $n$ and a $q$ witness
 remains at or after every $n$. If a first qualifying position occurs, the
 finite branch applies; if none occurs, the invariant yields
-$\Always P\land\Always\Eventually Q$, the fairness branch of $\Gamma$.
+$\Always P\land\Always\Eventually Q$, the fairness branch (the second disjunct of Eq.~\eqref{eq:t-huge}).
 Divergence converts recurring $q$ positions into a witness beyond the
 lower bound. For the strict case, replace $d\le t_m-t_s$ in the invariant
 by $d<t_m-t_s$ and use threshold $x>d$; in the fairness argument, a
@@ -829,7 +836,7 @@ clock and the residual by
 \qquad
 \elapsed_w(i,j)=\Delta_i+\elapsed_w(i+1,j).
 \]
-Substitution in~\eqref{eq:rres-ge} proves
+Substitution in Eq.~\eqref{eq:rres-ge} proves
 $\mathsf{RRes}_{\ge}(i+1,v+\Delta_i,d,p,q)$. Its strict analogue proves the
 same shift for $\mathsf{RRes}_{>}$ when $v\le d$. The residual ensures that
 every event in the already-entered lower-bound region has $q$ or an earlier
@@ -919,7 +926,8 @@ For a propositional B\"uchi automaton $A$ over the extended atoms, let
 $\mathsf{compile\_with}(A)$ denote relaxation followed by reset completion.
 Its correctness premise, Assumption~\ref{ass:backend}, is language
 equivalence over \emph{all} propositional words, including valuations that
-are not clock-consistent. The single end-to-end theorem is:
+are not clock-consistent. The single composed theorem (Figure~\ref{fig:correctness-composition}),
+conditional on the backend contract, is:
 \begin{theorem}[Conditional MTL-to-TBA correctness]
 \label{thm:mtl-to-tba-correct}
 For every well-formed formula $f$, timed word $w$, and propositional
@@ -933,14 +941,14 @@ In Rocq this is \Rocqid{MTL_to_TBA_correct_with}; backend language
 equivalence is an explicit premise.
 \end{theorem}
 \begin{proof}
-For MTL-to-TBA, the encoding theorem supplies a canonical clock-consistent
+For the forward direction, the encoding theorem supplies a canonical clock-consistent
 extension satisfying $\T(f)$. The backend premise gives an accepting
 propositional run. Relaxation carries the run to the relaxed automaton by
 \Rocqid{relax_complete}; reset completion then supplies the completed
 clock-consistent extension and accepting TBA run by
 \Rocqid{complete_complete}.
 
-For TBA-to-MTL, an accepting completed run first projects to a run of the
+For the converse direction, an accepting completed run first projects to a run of the
 relaxed backend by \Rocqid{complete_sound}. At each position, reconstruct a
 propositional valuation satisfying the selected original backend cube:
 deleted negative extended literals are made false, surviving literals are
@@ -1175,7 +1183,7 @@ neutral actions at subsequent timestamps, which advance by $\tfrac32$.
 Rocq proves \Rocqid{alarm_overlap_trace_satisfies} and derives
 \Rocqid{alarm_overlap_trace_accepted_by_spot_tba}. Both alarms use the same
 clock $x$. On the canonical extension, the residual checks at indices 0 and 1
-are respectively
+are, respectively,
 \[
   0+(3-0)=3\le3,
   \qquad
@@ -1198,7 +1206,7 @@ The repository also provides a Python consistency check between the saved
 graph and Rocq record (up to state renaming, including guards), with mutation
 self-tests for a changed guard and accepting set. It is an executable audit of
 the transcription, not a verified importer or a proof of Spot's semantics.
-The separate finite reset-policy scenario is illustrative.
+The finite reset-policy scenario of Table~\ref{tab:overlap-example} is illustrative.
 
 \input{evaluation_section}
 
