@@ -1301,6 +1301,30 @@ Proof.
 Qed.
 
 (* ====================================================================== *)
+(* 9b'. Action-consistent propositional words                             *)
+(* ====================================================================== *)
+
+(* The translation T uses the negated event atom [LNAct p], which holds in
+   an extended word exactly when the event atom [LAct p] does not.  The
+   LTL-to-Buchi back-end may receive this atom as the explicit negation of
+   the event atom (the quoted atom "p" negated: !"p"), so that its contract
+   is only required on the action-consistent propositional words, in which
+   [LNAct p] is the complement of [LAct p] at every position.  The
+   propositional word of an extended word is action-consistent, and
+   relaxation preserves the property: it never changes an action atom.
+   Monotonicity (psat_mono) is used only on words that differ on the
+   extended (clock and marker) atoms. *)
+Definition action_consistent (s : pword root) : Prop :=
+  forall (i : nat) (p : Action), s i (LNAct p) <-> ~ s i (LAct p).
+
+Lemma word_of_action_consistent :
+  forall rho : ext_word root, action_consistent (word_of rho).
+Proof.
+  intros rho. unfold action_consistent. intros i p.
+  unfold word_of. simpl. split; intro H; exact H.
+Qed.
+
+(* ====================================================================== *)
 (* 9c. Choice of a transition along a run                                 *)
 (* ====================================================================== *)
 
@@ -1435,10 +1459,11 @@ Qed.
    atoms outside the formula); by monotonicity, [s] satisfies the formula. *)
 Lemma relax_sound :
   forall (f : ltl root) A (s : pword root),
-    (forall s', PBA_accepts A s' -> psat s' 0 f) ->
+    action_consistent s ->
+    (forall s', action_consistent s' -> PBA_accepts A s' -> psat s' 0 f) ->
     PBA_accepts (relax (ltl_atoms f) A) s -> psat s 0 f.
 Proof.
-  intros f A s Hax [run [Hinit [Hsteps Hacc]]].
+  intros f A s Hcs Hax [run [Hinit [Hsteps Hacc]]].
   set (F := ltl_atoms f).
   set (P := fun i (t : ptransition root) =>
               consistent (pt_label t) = true /\ pt_src t = run i /\
@@ -1455,7 +1480,11 @@ Proof.
   set (s' := fun i (a : latom root) =>
                if is_ext a
                then (In (a, true) (lab i) /\ ~ In a F) \/ (s i a /\ ~ In (a, false) (lab i))
-               else s i a).
+                              else s i a).
+  (* the word s' differs from s on extended atoms only, so it is
+     action-consistent when s is *)
+  assert (Hcs' : action_consistent s').
+  { intros i p. unfold s'. unfold is_ext. simpl. exact (Hcs i p). }
   assert (Hrun : PBA_accepts A s').
   { exists run. split; [exact Hinit|]. split; [|exact Hacc].
     intro i. split; [exact (proj1 (Hsteps i))|].
@@ -1483,7 +1512,7 @@ Proof.
       { apply filter_In. split; [exact Hab|].
         unfold keep_lit. simpl. rewrite Hext. reflexivity. }
       exact (Hl _ Hk). }
-  apply (psat_mono (s := s')); [|exact (Hax s' Hrun)].
+  apply (psat_mono (s := s')); [|exact (Hax s' Hcs' Hrun)].
   intros i a Ha H. unfold s' in H. destruct (is_ext a).
   - destruct H as [[_ Hn] | [H _]]; [contradiction | exact H].
   - exact H.
@@ -1823,23 +1852,28 @@ End Completion.
 (* ====================================================================== *)
 
 (* The external LTL-to-Buchi tool (Spot) treats the atoms of the extended
-   alphabet as independent propositions: it returns a Buchi automaton whose
-   transitions are labelled by cubes of literals and which accepts exactly
-   the propositional words satisfying the formula. *)
+   alphabet as propositions: it returns a Buchi automaton whose transitions
+   are labelled by cubes of literals and which accepts exactly the
+   propositional words satisfying the formula.  The negated event atom
+   [LNAct p] is given to the tool as the negation !"p" of the event atom,
+   so the equivalence is required only on the action-consistent words. *)
 Axiom LTL_TO_BUCHI_CORRECT :
   forall (root : mtl) (f : ltl root),
     { A : PBuchi root |
-      forall s : pword root, PBA_accepts A s <-> psat s 0 f }.
+      forall s : pword root, action_consistent s ->
+        (PBA_accepts A s <-> psat s 0 f) }.
 
 Definition ltl_to_buchi (root : mtl) (f : ltl root) : PBuchi root :=
   proj1_sig (LTL_TO_BUCHI_CORRECT f).
 
 Theorem ltl_to_buchi_correct :
   forall root (f : ltl root) (s : pword root),
-    PBA_accepts (ltl_to_buchi f) s <-> psat s 0 f.
+    action_consistent s ->
+    (PBA_accepts (ltl_to_buchi f) s <-> psat s 0 f).
 Proof.
-  intros root f s. unfold ltl_to_buchi.
-  destruct (LTL_TO_BUCHI_CORRECT f) as [A HA]. simpl. apply HA.
+  intros root f s Hcs. unfold ltl_to_buchi.
+  destruct (LTL_TO_BUCHI_CORRECT f) as [A HA]. simpl.
+  apply HA. exact Hcs.
 Qed.
 
 (* ====================================================================== *)
@@ -1890,8 +1924,9 @@ Qed.
 
 Theorem compile_with_correct_from_encoding :
   forall (f : mtl) (A : PBuchi f) (w : timed_word),
-    EncodingCorrect ->
-    (forall s : pword f, PBA_accepts A s <-> psat s 0 (T f)) ->
+        EncodingCorrect ->
+    (forall s : pword f, action_consistent s ->
+       (PBA_accepts A s <-> psat s 0 (T f))) ->
     well_formed f ->
     (msat w 0 f <-> TBA_accepts (compile_with A) w).
 Proof.
@@ -1903,7 +1938,7 @@ Proof.
     apply (proj1 Henc) in Hm.
     destruct Hm as [rho [Hbase [Hclock Hltl]]].
     apply lsat_psat in Hltl.
-    apply (proj2 (HA (word_of rho))) in Hltl.
+        apply (proj2 (HA (word_of rho) (word_of_action_consistent rho))) in Hltl.
     apply (relax_complete (ltl_atoms (T f))) in Hltl.
     destruct (complete_complete Hclock (@compile_labels_ok f A) Hltl)
       as [rho' [Hb' [Hc' Ha']]].
@@ -1913,8 +1948,9 @@ Proof.
     apply (proj2 Henc).
     exists rho. split; [exact Hbase|]. split; [exact Hclock|].
     apply lsat_psat.
-    apply (relax_sound (A := A)).
-    + intros s' Hs'. apply HA. exact Hs'.
+        apply (relax_sound (A := A)).
+    + apply word_of_action_consistent.
+    + intros s' Hcs' Hs'. exact (proj1 (HA s' Hcs') Hs').
     + exact (complete_sound (@compile_labels_ok f A) Htba).
 Qed.
 
@@ -1928,8 +1964,8 @@ Theorem MTL_to_TBA_correct_from_encoding :
     (msat w 0 f <-> TBA_accepts (compile f) w).
 Proof.
   intros f w Henc Hwf. unfold compile.
-  apply compile_with_correct_from_encoding; [exact Henc | | exact Hwf].
-  intro s. apply ltl_to_buchi_correct.
+    apply compile_with_correct_from_encoding; [exact Henc | | exact Hwf].
+  intros s Hcs. apply ltl_to_buchi_correct. exact Hcs.
 Qed.
 
 (* ====================================================================== *)

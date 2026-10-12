@@ -940,8 +940,9 @@ Proof.
   - destruct Hfalse as [k [Hk _]]. lia.
 Qed.
 
-(* This is precisely the proposition-level backend premise required by
-   MTL_to_TBA_correct_with for this formula. *)
+(* The proposition-level backend premise for this formula, on all
+   propositional words.  MTL_to_TBA_correct_with requires it only on the
+   action-consistent words; the all-words form is stronger. *)
 Definition alarm_response_backend_contract
     (A : PBuchi alarm_response) : Prop :=
   forall s : pword alarm_response,
@@ -953,9 +954,11 @@ Theorem alarm_response_tba_correct_with :
     msat w 0 alarm_response <-> TBA_accepts (compile_with A) w.
 Proof.
   intros A w HA.
-  unfold alarm_response_backend_contract in HA.
+    unfold alarm_response_backend_contract in HA.
   eapply MTL_to_TBA_correct_with.
-  - exact HA.
+  - (* the contract of the record holds on all propositional words, in
+       particular on the action-consistent ones *)
+    intros s _. exact (HA s).
   - apply alarm_response_well_formed.
 Qed.
 

@@ -4122,11 +4122,15 @@ Qed.
 Print Assumptions MTL_to_TBA_correct.
 
 (* The same result for the Buchi automaton returned by any correct
-   LTL-to-Buchi translator, e.g. Spot called by the tool: no project axiom
-   is used, the correctness of the translator is a hypothesis. *)
+      LTL-to-Buchi translator, e.g. Spot called by the tool: no project axiom
+   is used, the correctness of the translator is a hypothesis.  The
+   hypothesis is required only on the action-consistent propositional words,
+   those in which the negated event atom is the complement of the event atom:
+   the tool gives the back-end the negated event atom as !"p". *)
 Theorem MTL_to_TBA_correct_with :
   forall (f : mtl) (A : PBuchi f) (w : timed_word),
-    (forall s : pword f, PBA_accepts A s <-> psat s 0 (T f)) ->
+    (forall s : pword f, action_consistent s ->
+       (PBA_accepts A s <-> psat s 0 (T f))) ->
     well_formed f ->
     (msat w 0 f <-> TBA_accepts (compile_with A) w).
 Proof.

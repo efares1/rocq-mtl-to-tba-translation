@@ -45,10 +45,13 @@ Description.constructive_definite_description :
 Classical_Prop.classic : forall P : Prop, P \/ ~ P
 LTL_TO_BUCHI_CORRECT :
   forall (root : mtl) (f : ltl root),
-  {A : PBuchi root | forall s : pword root, PBA_accepts A s <-> psat s 0 f}
+  {A : PBuchi root
+  | forall s : pword root,
+    action_consistent (root:=root) s -> PBA_accepts A s <-> psat s 0 f}
 MTL_to_TBA_correct_with
      : forall (f : mtl) (A : PBuchi f) (w : timed_word),
-       (forall s : pword f, PBA_accepts A s <-> psat s 0 (T f)) ->
+       (forall s : pword f,
+        action_consistent (root:=f) s -> PBA_accepts A s <-> psat s 0 (T f)) ->
        well_formed f -> msat w 0 f <-> TBA_accepts (compile_with A) w
 Axioms:
 ClassicalDedekindReals.sig_forall_dec :

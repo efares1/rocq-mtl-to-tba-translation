@@ -6,7 +6,7 @@ Source: `Print Assumptions` (logs in `output/rocq/assumptions*.txt`) and `coqchk
 
 | Assumption | Kind | Meaning |
 |---|---|---|
-| `LTL_TO_BUCHI_CORRECT` (project `Axiom`, Core) | **project-specific hypothesis about an external component** | states the existence of a correct LTL-to-Büchi translator; used only by the convenience theorems without the suffix `_with` (`MTL_to_TBA_correct`). The `_with` theorems take the backend contract as an explicit premise instead. It is not a mathematical axiom of the logic and is not discharged by Rocq. |
+| `LTL_TO_BUCHI_CORRECT` (project `Axiom`, Core) | **project-specific hypothesis about an external component** | states the existence of an LTL-to-Büchi translator that is correct on the action-consistent propositional words (those in which `LNAct p` is the complement of `LAct p`); used only by the convenience theorems without the suffix `_with` (`MTL_to_TBA_correct`). The `_with` theorems take the backend contract as an explicit premise instead. It is not a mathematical axiom of the logic and is not discharged by Rocq. |
 | `ClassicalDedekindReals.sig_forall_dec` | standard library | used by the construction of the real numbers (decidable comparisons of bounds) |
 | `FunctionalExtensionality.functional_extensionality_dep` | standard library | functional extensionality |
 | `Description.constructive_definite_description` | standard library | definite description (used by the classical Boolean reflection `decide_b`) |
