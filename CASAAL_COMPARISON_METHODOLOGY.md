@@ -41,10 +41,8 @@ this article). A timeout is inconclusive.
 
 CASAAL prints Boolean transition labels; Spot's output, and hence
 `compile(f)`, uses one transition per cube over the propositions and clock
-literals. this article reports `compile(f)` sizes (before any optimization) and
-explains this difference; the follow-up development compares its optimized output with
-CASAAL's in symbolic transitions (grouping by source, target, guard, resets).
-Neither article treats CASAAL as an optimizer baseline.
+literals. This article reports `compile(f)` sizes (before any optimization) and
+explains this difference. It does not treat CASAAL as an optimizer baseline.
 
 ## X74 (random formulas)
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Evaluation of Article 1 on the verified translation compile(f): the TBA
+# Evaluation of the article on the verified translation compile(f): the TBA
 # obtained by the clocked-LTL translation, Spot, relaxation and reset
 # completion (mtl2tba -tba, <base>_tba.dot), before any optimization.
 #
@@ -23,8 +23,8 @@ EXE=${EXE:-"$HERE/../tool/_build/default/src/mtl2tba.exe"}
 TCK=${TCK:-~/local/bin/tck-liveness}
 LIMIT=${LIMIT:-600}
 SET=${SET:-all}
-# The Article 1 theorem covers compile(f) without the recur and weak-until
-# rewritings, which are proved separately (follow-up development).
+# The article's theorem covers compile(f) without the recur and weak-until
+# rewritings, which are outside it.
 OPTS=${OPTS:-"-noweak -norecur -compile-only"}
 W=$(mktemp -d)
 

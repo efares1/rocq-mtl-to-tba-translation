@@ -1,4 +1,4 @@
-"""LaTeX table of the Article 1 evaluation, generated from the raw results.
+"""LaTeX table of the article's evaluation, generated from the raw results.
 
     python3 make_compiled_table.py      ->  compiled_table.tex, prints a summary
 

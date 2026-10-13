@@ -8,7 +8,7 @@ reader, relaxation, reset completion, **before any optimization**, produced by
 `mtl2tba -noweak -norecur -tba -compile-only` (tool built from `tool/` with dune, OCaml 5.4.0,
 WSL 2 Ubuntu 26.04, i7-8650U). `-noweak -norecur` make the clocked-LTL formula
 exactly the T(f) of the article (the default front end applies two further
-rewritings proved in the follow-up development). An earlier run with the
+rewritings, which are outside the article's theorem). An earlier run with the
 default options was discarded for this reason (kept only in the job scratch).
 
 Raw data: `evaluation/compiled_bench.tsv`, `compiled_random.tsv`,

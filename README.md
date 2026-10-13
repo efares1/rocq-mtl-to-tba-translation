@@ -1,9 +1,6 @@
 # A Mechanically Verified Translation of MTL<sub>0,∞</sub> into Timed Büchi Automata
 
 Source, proofs, tool, and evaluation of the IEEE Access article.
-Optimization and UPPAAL-oriented export are follow-up work in a separate
-repository that reuses this Rocq foundation unchanged (see
-`SHARED_FOUNDATION_MANIFEST.txt`).
 
 ## Contents
 
@@ -15,7 +12,6 @@ repository that reuses this Rocq foundation unchanged (see
 | `evaluation/` | evaluation of `compile(f)`: scripts, inputs, CASAAL outputs, raw results |
 | `examples/` | Spot input/graph of the alarm-response example and the assurance scripts |
 | `output/rocq/` | logs of the last fresh Rocq build, assumptions, and `coqchk` |
-| `scripts/check_shared_foundation.sh` | checks that the shared Rocq files have not diverged |
 | `ROCQ_*.md` | shared-foundation, build, and assumptions audits |
 
 ## Main result
@@ -54,7 +50,7 @@ bash run_spot_validation.sh        # Spot / ltl2ba / autfilt / LBTT checks   -> 
 
 Both scripts run the tool with `-noweak -norecur`: the article's theorem covers
 `compile(f)` without the weak-until and recurrence rewritings, which are
-proved separately in the follow-up development. The TChecker checks establish inclusions between
+outside the article's theorem. The TChecker checks establish inclusions between
 the languages of the two tools' automata, not equality, and they are tests,
 not proofs.
 

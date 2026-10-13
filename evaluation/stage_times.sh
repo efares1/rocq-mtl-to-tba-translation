@@ -4,7 +4,7 @@
 #   IDS="R3 R4 R5 R6 R7 R8" LIMIT=600 bash stage_times.sh
 #
 # mtl2tba is run with the options of the paper (-noweak -norecur), with the
-# optimization of the follow-up development disabled (-n 0) and with -v.  The
+# optimization disabled (-n 0) and with -v.  The
 # verbose log is time-stamped line by line, and the run is stopped once
 # compile(f) has been computed (the line "after reset completion"), so that
 # the later stages (optimization and export, which are not part of compile(f))

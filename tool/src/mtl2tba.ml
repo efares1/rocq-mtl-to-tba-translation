@@ -65,7 +65,7 @@ let speclist = [
   ("-dot", Arg.Set_string dot_cmd, "<cmd> Graphviz command (default: dot)");
   ("-tba", Arg.Set dump_tba, " also write <base>_tba.dot and <base>_opt.dot");
   ("-check", Arg.Set_string check, "<base> also write <base>_ltl.lbt (the clocked-LTL formula, in prefix notation, by a second printer) and <base>_ba.hoa (the automaton built by the reader), for the validation of the trusted interface with Spot");
-    ("-compile-only", Arg.Set compile_only, " stop after reset completion: compute compile(f) of the article, without the optimization and the export of the follow-up development; with -tba write <base>_tba.dot, with -stats print the first seven measures (see -stats-header) and the total time");
+    ("-compile-only", Arg.Set compile_only, " stop after reset completion: compute compile(f) of the article, without the optimization and the export; with -tba write <base>_tba.dot, with -stats print the first seven measures (see -stats-header) and the total time");
   ("-v", Arg.Set verbose, " print the intermediate results");
   ("-stats", Arg.Set stats, " print one tab-separated line of measures (see -stats-header)");
   ("-stats-header", Arg.Unit (fun () -> print_endline stats_header; exit 0), " print the header of -stats");
