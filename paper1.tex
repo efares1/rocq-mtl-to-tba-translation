@@ -73,30 +73,28 @@
 \doi{}
 
 \begin{abstract}
-Translating real-time temporal specifications into timed automata supports
-automated analysis, but only if the translation preserves the timed-word
-language. We present a Rocq-checked soundness-and-completeness development for
+Translating real-time specifications into timed automata supports automated
+analysis only if the translation preserves the timed-word language. We present a Rocq-checked soundness-and-completeness development for
 the pointwise dense-time translation of Metric Temporal Logic
 (MTL)$_{0,\infty}$ into timed B\"uchi automata (TBAs) via clocked Linear
-Temporal Logic. Earlier work established language preservation mathematically;
-to the best of our knowledge, no published machine-checked development covers
-the construction and semantic model formalized here. Rocq checks all eight
-strict and non-strict primitive cases, handling shared clocks and overlapping
-activations through soundness for every clock-consistent reset trace and
-completeness via one canonical reset trace. Relaxation and reset completion are
-also checked, yielding a compositional theorem under an explicit
-language-equivalence contract for the propositional B\"uchi backend, required
+Temporal Logic. Earlier work proved language preservation on paper; to our
+knowledge, no published machine-checked development covers this construction
+and semantic model. Rocq checks all eight strict and
+non-strict primitive cases, handling shared clocks and overlapping activations
+through soundness for every clock-consistent reset trace and completeness for
+one canonical reset trace. Relaxation and reset completion are
+also checked, giving a compositional theorem under an explicit
+language-equivalence contract for the B\"uchi backend, required
 on action-consistent words only. This contract is a premise (the convenience
 theorem postulates it as an axiom); Spot, graph import, parsing, printing,
-extraction, and zero-bound preprocessing lie outside the proof. For an
-alarm-response instance, we prove that a manually transcribed backend record
-satisfies the contract, that an overlapping-alarm trace is accepted, and that a
+extraction, and zero-bound preprocessing lie outside the proof. An
+alarm-response instance proves that a manually transcribed backend record
+satisfies the contract, an overlapping-alarm trace is accepted, and a
 violating trace is rejected. The theorem assumes real-valued bounds, strictly
 increasing divergent timestamps, and existential initial clock valuations. On
-31 benchmarks and 100 random formulas, all with integer bounds, TChecker
-checks complete on 22 benchmarks (20 inclusion checks against CASAAL, two
-self-consistency checks of hatted formulas), 26{,}200 random timed words agree with an
-unverified Python evaluation of the semantics, and the backend contract is
+31 benchmarks and 100 random formulas with integer bounds, TChecker inclusion
+and self-consistency checks complete on 22 benchmarks, 26{,}200 random timed
+words agree with an unverified Python semantics, and the backend contract is
 tested against ltl2ba on 28 benchmarks.
 \end{abstract}
 
