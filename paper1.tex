@@ -76,11 +76,10 @@
 Translating real-time specifications into timed automata supports automated
 analysis only if the translation preserves the timed-word language. We present a Rocq-checked soundness-and-completeness development for
 the pointwise dense-time translation of Metric Temporal Logic
-(MTL)$_{0,\infty}$ into timed B\"uchi automata (TBAs) via clocked Linear
+(MTL$_{0,\infty}$) into timed B\"uchi automata (TBAs) via clocked Linear
 Temporal Logic. Earlier work proved language preservation on paper; to our
 knowledge, no published machine-checked development covers this construction
-and semantic model. Rocq checks all eight strict and
-non-strict primitive cases, handling shared clocks and overlapping activations
+and semantic model. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
 through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
 also checked, giving a compositional theorem under an explicit
@@ -90,9 +89,8 @@ theorem postulates it as an axiom); Spot, graph import, parsing, printing,
 extraction, and zero-bound preprocessing lie outside the proof. An
 alarm-response instance proves that a manually transcribed backend record
 satisfies the contract, an overlapping-alarm trace is accepted, and a
-violating trace is rejected. The theorem assumes real-valued bounds, strictly
-increasing divergent timestamps, and existential initial clock valuations. On
-31 benchmarks and 100 random formulas with integer bounds, TChecker inclusion
+violating trace is rejected. The theorem assumes real-valued bounds, and strictly
+increasing divergent timestamps. On 31 benchmarks and 100 random formulas with integer bounds, TChecker inclusion
 and self-consistency checks complete on 22 benchmarks, 26{,}200 random timed
 words agree with an unverified Python semantics, and the backend contract is
 tested against ltl2ba on 28 benchmarks.
@@ -157,8 +155,7 @@ of a shared, formula-keyed clock. Independent witnesses per activation cannot
 establish this single-trace property. The proof maintains residual obligations
 for upper- and lower-bound Until and Release, and uses occurrence-indexed
 structural induction so recursion through a syntax path retains the clock
-identity of an identical primitive formula. Strict and non-strict boundaries
-require distinct inequalities. In addition, the propositional backend can
+identity of an identical primitive formula. In addition, the propositional backend can
 assign clock atoms independently of actual clock valuations, so relaxation
 and reset completion must preserve the precise implication directions before
 the automaton theorem can be composed.
@@ -166,7 +163,7 @@ the automaton theorem can be composed.
 The principal contributions are:
 \begin{itemize}
   \item Rocq-checked soundness and completeness of the clocked-LTL encoding,
-        including all eight strict and non-strict hatted primitive cases and
+        including all eight hatted primitive cases and
         correctness at every syntactic occurrence;
   \item a canonical completeness construction that handles overlapping
         activations with one reset trace for each formula-keyed clock,
@@ -187,13 +184,11 @@ The principal contributions are:
 
 The result is relative to the formal model defined here: real-valued bounds,
 well-formed core formulas, strictly increasing divergent timestamps,
-event-guarded TBAs without location invariants, and existential nonnegative
-initial clocks. This differs from Li et al.'s integer-bound,
+event-guarded TBAs without location invariants. This differs from Li et al.'s integer-bound,
 nondecreasing-time, zero-initial semantics and is not a direct refinement of
 CASAAL's input/output semantics. The TBA theorem composes through an explicit
 backend-equivalence premise; for the alarm instance Rocq checks a manually
-transcribed backend record, not Spot or the graph-import path. Zero-bound
-preprocessing is described but not verified, and the development proves a
+transcribed backend record, not Spot or the graph-import path. The development proves a
 semantic theorem; the evaluated tool runs code extracted from its
 definitions, and extraction, parsing, and printing are outside the proof. Section~\ref{subsec:rocq-result-map}
 summarizes the theorem dependencies and assumptions.
@@ -265,9 +260,6 @@ The Rocq development represents action names by natural numbers rather than a
 parameterized finite type, and timed words may use any natural-number name.
 Each formula mentions finitely many names, so its semantics and generated
 labels distinguish actions only by equality or inequality with those names.
-Equivalently, the construction operates over the finite quotient induced by
-those action tests; this is the finite alphabet used in the mathematical
-presentation.
 
 The well-formedness condition requires $d>0$ for every lower bound and strict
 upper bound, and $d\ge0$ for a non-strict upper bound. Ordinary timed
@@ -285,8 +277,7 @@ bound hypotheses, is proved in Rocq:
 \begin{theorem}[Semantic compatibility of the derived timed operators]
 \label{thm:derived-semantic-compatibility}
 Under the well-formedness conditions above, Eqs.~\eqref{eq:derive-ule}--
-\eqref{eq:derive-rge} agree with the standard pointwise semantics for all
-strict and non-strict upper and lower bounds.
+\eqref{eq:derive-rge} agree with the standard pointwise semantics for all upper and lower bounds.
 \end{theorem}
 The identities follow by separating the current-position case from a
 strictly future endpoint. For upper Until, a witness at $i$ contributes
@@ -310,7 +301,7 @@ Until and Release operators, and the $>0$ cases reduce to
 $p\land\Next(p\Until q)$ and $p\lor\Next(p\Release q)$,
 respectively. These reductions rely on strictly increasing event
 times and must be applied before encoding a source formula as a Rocq core
-formula; the preprocessing itself is not mechanized. A zero strict
+formula. A zero strict
 upper bound has an empty interval: Until reduces to $\bot$ and Release to
 $\top$; strict upper-bound constructors in the core consequently require
 $d>0$. For a non-strict upper bound of zero, the hatted future operators reduce
@@ -381,13 +372,7 @@ $\mathsf{LNAct}(a)$, as well as clock-related atoms: clock comparisons
 $x\sim d$, a reset atom
 $\Reset(x)$, and a preservation atom $\Unch(x)$. Under timed-word
 interpretation, the action atoms mean that the current action is $a$ or is
-different from $a$, respectively. The atom $\mathsf{LNAct}(a)$ and the
-negated literal of $\mathsf{LAct}(a)$ have the same timed-word interpretation.
-The tool gives $\mathsf{LNAct}(a)$ to the backend as the explicit negation of
-the quoted atom for $\mathsf{LAct}(a)$; in the Rocq development
-$\mathsf{LNAct}(a)$ remains a separate atom, and the backend contract is
-required only on the words in which it complements $\mathsf{LAct}(a)$
-(Section~\ref{sec:tba-construction}). The reset
+different from $a$, respectively. The reset
 and preservation atoms describe the clock update at the current event. Clock
 values are read before the event's reset, matching the guard semantics of a
 timed automaton.
@@ -395,10 +380,7 @@ timed automaton.
 For a formula $f$, let $\Clock(f)$ be its finite set of distinct primitive
 hatted timed subformulas. The clock associated with $F\in\Clock(f)$ is
 $x=F$ itself. Clock identity uses structural equality on the Rocq MTL syntax
-tree, with bounds compared by equality in $\Real$. Constructor, operands,
-comparison, and bound all participate: identical formula values at different
-paths share a clock, while semantic equivalence alone does not. No
-simplification-based merging is used. The main result proves that this clock
+tree. The main result proves that this clock
 also serves all dynamic activations of its subformula.
 The clock count is therefore bounded by the number of distinct primitive
 timed subformulas, which is at most the number of timed occurrences in $f$.
@@ -422,9 +404,7 @@ $\alpha\WeakUntil\beta=(\alpha\Until\beta)\lor\Always\alpha$.
 For upper comparisons $\precsim\in\{\le,<\}$ and lower comparisons
 $\succsim\in\{\ge,>\}$, complements are
 $\le^{\mathrm c}=>$, $<^{\mathrm c}=\ge$, $\ge^{\mathrm c}=<$, and
-$>^{\mathrm c}=\le$. The four clause shapes, each instantiated for its
-strict and non-strict bound, give all eight primitive cases (Table~\ref{tab:clock-tests} lists the clock
-comparison each one uses):
+$>^{\mathrm c}=\le$. The four clause shapes give all eight primitive cases:
 \begin{align}
 \T_\pi(p\hUntil_{\precsim d}q)
  &=\Next\bigl(((x\precsim d)\land\Unch(x)\land P)\nonumber\\
@@ -447,24 +427,8 @@ bounded witness and weak Until for the Release window. Lower-bounded Until
 also has a fairness branch for an obligation whose threshold is delayed
 indefinitely. Every clock atom occurs positively, which is the property used
 by relaxation in Section~\ref{sec:reset-completion}. The eight local proof
-arguments establish the precise strict and non-strict behavior in
+arguments establish the precise behavior in
 Section~\ref{subsec:primitive-soundness}.
-
-\begin{table}[t]
-\centering
-\caption{Clock comparisons used by each hatted primitive.}
-\label{tab:clock-tests}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Primitive role & Non-strict bound & Strict bound\\
-\midrule
-$\hUntil_{\precsim d}$ endpoint & $x\le d$ & $x<d$\\
-$\hUntil_{\succsim d}$ threshold & $x\ge d$ & $x>d$\\
-$\hRelease_{\precsim d}$ window end & $x>d$ & $x\ge d$\\
-$\hRelease_{\succsim d}$ pre-threshold & $x<d$ & $x\le d$\\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Shared clocks under overlapping activations}
 \label{subsec:overlap-motivation}
@@ -527,9 +491,7 @@ backend automaton for $F$.
 \end{assumption}
 This contract ranges over all action-consistent propositional words,
 including assignments of the clock-related atoms that do not correspond to any
-clock-consistent timed word. That scope is used by relaxation. A backend that
-satisfies the contract on all propositional words, for instance one that
-receives $\mathsf{LNAct}(a)$ as an independent atom, satisfies it a fortiori.
+clock-consistent timed word. That scope is used by relaxation. 
 
 \subsection{Relaxation and reset completion}
 \label{sec:reset-completion}
@@ -538,7 +500,7 @@ Its correctness contract therefore applies to all action-consistent Boolean
 words, including assignments of the clock-related atoms that cannot arise from
 any clock-consistent timed trace. Every
 clock-related atom in the translation occurs positively. Relaxation acts on
-each backend transition cube by removing negative literals over clock
+each backend transition cube (conjunction of atomic constraints) by removing negative literals over clock
 comparisons and reset/preservation markers, removing irrelevant
 clock-related literals, and discarding contradictory cubes. Action literals
 and positive relevant clock literals are retained. This weakens the cubes
@@ -566,14 +528,14 @@ completed TBA resets $x$, while $\rho$ may either reset it or preserve it.
 Thus the completed reset set contains the original reset decision for $x$.
 Induction on positions using the clock recurrence gives
 $\CVal_{\rho'}(i,x)\le\CVal_\rho(i,x)$. These clocks occur only in upper
-tests ($x\le d$ or $x<d$), which remain true when the value decreases.
+tests ($x\lesssim d$), which remain true when the value decreases.
 
 For a restart clock $x$, completion resets it exactly when the cube contains
 $\Reset(x)$. A true reset marker requires that $\rho$ resets $x$; without the
 marker completion preserves it, whether or not $\rho$ resets it. The
 completed reset set is therefore contained in the original one, and the same
 induction gives $\CVal_{\rho'}(i,x)\ge\CVal_\rho(i,x)$. These clocks occur
-only in lower tests ($x\ge d$, $x>d$, or their equivalent window-ending
+only in lower tests ($x\gtrsim d$, or their equivalent window-ending
 comparisons), which remain true when the value increases. The clock recurrence
 holds by the construction of $\rho'$. State transitions, event labels,
 guards that remain true, and the Büchi accepting set are unchanged, so the
@@ -614,9 +576,7 @@ The soundness direction does not select or assume the canonical policy. For
 each primitive formula $F$ at path $\pi$, the corresponding Rocq lemma
 \texttt{sound\_*} turns $\rho,i\satL\T_\pi(F)$ into
 $\ewbase(\rho),i\satM F$, assuming clock consistency and
-induction hypotheses for its operands. The four proof families below each
-cover both the strict and non-strict comparison.
-
+induction hypotheses for its operands. 
 Clock consistency gives two useful bounds. If a clock is preserved on
 $[i,j)$, then
 \[
@@ -1099,8 +1059,7 @@ the standard/classical assumptions in the audit.
 The formal domain remains deliberately bounded: well-formed core formulas;
 real-valued mathematical parameters (not executable encodings of arbitrary
 reals); strictly increasing divergent timestamps; event-guarded automata
-without location invariants; and existential nonnegative initial clock
-values. The zero lower-bound and zero strict upper-bound reductions described
+without location invariants. The zero lower-bound and zero strict upper-bound reductions described
 in Section~\ref{sec:mtl} are preprocessing, not mechanized results. Parsing,
 a concrete LTL backend implementation, Spot execution, graph import,
 automaton printing, and adaptation to zero-initialized clocks remain outside
@@ -1343,7 +1302,7 @@ Event-clock logics associate clocks with subformulas to measure time since or
 until events~\cite{afh_eventclock_tcs99,
 raskin_schobbens_jalc99,nickovic_piterman_formats10}. Formula-indexed clocks
 are established; our proof checks that one clock per distinct timed formula
-preserves language across repeated activations and all strict and non-strict
+preserves language across repeated activations and all
 cases (Section~\ref{subsec:occurrence-induction}).
 
 \runinhead{Recent automata-based real-time verification.}
@@ -1408,7 +1367,7 @@ for generated Event-B patterns.
 \section{Conclusion}
 This paper provides a Rocq-checked soundness-and-completeness development for
 the specified pointwise MTL$_{0,\infty}$-to-TBA construction. Its proof covers
-all eight strict and non-strict primitive cases, soundness for arbitrary
+all eight primitive cases, soundness for arbitrary
 clock-consistent reset traces, and completeness using one canonical trace
 across repeated activations of formula-keyed clocks. The occurrence-indexed
 induction connects each syntactic occurrence to its translation while

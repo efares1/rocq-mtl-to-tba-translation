@@ -7,9 +7,7 @@ It requires $p$ to be false at the origin and until age two, then true by age
 five. Fig.~\ref{fig:translation-reference-tba} shows a hand-simplified
 equivalent one-clock TBA, not the syntax-directed output, which assigns
 separate clocks to the two distinct timed subformulas. The steps below show
-the clocked-LTL translation and timed reinterpretation. This is a construction
-illustration: the saved Spot graph and its two-clock TBA transcription are not
-covered by the proved Rocq backend contract. The concrete instance
+the clocked-LTL translation and timed reinterpretation. The concrete instance
 checked in Rocq is the alarm-response example in
 Section~\ref{sec:alarm-example}.
 
@@ -53,11 +51,7 @@ bound $<2$, allowing $p$ from age two.
 \item The saved Spot 2.16 graph for $\T(f)$ is redrawn on the left of
 Fig.~\ref{fig:translation-steps45} (top). The clock guards $x\le5$ and
 $y\ge2$, the markers $\mathsf{unch}(x)$ and $\mathsf{rst}(y)$, and the action
-atom $p$ are propositions to the backend, and the negated action atom
-$\neg p=\mathsf{LNAct}(p)$ reaches Spot as the negation of the atom $p$
-(the default of the tool; Section~\ref{sec:tba-construction}). No cube of
-the graph therefore contains both $p$ and $\neg p$, and every edge is
-realizable by a timed event. The graph has four
+atom $p$ are propositions to the backend. The graph has four
 states and seven transitions, the size reported for F11 in
 Table~\ref{tab:compiled}.
 
@@ -68,6 +62,10 @@ $\mathsf{rst}(y)$ is present. The bottom of
 Fig.~\ref{fig:translation-steps45} shows the same state graph after these
 operations: each edge carries the event, the clock guard, and the resets. The
 event is an action ($p$ or $\neg p$), and $\top$ stands for any event.
+Relaxation removes $\neg(y\ge2)$ from the loop on~2, which therefore stays
+enabled after age~2. From then on state~2 behaves as state~3, since $y$ is
+never reset again, so no word is added; the two states could be merged, which
+the translation does not do.
 \end{enumerate}
 
 \begin{figure*}[!t]
