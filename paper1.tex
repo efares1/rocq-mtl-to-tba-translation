@@ -1128,24 +1128,22 @@ where \texttt{ALARM} and \texttt{HANDLED} are actions 1 and 2. Rocq checks
 that it is well formed and has one primitive timed subformula,
 $\widehat{\mathsf{U}}_{\le 3}\,\top\,\mathit{handled}$, whose obligations
 share clock $x$. Abbreviate $\mathsf{LAct}(\mathit{alarm})$ by $A$,
-$\mathsf{LNAct}(\mathit{alarm})$ by $N$,
 $\mathsf{LAct}(\mathit{handled})$ by $H$, $x\le3$ by $C$, and
-$\mathsf{LUnch}(x)$ by $U$. Spot receives the exact clocked-LTL formula
+$\mathsf{LUnch}(x)$ by $U$. The translation contains
+$\mathsf{LNAct}(\mathit{alarm})$, which the tool prints as the explicit
+negation $\neg A$ of the event atom (its default). Spot therefore receives
 \[
-\mathsf{G}\bigl(N\lor H\lor \Next((C\land U)\Until(C\land H))\bigr).
+\mathsf{G}\bigl(\neg A\lor H\lor \Next((C\land U)\Until(C\land H))\bigr).
 \]
 Spot 2.16's input and output are saved in
 \Rocqid{examples/spot/alarm_response_backend.ltl} and
-\Rocqid{examples/spot/alarm_response_backend.dot}~\cite{[spot]}. In these files
-$N$ is an independent atom (the tool option \texttt{-indep-neg}); the default
-printing passes $\neg A$ instead, and the contract proved below covers both,
-since it holds on all propositional words. The generated graph has
-initial state 0, accepting set $\{0,1\}$, and these transitions:
+\Rocqid{examples/spot/alarm_response_backend.dot}~\cite{[spot]}. The generated
+graph has initial state 0, accepting set $\{0,1\}$, and these transitions:
 \[
 \begin{array}{c|c|l}
 \text{source}&\text{target}&\text{label}\\ \hline
-0&0&H\lor N\\
-0&1&\neg H\land\neg N\\
+0&0&H\lor\neg A\\
+0&1&\neg H\land A\\
 1&0&C\land H\\
 1&2&C\land\neg H\land U\\
 2&0&C\land H\\
@@ -1157,10 +1155,12 @@ The graph is manually transcribed as
 self-loop into two cubes. Lemma
 \Rocqid{alarm_response_T_eq} matches its input to the Rocq translation;
 \Rocqid{alarm_response_spot_backend_contract} proves that the transcribed
-automaton has exactly that LTL language on all propositional words, which
-implies the action-consistent contract above. This discharges the backend
-premise for this instance. The regeneration script
-requires \texttt{ltl2tgba --version} to report Spot 2.16.
+automaton has exactly that LTL language on the action-consistent propositional
+words, which is the contract above. The record mentions only event atoms; the
+proof uses that, on an action-consistent word, $\mathsf{LNAct}(\mathit{alarm})$
+holds exactly when $A$ does not. This discharges the backend premise for this
+instance. The regeneration script requires \texttt{ltl2tgba --version} to
+report Spot 2.16.
 
 The resulting concrete TBA is \Rocqid{alarm_response_spot_tba}. It has initial
 location $0$, accepting locations $\{0,1\}$, and clock $x$. Table~\ref{tab:alarm-tba}

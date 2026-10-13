@@ -29,9 +29,9 @@ captured Rocq 9.0.1 output is preserved in `ASSUMPTIONS.txt`.
 The alarm-response instance uses Spot 2.16 to generate a propositional
 automaton from the exact translated formula. The DOT graph is manually
 transcribed into the Rocq `PBuchi` record; Rocq then proves the record's
-acceptance equivalent to the formula on all propositional words (the generic
-theorem needs it only on the action-consistent words, in which the negated
-event atom is the complement of the event atom) and instantiates the generic
+acceptance equivalent to the formula on the action-consistent propositional
+words (in which the negated event atom is the complement of the event atom;
+the Spot input prints it as `!alarm`) and instantiates the generic
 MTL-to-TBA theorem. The infinite trace has alarms at
 times 0 and 2 and a handled event at time 4; Rocq proves that the concrete
 Spot-instance TBA rejects it. This does not verify Spot or the DOT

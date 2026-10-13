@@ -79,16 +79,19 @@ Proof.
 Qed.
 
 (* Spot 2.16, with --buchi -S, produces this three-state state-based Büchi
-   automaton from examples/spot/alarm_response_backend.ltl. The DOT graph is
-   manually transcribed here; its disjunctive edge is split into two cubes. *)
+   automaton from examples/spot/alarm_response_backend.ltl, in which the
+   negated event atom is printed as the explicit negation !alarm of the event
+   atom.  The DOT graph is manually transcribed here; its disjunctive edge is
+   split into two cubes.  The record therefore mentions only event atoms,
+   and its contract is proved on the action-consistent words. *)
 Definition alarm_response_spot_backend : PBuchi alarm_response :=
   {| pb_nstates := 3;
      pb_init := 0;
      pb_trans :=
        [{| pt_src := 0; pt_label := [(LAct HANDLED, true)]; pt_tgt := 0 |};
-        {| pt_src := 0; pt_label := [(LNAct ALARM, true)]; pt_tgt := 0 |};
+        {| pt_src := 0; pt_label := [(LAct ALARM, false)]; pt_tgt := 0 |};
         {| pt_src := 0;
-           pt_label := [(LAct HANDLED, false); (LNAct ALARM, false)];
+           pt_label := [(LAct HANDLED, false); (LAct ALARM, true)];
            pt_tgt := 1 |};
         {| pt_src := 1;
            pt_label := [(LCLe alarm_clock 3, true); (LAct HANDLED, true)];
@@ -106,8 +109,10 @@ Definition alarm_response_spot_backend : PBuchi alarm_response :=
            pt_tgt := 2 |}];
      pb_accepting := [0%nat; 1%nat] |}.
 
+Definition alarm_spot_alarm (s : pword alarm_response) (i : nat) : Prop :=
+  s i (LAct ALARM).
 Definition alarm_spot_not_alarm (s : pword alarm_response) (i : nat) : Prop :=
-  s i (LNAct ALARM).
+  ~ s i (LAct ALARM).
 Definition alarm_spot_handled (s : pword alarm_response) (i : nat) : Prop :=
   s i (LAct HANDLED).
 Definition alarm_spot_clock_le (s : pword alarm_response) (i : nat) : Prop :=
@@ -131,7 +136,7 @@ Definition alarm_spot_step
     (s : pword alarm_response) (i src tgt : nat) : Prop :=
   match src, tgt with
   | 0, 0 => alarm_spot_not_alarm s i \/ alarm_spot_handled s i
-  | 0, 1 => ~ alarm_spot_not_alarm s i /\ ~ alarm_spot_handled s i
+  | 0, 1 => alarm_spot_alarm s i /\ ~ alarm_spot_handled s i
   | 1, 0 | 2, 0 => alarm_spot_q s i
   | 1, 2 | 2, 2 => alarm_spot_p s i /\ ~ alarm_spot_handled s i
   | _, _ => False
@@ -139,7 +144,7 @@ Definition alarm_spot_step
 
 Definition alarm_spot_trigger
     (s : pword alarm_response) (i : nat) : Prop :=
-  ~ alarm_spot_not_alarm s i /\ ~ alarm_spot_handled s i.
+  alarm_spot_alarm s i /\ ~ alarm_spot_handled s i.
 
 Definition alarm_spot_next_state
     (s : pword alarm_response) (q i : nat) : nat :=
@@ -223,9 +228,10 @@ Qed.
 
 Lemma alarm_response_spot_ltl_language :
   forall s : pword alarm_response,
-    psat s 0 alarm_response_spot_ltl <-> alarm_response_backend_spec s.
+    action_consistent s ->
+    (psat s 0 alarm_response_spot_ltl <-> alarm_response_backend_spec s).
 Proof.
-  intros s.
+  intros s Hcons.
   unfold alarm_response_spot_ltl, alarm_response_backend_spec.
   unfold alarm_spot_not_alarm, alarm_spot_handled,
     alarm_spot_clock_le, alarm_spot_unchanged,
@@ -236,7 +242,7 @@ Proof.
     specialize (H i (Nat.le_0_l i)).
     destruct H as [Hbody | [k [_ Hfalse]]]; [|contradiction].
     destruct Hbody as [Hnot | [Hhandled | [Htrue Huntil]]].
-    + left. exact Hnot.
+    + left. exact (proj1 (Hcons i ALARM) Hnot).
     + right. left. exact Hhandled.
     + right. right.
       destruct Huntil as [j [Hj [Hq Hp]]].
@@ -246,7 +252,7 @@ Proof.
       destruct Hp as [Hc [Hu _]]. exact (conj Hc Hu).
   - intros H j Hj.
     destruct (H j) as [Hnot | [Hhandled | [j0 [Hj0 [Hq Hp]]]]].
-    + left. left. exact Hnot.
+    + left. left. exact (proj2 (Hcons j ALARM) Hnot).
     + left. right. left. exact Hhandled.
     + left. right. right. split; [exact I|].
       exists j0. split; [exact Hj0|].
@@ -271,7 +277,7 @@ Proof.
       unfold plit_holds in Hlabels; simpl in Hlabels;
       inversion Hlabels; subst; tauto.
   - intros [Hnot|Hhandled].
-    + exists {| pt_src := 0; pt_label := [(LNAct ALARM, true)]; pt_tgt := 0 |}.
+    + exists {| pt_src := 0; pt_label := [(LAct ALARM, false)]; pt_tgt := 0 |}.
       split; [simpl; right; left; reflexivity|].
       split; [reflexivity|]. split; [reflexivity|].
       simpl. constructor; [unfold plit_holds; simpl; exact Hnot|constructor].
@@ -284,11 +290,11 @@ Qed.
 Lemma alarm_spot_edge_01 :
   forall (s : pword alarm_response) i,
     alarm_spot_edge s i 0 1 <->
-    ~ alarm_spot_not_alarm s i /\ ~ alarm_spot_handled s i.
+    alarm_spot_alarm s i /\ ~ alarm_spot_handled s i.
 Proof.
   intros s i.
   unfold alarm_spot_edge, alarm_response_spot_backend,
-    alarm_spot_not_alarm, alarm_spot_handled.
+    alarm_spot_alarm, alarm_spot_handled.
   split.
   - intros [t [Hin [Hsrc [Htgt Hlabels]]]].
     simpl in Hin.
@@ -299,7 +305,7 @@ Proof.
       simpl in *; tauto.
   - intros [Hnot Hhandled].
     exists {| pt_src := 0; pt_label := [(LAct HANDLED, false);
-                                          (LNAct ALARM, false)]; pt_tgt := 1 |}.
+                                          (LAct ALARM, true)]; pt_tgt := 1 |}.
     split; [simpl; right; right; left; reflexivity|].
     split; [reflexivity|]. split; [reflexivity|].
     simpl. constructor.
@@ -480,7 +486,8 @@ Proof.
   - destruct tgt as [|[|[|tgt]]].
     + cbn [alarm_spot_step] in Hstep. unfold alarm_spot_next_state. simpl.
       destruct (excluded_middle_informative (alarm_spot_trigger s i)) as [Ht|Ht].
-      * unfold alarm_spot_trigger in Ht. tauto.
+      * unfold alarm_spot_trigger, alarm_spot_not_alarm, alarm_spot_alarm in *.
+        tauto.
       * reflexivity.
     + cbn [alarm_spot_step] in Hstep. unfold alarm_spot_next_state. simpl.
       destruct (excluded_middle_informative (alarm_spot_trigger s i)) as [Ht|Ht].
@@ -529,7 +536,8 @@ Proof.
     destruct (excluded_middle_informative (alarm_spot_trigger s i))
       as [Htrigger|Htrigger].
     + exact Htrigger.
-    + unfold alarm_spot_trigger in Htrigger. tauto.
+    + unfold alarm_spot_trigger, alarm_spot_not_alarm, alarm_spot_alarm in *.
+      tauto.
   - unfold alarm_spot_step, alarm_spot_next_state. simpl.
     destruct (excluded_middle_informative (alarm_spot_q s i))
       as [Hq|Hq].
@@ -745,7 +753,8 @@ Proof.
   - destruct (classic (alarm_spot_handled s i)) as [Hhandled|Hhandled].
     + right. left. exact Hhandled.
     + right. right.
-      assert (Htrigger : alarm_spot_trigger s i) by (unfold alarm_spot_trigger; tauto).
+      assert (Htrigger : alarm_spot_trigger s i) by (unfold alarm_spot_trigger, alarm_spot_alarm;
+        split; [apply NNPP; exact Hnot | exact Hhandled]).
       pose proof (alarm_spot_run_lt3 s i) as Hlt.
       destruct (alarm_spot_run s i) as [|[|[|q]]] eqn:Hrun; try lia.
       * assert (Hnext : alarm_spot_run s (S i) = 1%nat).
@@ -774,10 +783,11 @@ Qed.
 
 Theorem alarm_response_spot_backend_contract :
   forall s : pword alarm_response,
-    PBA_accepts alarm_response_spot_backend s <->
-      psat s 0 (T alarm_response).
+    action_consistent s ->
+    (PBA_accepts alarm_response_spot_backend s <->
+      psat s 0 (T alarm_response)).
 Proof.
-  intro s. rewrite alarm_response_T_eq.
+  intros s Hc. rewrite alarm_response_T_eq.
   split.
   - intro Haccept.
     unfold PBA_accepts, alarm_response_spot_backend in Haccept.
@@ -805,11 +815,11 @@ Proof.
       In (alarm_spot_run s j) [0%nat; 1%nat]).
     { intro n. destruct (Hbuchi n) as [j [Hnj Hmem]].
       exists j. split; [exact Hnj|]. rewrite <- (Hsame j). exact Hmem. }
-    apply (proj2 (alarm_response_spot_ltl_language s)).
+    apply (proj2 (alarm_response_spot_ltl_language s Hc)).
     eapply alarm_spot_run_acceptance_implies_spec; eassumption.
   - intro Hltl.
     assert (Hspec : alarm_response_backend_spec s).
-    { apply (proj1 (alarm_response_spot_ltl_language s)). exact Hltl. }
+    { apply (proj1 (alarm_response_spot_ltl_language s Hc)). exact Hltl. }
     unfold PBA_accepts, alarm_response_spot_backend.
     exists (alarm_spot_run s). split; [reflexivity|].
     split.
@@ -940,13 +950,14 @@ Proof.
   - destruct Hfalse as [k [Hk _]]. lia.
 Qed.
 
-(* The proposition-level backend premise for this formula, on all
-   propositional words.  MTL_to_TBA_correct_with requires it only on the
-   action-consistent words; the all-words form is stronger. *)
+(* The proposition-level backend premise for this formula, required only on
+   the action-consistent propositional words, as in
+   MTL_to_TBA_correct_with. *)
 Definition alarm_response_backend_contract
     (A : PBuchi alarm_response) : Prop :=
   forall s : pword alarm_response,
-    PBA_accepts A s <-> psat s 0 (T alarm_response).
+    action_consistent s ->
+    (PBA_accepts A s <-> psat s 0 (T alarm_response)).
 
 Theorem alarm_response_tba_correct_with :
   forall (A : PBuchi alarm_response) (w : timed_word),
@@ -956,9 +967,7 @@ Proof.
   intros A w HA.
     unfold alarm_response_backend_contract in HA.
   eapply MTL_to_TBA_correct_with.
-  - (* the contract of the record holds on all propositional words, in
-       particular on the action-consistent ones *)
-    intros s _. exact (HA s).
+  - exact HA.
   - apply alarm_response_well_formed.
 Qed.
 

@@ -31,10 +31,19 @@ start 2026-10-12 10:53, bench 11:48 to 16:22 (+04), stage 16:23 to 16:35. Rocq f
 `output/rocq/build_info.txt` (regenerated). The long runs above (R4, N5) were not repeated;
 their automata are unchanged. Report: `PAPER1_EVALUATION_REPORT.md`, section 8.
 
+## Alarm-response example, 2026-10-13
+`examples/spot/alarm_response_backend.{ltl,dot}` were regenerated with the default
+explicit negation (`!alarm`; Spot 2.16, same three-state graph). The Rocq record
+`alarm_response_spot_backend` now mentions only event atoms and its contract
+(`alarm_response_spot_backend_contract`, `alarm_response_backend_contract`) is required
+on action-consistent words only. `proof/regen_rocq_logs.sh`: make, assumptions and
+coqchk exit 0; the assumptions are unchanged. `examples/assurance/check_spot_transcription.py
+--self-test` passes.
+
 ## PDF (as in the commit)
 | File | Pages | SHA-256 |
 |---|---|---|
-| `paper1.pdf` | 17 | `6aab76136bfffa7aba6967e671eafab8fa219cfc7164730474586654376d7b65` |
+| `paper1.pdf` | 17 | `f5b1be479da6fafb052904261f7eb5acd903adb28d1ba789d988ed4050c656af` |
 
 Rebuild with `build-ieee-access.ps1` (Windows, MiKTeX). PDF byte hashes depend on build
 timestamps; the page count and extracted text are stable.

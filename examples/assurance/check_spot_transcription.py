@@ -19,12 +19,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DOT_PATH = ROOT / "examples" / "spot" / "alarm_response_backend.dot"
 ROCQ_PATH = ROOT / "proof" / "OverlappingResponse_Example.v"
-ATOMS = ("handled", "not_alarm_prop", "clock_le_3", "unch_clock")
+ATOMS = ("handled", "alarm", "clock_le_3", "unch_clock")
 ROCq_ATOM = {
     ("LAct HANDLED", "true"): "handled",
     ("LAct HANDLED", "false"): "handled",
-    ("LNAct ALARM", "true"): "not_alarm_prop",
-    ("LNAct ALARM", "false"): "not_alarm_prop",
+    ("LAct ALARM", "true"): "alarm",
+    ("LAct ALARM", "false"): "alarm",
     ("LCLe alarm_clock 3", "true"): "clock_le_3",
     ("LCLe alarm_clock 3", "false"): "clock_le_3",
     ("LUnch alarm_clock", "true"): "unch_clock",
@@ -167,7 +167,7 @@ def parse_rocq(path: Path) -> Graph:
     start = text.find(marker)
     if start < 0:
         raise CheckError(f"could not find PBuchi definition in {path}")
-    end = text.find("Definition alarm_spot_not_alarm", start)
+    end = text.find("Definition alarm_spot_alarm", start)
     if end < 0:
         raise CheckError("could not find end of PBuchi definition")
     block = text[start:end]
@@ -191,7 +191,7 @@ def parse_rocq(path: Path) -> Graph:
         r"pt_tgt\s*:=\s*(\d+)\s*\|\}",
         re.S,
     )
-    literal_re = re.compile(r"\((LAct HANDLED|LNAct ALARM|LCLe alarm_clock 3|LUnch alarm_clock),\s*(true|false)\)")
+    literal_re = re.compile(r"\((LAct HANDLED|LAct ALARM|LCLe alarm_clock 3|LUnch alarm_clock),\s*(true|false)\)")
     edges = {}
     seen = 0
     for source, labels, target in transition_re.findall(block):
