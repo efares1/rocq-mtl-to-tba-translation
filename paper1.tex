@@ -1053,7 +1053,7 @@ Section~\ref{sec:evaluation} are measurements, not mechanized results.
 The occurrence-indexed induction, residual invariants, and separate
 relaxation/reset-completion obligations expose the proof dependencies behind
 the language-preservation result. The development is supplied as inspectable
-Rocq source; the successful source replay procedure are
+Rocq source; the successful source replay procedure is
 documented with the artifact.
 \subsection{Alarm-response proof instance}
 \label{sec:alarm-example}
@@ -1163,7 +1163,12 @@ compiles the core, the correctness development, and the alarm example;
 which are recorded in \path{proof/ASSUMPTIONS.txt}; and \texttt{coqchk}
 re-checks the compiled objects. On Windows, \path{reproduce-ieee-access.ps1}
 performs these steps, runs the two Python assurance scripts, and builds the
-PDF.
+PDF. The scripts are executable audits, not verified components:
+\path{examples/assurance/check_spot_transcription.py} compares the saved
+Spot graph with the Rocq record of the alarm-response instance, up to state
+renaming, including edge guards (with mutation self-tests), and
+\path{examples/assurance/reset_policy_scenarios.py} checks the finite
+reset-policy scenarios of Table~\ref{tab:overlap-example}.
 
 The main checked claims have direct source declarations:
 \Rocqid{EncodingCorrect_proved} and
@@ -1327,14 +1332,11 @@ results of Li et al. and adjacent proof-assistant work, while contributing a
 machine-checked derivation for the formal construction and semantic model
 defined here~\cite{li_spin7,xu08,roohi_viswanathan_vmcai18}.
 
-For the alarm-response instance, the backend contract is proved for a manual
-Rocq transcription of a Spot graph. Rocq proves both acceptance of the
-overlapping-request trace, whose response satisfies the concurrent
-obligations, and rejection of a fixed violating trace. These examples make
-the theorem concrete; the external graph-to-record path remains outside its
-proof. The theorem applies to the stated pointwise semantics and composes
-through an explicit backend contract; Spot's graph generation/import and
-zero-bound preprocessing remain outside the checked boundary. Future work
+The theorem applies to the stated pointwise semantics and composes
+through an explicit backend contract. The contract is discharged only for a
+manually transcribed backend record in the alarm-response instance, and
+Spot's graph generation/import and zero-bound preprocessing remain outside
+the checked boundary. Future work
 can extend the mechanization to these components and connect the semantic
 theorem to a verified executable backend.
 
