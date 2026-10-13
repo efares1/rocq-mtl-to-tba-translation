@@ -659,7 +659,7 @@ when activations overlap. The canonical policy preserves a reference only
 while its residual obligation is still useful. Recall that
 $\elapsed_w(i,j)=t_j-t_i$. For upper-bounded Until define
 \begin{align}
-\mathsf{URes}_{\precsim}(i,v,d,p,q)\iff{}\nonumber\\[-1mm]
+\mathsf{URes}_{\precsim}(i,v,d,p,q)\iff{}
 &\exists j\ge i.\;v+\elapsed_w(i,j)\precsim d\nonumber\\[-1mm]
 &\land w,j\satM q\nonumber\\[-1mm]
 &\land\forall k\in[i,j).\,w,k\satM p\label{eq:ures-le}
@@ -667,9 +667,9 @@ $\elapsed_w(i,j)=t_j-t_i$. For upper-bounded Until define
 The residual says that a $q$ endpoint is still reachable with the current
 clock age and the required $p$ prefix. For lower-bounded Release define
 \begin{align}
-\mathsf{RRes}_{\succsim}(i,v,d,p,q)\iff{}\nonumber\\[-1mm]
+\mathsf{RRes}_{\succsim}(i,v,d,p,q)\iff{}
 &\forall j\ge i.\;v+\elapsed_w(i,j)\succsim d\Rightarrow\nonumber\\[-1mm]
-&\Bigl(w,j\satM q\lor\nonumber\\[-1mm]
+&\Bigl(w,j\satM q~\lor\nonumber\\[-1mm]
 &\exists k\in[i,j).\,w,k\satM p\Bigr)\label{eq:rres-ge}
 \end{align}
 These are universal residuals: every position already beyond the threshold
@@ -722,8 +722,7 @@ itself, not by an occurrence path.
 \label{subsec:primitive-completeness}
 For every formula satisfied by $w$, completeness constructs one clock-consistent
 extension $\rho^\star$ that serves all activations of every shared clock.
-The four operator families use different invariants; strict variants replace
-each boundary test by its strict counterpart.
+The four operator families use different invariants:
 
 \runinhead{Upper-bounded hatted Until.}
 Choose the first position $j>i$ at which $q$ holds with $p$ on $[i,j)$, while
@@ -767,10 +766,7 @@ remains at or after every $n$. If a first qualifying position occurs, the
 finite branch applies; if none occurs, the invariant yields
 $\Always P\land\Always\Eventually Q$, the fairness branch (the second disjunct of Eq.~\eqref{eq:t-huge}).
 Divergence converts recurring $q$ positions into a witness beyond the
-lower bound. For the strict case, replace $d\le t_m-t_s$ in the invariant
-by $d<t_m-t_s$ and use threshold $x>d$; in the fairness argument, a
-recurring $q$ at distance at least $d$ from $i+1$ is strictly more than $d$
-from $i$ because timestamps strictly increase. These are the arguments
+lower bound. These are the arguments
 formalized by \Rocqid{complete_UhatGe} and \Rocqid{complete_UhatGt}.
 
 \runinhead{Upper-bounded hatted Release.}
@@ -1049,20 +1045,15 @@ the standard/classical assumptions in the audit.
 The formal domain remains deliberately bounded: well-formed core formulas;
 real-valued mathematical parameters (not executable encodings of arbitrary
 reals); strictly increasing divergent timestamps; event-guarded automata
-without location invariants. The zero lower-bound and zero strict upper-bound reductions described
-in Section~\ref{sec:mtl} are preprocessing, not mechanized results. Parsing,
-a concrete LTL backend implementation, Spot execution, graph import,
-automaton printing, and adaptation to zero-initialized clocks remain outside
-the theorem. Tools such as UPPAAL start clocks at zero; relating that
-convention to the existential initial clocks of the theorem requires a check
-that no clock is read before its first reset, which is left to follow-up
-work. The sizes and checks of
+without location invariants. Parsing, a concrete LTL backend implementation, Spot execution, graph import, and
+automaton printing remain outside
+the theorem. The sizes and checks of
 Section~\ref{sec:evaluation} are measurements, not mechanized results.
 
 The occurrence-indexed induction, residual invariants, and separate
 relaxation/reset-completion obligations expose the proof dependencies behind
 the language-preservation result. The development is supplied as inspectable
-Rocq source; the successful source replay procedure and its limits are
+Rocq source; the successful source replay procedure are
 documented with the artifact.
 \subsection{Alarm-response proof instance}
 \label{sec:alarm-example}
@@ -1119,12 +1110,7 @@ self-loop into two cubes. Lemma
 \Rocqid{alarm_response_T_eq} matches its input to the Rocq translation;
 \Rocqid{alarm_response_spot_backend_contract} proves that the transcribed
 automaton has exactly that LTL language on the action-consistent propositional
-words, which is the contract above. The record mentions only event atoms; the
-proof uses that, on an action-consistent word, $\mathsf{LNAct}(\mathit{alarm})$
-holds exactly when $\mathit{alarm}$ does not. This discharges the backend premise for this
-instance. The regeneration script requires \texttt{ltl2tgba --version} to
-report Spot 2.16.
-
+words, which is the contract above. 
 The resulting concrete TBA is \Rocqid{alarm_response_spot_tba}. It has initial
 location $0$, accepting locations $\{0,1\}$, and clock $x$.
 Figure~\ref{fig:alarm-tba} shows the reset-completed automaton of the Rocq
@@ -1158,40 +1144,8 @@ outside the Rocq proof.}
 \end{figure*}
 The theorem \Rocqid{alarm_response_spot_tba_correct} instantiates
 Theorem~\ref{thm:mtl-to-tba-correct} and proves that this record accepts
-exactly the timed words satisfying $f_{\mathit{alarm}}$. The verified object
-is the Rocq record and its contract; neither Spot nor the saved DOT-to-record
-transcription is verified.
+exactly the timed words satisfying $f_{\mathit{alarm}}$.
 
-Two trace instances make the universal theorem concrete. The accepted word
-has alarms at times $0$ and $\tfrac32$, a handled event at time $3$, and only
-neutral actions at subsequent timestamps, which advance by $\tfrac32$.
-Rocq proves \Rocqid{alarm_overlap_trace_satisfies} and derives
-\Rocqid{alarm_overlap_trace_accepted_by_spot_tba}. Both alarms use the same
-clock $x$. On the canonical extension, the residual checks at indices 0 and 1
-are, respectively,
-\[
-  0+(3-0)=3\le3,
-  \qquad
-  \tfrac32+(3-\tfrac32)=3\le3.
-\]
-Thus the clock is preserved at the second alarm: its existing value still
-leaves exactly enough time for the shared handler at time 3. The accepted-trace
-corollary follows from the checked MTL satisfaction proof and
-\Rocqid{alarm_response_spot_tba_correct}; it is not a separate graph search.
-
-The rejected word has alarms at times $0$ and $2$, a handled event at time
-$4$, and neutral actions thereafter at intervals of 2. The first request has
-no handler by time 3. Rocq proves
-\Rocqid{alarm_response_trace_violates} and derives
-\Rocqid{alarm_response_trace_rejected_by_spot_tba}. These are fixed trace
-instances of the semantic result, not performance experiments or validation
-of Spot's implementation.
-
-The repository also provides a Python consistency check between the saved
-graph and Rocq record (up to state renaming, including guards), with mutation
-self-tests for a changed guard and accepting set. It is an executable audit of
-the transcription, not a verified importer or a proof of Spot's semantics.
-The finite reset-policy scenario of Table~\ref{tab:overlap-example} is illustrative.
 
 \input{evaluation_section}
 
@@ -1306,9 +1260,9 @@ Ho et al.'s MightyPPL translates pointwise MITL with past and Pnueli
 modalities over finite and infinite timed words; it gives mathematical
 construction results and proof sketches alongside a complete implementation
 whose testers sequentialize overlapping obligations
-\cite{mightyppl_tacas26}. The September 2026 QEST+FORMATS preprint describes
+\cite{mightyppl_tacas26}.~\cite{mightyppl_qest_arxiv26} describes
 an implementation for existentially punctual metric temporal logic with past
-and Pnueli modalities (MTLPPL)~\cite{mightyppl_qest_arxiv26}. Its term
+and Pnueli modalities (MTLPPL). Its term
 \emph{one-sided MTL} denotes the subfragment without past or Pnueli, whereas
 here it describes interval shapes $[0,d]$ and $[d,\infty)$. Any syntactic
 containment comparison is limited to conventional source formulas after
