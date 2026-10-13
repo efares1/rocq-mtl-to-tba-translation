@@ -19,6 +19,16 @@ drawing (Graphviz dot).
       -noweak      for measurements only: keep a strong Until in the
                    clauses of upper-bounded hatted Until instead of the
                    weak until of the translation
+      -explicit-neg  print a negated event !e for Spot as !"e", the negation
+                   of the quoted atom of e (default; the contract of the proof
+                   is required on action-consistent words only)
+      -indep-neg   print a negated event !e as the independent atom "!e"
+      -compile-only  stop after reset completion: compute compile(f) of the
+                   article, without optimization and export
+      -spot-level <l>  Spot post-processing level: small (default), high,
+                   medium, low or any
+      -all-copy    use the nondeterministic all-copy invariant split for
+                   export (experimental comparison mode)
       -check <b>   write <b>_ltl.lbt (T(f) by a second printer) and <b>_ba.hoa
                    (the automaton built by the reader), to check the
                    interface with Spot (evaluation/run_interface_check.sh)
@@ -55,9 +65,11 @@ models of `f`, and `optimize_accepts` and `export_accepts` that the later
 steps preserve the language; `MTL_to_exported_correct0_recur_weak_with`
 states the same for the default chain, where the formula is first rewritten
 by `recur` and `A` accepts the models of its translation with the weak
-until.  Every atom, including a negated event `!e`, is
-passed to Spot as an independent quoted proposition, as in the hypothesis of
-that theorem.
+until.  The hypothesis of these theorems is required only on the
+action-consistent words.  By default (`-explicit-neg`) a negated event `!e`
+is printed for Spot as the negation `!"e"` of the quoted atom of `e`;
+with `-indep-neg` it is printed as the independent quoted atom `"!e"`, for
+which the hypothesis holds on all propositional words.
 
 In the UPPAAL model, the template `Property` receives the events on
 channels (`other` stands for every event that does not occur in the

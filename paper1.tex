@@ -528,14 +528,14 @@ completed TBA resets $x$, while $\rho$ may either reset it or preserve it.
 Thus the completed reset set contains the original reset decision for $x$.
 Induction on positions using the clock recurrence gives
 $\CVal_{\rho'}(i,x)\le\CVal_\rho(i,x)$. These clocks occur only in upper
-tests ($x\lesssim d$), which remain true when the value decreases.
+tests ($x\precsim d$), which remain true when the value decreases.
 
 For a restart clock $x$, completion resets it exactly when the cube contains
 $\Reset(x)$. A true reset marker requires that $\rho$ resets $x$; without the
 marker completion preserves it, whether or not $\rho$ resets it. The
 completed reset set is therefore contained in the original one, and the same
 induction gives $\CVal_{\rho'}(i,x)\ge\CVal_\rho(i,x)$. These clocks occur
-only in lower tests ($x\gtrsim d$, or their equivalent window-ending
+only in lower tests ($x\succsim d$, or their equivalent window-ending
 comparisons), which remain true when the value increases. The clock recurrence
 holds by the construction of $\rho'$. State transitions, event labels,
 guards that remain true, and the Büchi accepting set are unchanged, so the
@@ -610,7 +610,7 @@ continuation with no $Q$ endpoint is not a bounded Until witness.
 
 \runinhead{Lower-bounded hatted Until.}
 Here the translation requires $\Reset(x)$ at $i$. The finite branch (the first disjunct of
-Eq.~\eqref{eq:t-huge}) waits for a position with $x\ge d$ (or $x>d$) and then supplies an
+Eq.~\eqref{eq:t-huge}) waits for a position with $x\succsim d$ and then supplies an
 ordinary $P\Until Q$ witness. Since subsequent resets can only make a clock
 younger, $\CVal_\rho(j,x)\le\elapsed_w(i,j)$; thus the threshold guard proves
 the required lower-bound comparison. The nested Until supplies $P$ up to the
@@ -637,17 +637,14 @@ exact strict boundary.
 
 \runinhead{Lower-bounded hatted Release.}
 Before the threshold, the left side of weak Until requires both the
-pre-threshold comparison and $\Unch(x)$. A non-strict lower bound uses
-$x<d$; a strict lower bound uses $x\le d$. Thus an arbitrary reset trace
+pre-threshold comparison and $\Unch(x)$. Thus an arbitrary reset trace
 cannot move the clock backwards while the pre-threshold condition remains
 active. Once the comparison becomes false, the translation requires ordinary
 $P\Release Q$ from that event, unless the right-side alternative has already
 terminated the obligation at a position satisfying $P$ while still below the
 threshold. An older initial clock value can make the translation enter the
 ordinary Release branch earlier than the MTL interval does; this only imposes
-a stronger condition. The endpoint of the MTL lower interval is covered in
-both cases, including the event exactly at $d$ for $\ge d$ and its exclusion
-for $>d$.
+a stronger condition. 
 
 The standard LTL semantics used here are formalized in Rocq as
 \Rocqid{LG_semantics}, \Rocqid{LGF_semantics},
@@ -662,30 +659,23 @@ when activations overlap. The canonical policy preserves a reference only
 while its residual obligation is still useful. Recall that
 $\elapsed_w(i,j)=t_j-t_i$. For upper-bounded Until define
 \begin{align}
-\mathsf{URes}_{\le}(i,v,d,p,q)\iff{}\\[-1mm]
-&\exists j\ge i.\;v+\elapsed_w(i,j)\le d\nonumber\\[-1mm]
+\mathsf{URes}_{\precsim}(i,v,d,p,q)\iff{}\nonumber\\[-1mm]
+&\exists j\ge i.\;v+\elapsed_w(i,j)\precsim d\nonumber\\[-1mm]
 &\land w,j\satM q\nonumber\\[-1mm]
-&\land\forall k\in[i,j).\,w,k\satM p,\label{eq:ures-le}\\
-\mathsf{URes}_{<}(i,v,d,p,q)\iff{}\\[-1mm]
-&\exists j\ge i.\;v+\elapsed_w(i,j)<d\nonumber\\[-1mm]
-&\land w,j\satM q\nonumber\\[-1mm]
-&\land\forall k\in[i,j).\,w,k\satM p.\label{eq:ures-lt}
+&\land\forall k\in[i,j).\,w,k\satM p\label{eq:ures-le}
 \end{align}
 The residual says that a $q$ endpoint is still reachable with the current
 clock age and the required $p$ prefix. For lower-bounded Release define
 \begin{align}
-\mathsf{RRes}_{\ge}(i,v,d,p,q)\iff{}\\[-1mm]
-&\forall j\ge i.\;d\le v+\elapsed_w(i,j)\Rightarrow\nonumber\\[-1mm]
+\mathsf{RRes}_{\succsim}(i,v,d,p,q)\iff{}\nonumber\\[-1mm]
+&\forall j\ge i.\;v+\elapsed_w(i,j)\succsim d\Rightarrow\nonumber\\[-1mm]
 &\Bigl(w,j\satM q\lor\nonumber\\[-1mm]
-&\exists k\in[i,j).\,w,k\satM p\Bigr),\label{eq:rres-ge}\\
-\mathsf{RRes}_{>}(i,v,d,p,q)\iff{}\\[-1mm]
-&\forall j\ge i.\;d<v+\elapsed_w(i,j)\Rightarrow\nonumber\\[-1mm]
-&\Bigl(w,j\satM q\lor\nonumber\\[-1mm]
-&\exists k\in[i,j).\,w,k\satM p\Bigr).\label{eq:rres-gt}
+&\exists k\in[i,j).\,w,k\satM p\Bigr)\label{eq:rres-ge}
 \end{align}
 These are universal residuals: every position already beyond the threshold
-must have $q$ or an earlier $p$ that discharges the obligation. Their
-strict variants keep the comparison itself strict.
+must have $q$ or an earlier $p$ that discharges the obligation.
+Instantiating $\precsim$ as $\le$ or $<$, and $\succsim$ as $\ge$ or $>$,
+gives the non-strict and strict variants.
 
 For a clock $x=F$, let $v=\CVal_{\rho^\star}(i,x)$; Table~\ref{tab:canonical-policy} gives the
 policy.
@@ -806,8 +796,8 @@ clock and the residual by
 \elapsed_w(i,j)=\Delta_i+\elapsed_w(i+1,j).
 \]
 Substitution in Eq.~\eqref{eq:rres-ge} proves
-$\mathsf{RRes}_{\ge}(i+1,v+\Delta_i,d,p,q)$. Its strict analogue proves the
-same shift for $\mathsf{RRes}_{>}$ when $v\le d$. The residual ensures that
+$\mathsf{RRes}_{\ge}(i+1,v+\Delta_i,d,p,q)$. The instance $\succsim\,=\,>$
+proves the same shift for $\mathsf{RRes}_{>}$ when $v\le d$. The residual ensures that
 every event in the already-entered lower-bound region has $q$ or an earlier
 $p$. If $p$ occurs while the clock is still below threshold, the right side
 of weak Until terminates with that $p$; otherwise the clock reaches the

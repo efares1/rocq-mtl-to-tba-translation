@@ -18,7 +18,9 @@ Source, proofs, tool, and evaluation of the IEEE Access article.
 
 `MTL_to_TBA_correct_with` (file `EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v`):
 for every well-formed formula `f` and every propositional Büchi automaton `A`
-that accepts exactly the models of the clocked-LTL formula `T f`, the timed
+that accepts exactly the models of the clocked-LTL formula `T f` on the
+action-consistent propositional words (those in which `LNAct a` is the
+complement of `LAct a`), the timed
 Büchi automaton `compile_with A` accepts exactly the timed words that satisfy
 `f`. It depends on four standard Rocq library axioms and on no project axiom;
 the convenience theorem `MTL_to_TBA_correct` replaces the premise by the
