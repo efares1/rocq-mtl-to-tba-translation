@@ -1,7 +1,9 @@
-# Build record of the snapshot tagged `v1.0`
+# Build record of the snapshot tagged `v1.1`
 
-Snapshot: the commit tagged `v1.0` of this repository (the tag is moved to the commit that
-contains this file). Earlier transcripts are not part of the repository.
+Snapshot: the commit tagged `v1.1` of this repository, which is the revision described by
+the article. The tag `v1.0` is an earlier snapshot (16-page PDF) and is not the described
+revision. File digests of the sources, proofs, evaluation tables and PDF are in
+`SNAPSHOT_MANIFEST.txt`.
 
 | Component | Version / value |
 |---|---|
@@ -43,7 +45,7 @@ coqchk exit 0; the assumptions are unchanged. `examples/assurance/check_spot_tra
 ## PDF (as in the commit)
 | File | Pages | SHA-256 |
 |---|---|---|
-| `paper1.pdf` | 17 | `f5b1be479da6fafb052904261f7eb5acd903adb28d1ba789d988ed4050c656af` |
+| `paper1.pdf` | 17 | `540f97f691272ef82bc6cca15fb71740f8bb248d89008ebacf8e46ec19f44001` |
 
 Rebuild with `build-ieee-access.ps1` (Windows, MiKTeX). PDF byte hashes depend on build
 timestamps; the page count and extracted text are stable.
