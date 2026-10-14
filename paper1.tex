@@ -77,22 +77,20 @@ Translating real-time specifications into timed automata supports automated
 analysis only if the translation preserves the timed-word language. We present a Rocq-checked soundness-and-completeness development for
 the pointwise dense-time translation of Metric Temporal Logic
 (MTL$_{0,\infty}$) into timed B\"uchi automata (TBAs) via clocked Linear
-Temporal Logic. Earlier work proved language preservation on paper; to our
-knowledge, no published machine-checked development covers this construction
-and semantic model. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
+Temporal Logic. Earlier constructions extend the tableau LTL-to-B\"uchi
+translation with clocks directly and were proved on paper; here the translation
+instead factors through an untimed clocked-LTL formula that any standard
+LTL-to-B\"uchi backend can process. To our knowledge, no published
+machine-checked development covers this construction and semantic model. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
 through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
 also checked, giving a compositional theorem under an explicit
 language-equivalence contract for the B\"uchi backend, required
 on action-consistent words only. This contract is a premise (the convenience
 theorem postulates it as an axiom); Spot, graph import, parsing, printing,
-extraction, and zero-bound preprocessing lie outside the proof. An
-alarm-response instance proves that a manually transcribed backend record
-satisfies the contract, an overlapping-alarm trace is accepted, and a
-violating trace is rejected. The theorem assumes real-valued bounds, and strictly
+extraction, and zero-bound preprocessing lie outside the proof. The theorem assumes real-valued bounds, and strictly
 increasing divergent timestamps. On 31 benchmarks and 100 random formulas with integer bounds, TChecker inclusion
-and self-consistency checks complete on 22 benchmarks, 26{,}200 random timed
-words agree with an unverified Python semantics, and the backend contract is
+and self-consistency checks complete on 22 benchmarks and the backend contract is
 tested against ltl2ba on 28 benchmarks.
 \end{abstract}
 
@@ -113,7 +111,7 @@ automaton analyzed by a downstream tool. A bounded-response requirement, for exa
 \end{equation*}
 Overlapping requests can leave several response obligations outstanding while
 sharing the clock assigned to one primitive timed formula. Table~\ref{tab:overlap-example}
-illustrates why the reset semantics need a correctness argument.
+illustrates why the reset semantics needs a correctness argument.
 
 The mathematical construction studied here has substantial predecessors.
 Bulychev et al. establish exact timed-automaton language results for safety
@@ -121,8 +119,13 @@ and co-safety fragments. Li et al. establish full-fragment
 MTL$_{0,\infty}$-to-TBA language equality and show that their best-choice
 reset policy preserves language~\cite{[BDLG14],li_spin7}. Their
 work already contains the central timed-subformula clocking and reset
-architecture. Our contribution is a machine-checked proof of the specified
-construction. Table~\ref{tab:prior-construction-comparison} compares these
+architecture. They build the timed B\"uchi automaton directly, by extending the
+classical tableau translation with clocks. We keep that clocking and reset
+architecture but reformulate it: the formula is encoded into an untimed
+clocked-LTL formula, a standard LTL-to-B\"uchi backend is applied through an
+explicit contract, and relaxation and reset completion restore the timed
+meaning. Our contribution is this reformulation and its machine-checked proof.
+Table~\ref{tab:prior-construction-comparison} compares these
 constructions.
 
 Mathematical proofs and machine-checked proofs provide different assurance.
@@ -162,6 +165,12 @@ the automaton theorem can be composed.
 
 The principal contributions are:
 \begin{itemize}
+  \item a reformulation of the construction that factors the translation
+        through an untimed clocked-LTL formula and a standard
+        LTL-to-B\"uchi backend, with the backend as an explicit language
+        contract, in contrast with constructions that extend the tableau
+        translation with clocks directly or that build networks of timed
+        testers;
   \item Rocq-checked soundness and completeness of the clocked-LTL encoding,
         including all eight hatted primitive cases and
         correctness at every syntactic occurrence;
@@ -257,8 +266,7 @@ The strict increase assumption excludes simultaneous events; divergence is
 used in the lower-bounded Until fairness argument.
 
 The Rocq development represents action names by natural numbers rather than a
-parameterized finite type, and timed words may use any natural-number name.
-Each formula mentions finitely many names, so its semantics and generated
+parameterized finite type. Each formula mentions finitely many names, so its semantics and generated
 labels distinguish actions only by equality or inequality with those names.
 
 The well-formedness condition requires $d>0$ for every lower bound and strict
@@ -1204,10 +1212,10 @@ semantics, targets, and proof scopes; they are not a performance comparison.}
 \toprule
 Work & Semantic scope & Existing correctness and construction & Mechanization and implementation evidence\\
 \midrule
-Bulychev~\cite{[BDLG14]} & Pointwise non-Zeno infinite words; integer bounds, all four comparisons, nondecreasing timestamps. & Theorems 1--2 prove exact automaton languages for safety/co-safety. The construction already uses timed-subformula clocks, obligations, and reset/unchanged markers. & Mathematical proofs and controller-synthesis tooling for the stated fragments.\\
-Li et al.~\cite{li_spin7} & Full MTL$_{0,\infty}$; pointwise non-Zeno words, integer bounds, all four comparisons, nondecreasing timestamps, zero initial clocks. & Establishes exact language equality for the timed-B\"uchi construction and language preservation under best-choice resets. & CASAAL implements the workflow and deterministic approximations~\cite{casaal_tool}; the proof is mathematical.\\
+Bulychev~\cite{[BDLG14]} & Pointwise non-Zeno infinite words; integer bounds, all four comparisons, nondecreasing timestamps. & Theorems 1--2 prove exact automaton languages for safety/co-safety. The construction extends the classical tableau LTL-to-B\"uchi translation directly, with timed-subformula clocks, obligations, and reset/unchanged markers. & Mathematical proofs and controller-synthesis tooling for the stated fragments.\\
+Li et al.~\cite{li_spin7} & Full MTL$_{0,\infty}$; pointwise non-Zeno words, integer bounds, all four comparisons, nondecreasing timestamps, zero initial clocks. & Establishes exact language equality for the timed-B\"uchi construction (closure, extended formulas, degeneralization) and language preservation under best-choice resets. & CASAAL implements the workflow and deterministic approximations~\cite{casaal_tool}; the proof is mathematical.\\
 Xu and Miao~\cite{xu08} & MITL formulas mapped to fair timed automata; exact semantic relation to this paper's pointwise event-word model is not compared. & The article describes a syntax/semantics-based construction by formula type. & The publisher abstract reports PVS implementation details; detailed proof coverage is not assessed in this comparison.\\
-This paper & Well-formed Rocq formulas with real bounds, strictly increasing timestamps, existential nonnegative initial clocks. & \Rocqid{EncodingCorrect_proved} proves clocked-LTL equivalence for all eight primitive cases; TBA composition is conditional on backend equivalence. & Rocq-checked proof and one proved contract for a manual Spot transcription; tool evaluation with extracted code (Section~\ref{sec:evaluation}).\\
+This paper & Well-formed Rocq formulas with real bounds, strictly increasing timestamps, existential nonnegative initial clocks. & Translation factored through clocked LTL and a standard LTL-to-B\"uchi backend. \Rocqid{EncodingCorrect_proved} proves clocked-LTL equivalence for all eight primitive cases; TBA composition is conditional on backend equivalence. & Rocq-checked proof and one proved contract for a manual Spot transcription; tool evaluation with extracted code (Section~\ref{sec:evaluation}).\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1226,6 +1234,19 @@ Li et al. establish the full-fragment mathematical language-equivalence
 result. Our overlapping-activation proof checks completeness for the present
 formal model; we do not infer that prior constructions lacked such handling.
 
+Bulychev et al. state that their translation uses ``the classical
+tableau-based translation from linear-time temporal formulas into B\"uchi
+automata'' with two modifications: no B\"uchi acceptance condition for the
+safety and co-safety fragments, and an auxiliary clock for each timed
+subformula. Li et al. proceed by a closure, extended formulas that carry the
+clock bookkeeping, a normal form, a transition-based timed B\"uchi automaton,
+and a degeneralization step. In both, the timed expansion and the B\"uchi
+construction are one hand-built construction. Ours differs in architecture:
+the formula is encoded into untimed clocked LTL, any LTL-to-B\"uchi backend
+may then be used, and its correctness enters the composed theorem as an
+explicit contract. This factoring is what the Rocq development exploits, and
+it is also why the backend premise is separate from the timed argument.
+
 Xu and Miao describe a PVS-based transformation from MITL formulas to fair
 timed automata, including construction principles and implementation
 details~\cite{xu08}. This is an earlier proof-assistant-based timed-logic
@@ -1236,7 +1257,10 @@ MITL translations use temporal testers, automata networks, or one-clock
 alternating automata~\cite{maler_mitl_to_ta,
 ferrere2019_realtimelogic_to_ta,[BM14]}; MightyL and MITL2Timed provide
 UPPAAL-oriented tools for that distinct logic
-\cite{mightyl_paper17,mitl2timed_github}. Obligation-merging techniques are
+\cite{mightyl_paper17,mitl2timed_github}. MightyL, for example, outputs a
+network of timed automata, one per temporal subformula, generalizing the
+Gastin--Oddoux LTL-to-B\"uchi construction; it does not call an LTL-to-B\"uchi
+tool on a timed formula. Obligation-merging techniques are
 related, while our one-sided residual predicates support the checked
 completeness proof.
 
@@ -1329,8 +1353,9 @@ explicit propositional backend language-equivalence contract. The resulting
 theorem makes its backend dependency inspectable instead of hiding it in an
 assurance claim. This work builds on the mathematical language-preservation
 results of Li et al. and adjacent proof-assistant work, while contributing a
-machine-checked derivation for the formal construction and semantic model
-defined here~\cite{li_spin7,xu08,roohi_viswanathan_vmcai18}.
+reformulation that factors the translation through untimed clocked LTL and a
+standard LTL-to-B\"uchi backend, and a machine-checked derivation for this
+construction and the semantic model defined here~\cite{li_spin7,xu08,roohi_viswanathan_vmcai18}.
 
 The theorem applies to the stated pointwise semantics and composes
 through an explicit backend contract. The contract is discharged only for a
