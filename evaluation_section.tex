@@ -198,7 +198,8 @@ automaton accepts exactly the models of $\T(f)$. For each configuration we
 saved the formula given to Spot and the LBTT automaton $A$ it returned, and
 checked the contract with Spot's \texttt{autfilt}, using an independent
 translator, ltl2ba~1.3: $A\times\mathrm{ltl2ba}(\neg\T(f))$ and
-$\overline{A}\times\mathrm{ltl2ba}(\T(f))$ must both be empty. No discrepancy is
+$\overline{A}\times\mathrm{ltl2ba}(\T(f))$, where $\overline{A}$ is the
+complement of $A$, must both be empty. No discrepancy is
 found on 28 of the 31 configurations; for R7 the equivalence check exceeds
 600~s, for N8 ltl2ba exceeds 300~s, and for R8 Spot does not finish within
 300~s. The acceptance marks of Spot's automaton are converted to the B\"uchi
