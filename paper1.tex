@@ -181,7 +181,7 @@ The principal contributions are:
         together with policy-independent soundness for arbitrary consistent
         reset traces;
   \item checked relaxation and reset completion, composed with an explicit
-        all-propositional-words backend contract in
+        backend contract on action-consistent propositional words in
         \Rocqid{MTL_to_TBA_correct_with};
   \item a concrete alarm-response instance whose manually transcribed Rocq
         backend satisfies the contract, with proved accepted-overlap and
@@ -1008,7 +1008,7 @@ Positive extended atoms; label side conditions\\
 Conditional backend composition &
 \Rocqid{MTL_to_TBA_correct_with} &
 Proof &
-Explicit all-propositional-words backend equivalence premise\\
+Explicit backend equivalence premise on action-consistent propositional words\\
 Convenience backend theorem &
 \Rocqid{MTL_to_TBA_correct} &
 Proof &
@@ -1144,7 +1144,7 @@ exactly the timed words satisfying $f_{\mathit{alarm}}$.
 \label{sec:artifact}
 The artifact is available at
 \url{https://github.com/efares1/rocq-mtl-to-tba-translation};
-the revision described here is the release tagged \texttt{v1.1}.
+the revision described here is the release tagged \texttt{v1.2}.
 It contains the Rocq sources, the assumptions report, the tool
 \texttt{mtl2tba}, the evaluation scripts with their inputs and raw results,
 the Spot input and graph of the alarm-response example, and the article
@@ -1165,7 +1165,7 @@ The main checked claims have direct source declarations:
 \Rocqid{EncodingCorrect_proved} and
 \Rocqid{canonical_encoding_all} establish the formula-to-clocked-LTL
 equivalence; \Rocqid{MTL_to_TBA_correct_with} composes this result with
-the explicit all-propositional-words backend contract;
+the explicit backend contract on action-consistent propositional words;
 \Rocqid{alarm_response_spot_tba_correct} is the concrete alarm
 instance. The primitive theorem families, relaxation lemmas, reset-completion
 lemmas, and their assumptions are mapped in
@@ -1178,10 +1178,7 @@ in \path{tool/} and running \path{evaluation/run_compiled_eval.sh} and
 regenerates Table~\ref{tab:compiled} from the raw results. The word-level
 test is \path{evaluation/lasso_check.py}, run on the automata written by
 \path{evaluation/dump_compile_dot.sh}, and \path{evaluation/grouped_edges.py}
-computes the grouped transition counts. The SHA-256 digests
-of the Rocq core and correctness files are listed in
-\path{SHARED_FOUNDATION_MANIFEST.txt}, and a script checks them, so that later
-work can reuse exactly this foundation.
+computes the grouped transition counts.
 
 \section{Related Work}
 \label{sec:related}

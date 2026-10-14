@@ -1,4 +1,4 @@
-# SHA-256 digests of the files of the snapshot tagged v1.1 (sources, proofs, evaluation tables, PDF).
+# SHA-256 digests of the files of the snapshot tagged v1.2 (sources, proofs, evaluation tables, PDF).
 # Verify with: sha256sum -c SNAPSHOT_MANIFEST.txt (from the repository root, with LF line endings).
 58d36fd59192af39f2044e1157be93dae2298951986a003e925cb2467bc03dc3 *evaluation/backend_validation.tsv
 f6f85712ae302716e16de4dfae247da65bfbd48c56b2fcde354710f9e282f66f *evaluation/casaal_exclusive.tsv
@@ -53,8 +53,8 @@ accdfda440c00121f3868625f0c757aee0fec210f10f7c23203a6d107e3bb1f5 *figures/fig_tb
 a280fa39bf393a1fb34983d710bf6ad761a4a620da8ffb7da20e3c8f3f2388a3 *output/rocq/assumptions_per_theorem.txt
 871896ddb7cc657d619b7f37ff9dcef90cd8740e82e2a0cd6bf6353a8b4dee12 *output/rocq/build_info.txt
 ef3ce13300948bdb5d7e4d078d4e7009614af6846e6c5207477886a59c680630 *output/rocq/coqchk.txt
-978dce916685047ab2d203be4d99220d726dde4e2c9cc46555b067bc77896b5e *paper1.pdf
-c2ed41ff1b3fb11611220b24d06def33eedda83edb12edcc260b00c49b529824 *paper1.tex
+97f3b49ea17bb636f1c4b78250c5c16cbab116f1084389194237c2ec1324d72e *paper1.pdf
+4d9efcdd5fe565e9fd5542fb7676be26a9c14e09ae87a1d335956ca027a52c22 *paper1.tex
 75c78fa187cf234733be4284eb6c5cb48037135ca5686c3e8c8257ce8a141592 *proof/ASSUMPTIONS.txt
 80b862aaa50cbbfee610267acdd7ed9f01604e95142f297d5b0bdf9ad9cebdb3 *proof/CheckAssumptions.v
 4057f3aac5b4003f328e5e23ab21ef3068397940c1ed33b021627e2fe70848b7 *proof/EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v
