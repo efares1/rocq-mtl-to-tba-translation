@@ -81,8 +81,8 @@ Temporal Logic. Earlier constructions extend the tableau LTL-to-B\"uchi
 translation with clocks directly and were proved on paper; here the translation
 instead factors through an untimed clocked-LTL formula that any standard
 LTL-to-B\"uchi backend can process. To the best of our knowledge, this
-factoring is new, and no published machine-checked development covers this
-construction and semantic model. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
+factoring is new, and no published machine-checked development covers a
+pointwise MTL$_{0,\infty}$-to-TBA construction in this semantic setting. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
 through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
 also checked, giving a compositional theorem under an explicit
@@ -172,7 +172,9 @@ The principal contributions are:
         contract, in contrast with constructions that extend the tableau
         translation with clocks directly or that build networks of timed
         testers; to the best of our knowledge, this is the first
-        presentation of the translation in this form;
+        presentation of the translation in this form, and the first
+        machine-checked proof of a pointwise MTL$_{0,\infty}$-to-TBA
+        construction in this semantic setting;
   \item Rocq-checked soundness and completeness of the clocked-LTL encoding,
         including all eight hatted primitive cases and
         correctness at every syntactic occurrence;
