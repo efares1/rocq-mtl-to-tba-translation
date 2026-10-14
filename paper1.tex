@@ -1250,12 +1250,15 @@ explicit contract. This factoring is what the Rocq development exploits, and
 it is also why the backend premise is separate from the timed argument.
 To the best of our knowledge, none of the translations from MTL or MITL to
 timed automata that we examined (the two above, the testers of Maler et al.,
-MightyL, and MightyPPL) is presented in this form; we did not examine every
+MightyL, MightyPPL, and, from its abstract only, Xu and Miao) is presented in
+this form; we did not examine every
 cited work in the same depth.
 
 Xu and Miao describe a PVS-based transformation from MITL formulas to fair
 timed automata, including construction principles and implementation
-details~\cite{xu08}. This is an earlier proof-assistant-based timed-logic
+details~\cite{xu08}. The accessible abstract presents a direct
+MITL-to-timed-automata construction, with no intermediate untimed LTL stage.
+This is an earlier proof-assistant-based timed-logic
 translation; our scope-specific comparison concerns the pointwise
 MTL$_{0,\infty}$ construction formalized here.
 
