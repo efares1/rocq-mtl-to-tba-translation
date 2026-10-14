@@ -80,8 +80,9 @@ the pointwise dense-time translation of Metric Temporal Logic
 Temporal Logic. Earlier constructions extend the tableau LTL-to-B\"uchi
 translation with clocks directly and were proved on paper; here the translation
 instead factors through an untimed clocked-LTL formula that any standard
-LTL-to-B\"uchi backend can process. To our knowledge, no published
-machine-checked development covers this construction and semantic model. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
+LTL-to-B\"uchi backend can process. To the best of our knowledge, this
+factoring is new, and no published machine-checked development covers this
+construction and semantic model. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
 through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
 also checked, giving a compositional theorem under an explicit
@@ -170,7 +171,8 @@ The principal contributions are:
         LTL-to-B\"uchi backend, with the backend as an explicit language
         contract, in contrast with constructions that extend the tableau
         translation with clocks directly or that build networks of timed
-        testers;
+        testers; to the best of our knowledge, this is the first
+        presentation of the translation in this form;
   \item Rocq-checked soundness and completeness of the clocked-LTL encoding,
         including all eight hatted primitive cases and
         correctness at every syntactic occurrence;
@@ -1246,6 +1248,10 @@ the formula is encoded into untimed clocked LTL, any LTL-to-B\"uchi backend
 may then be used, and its correctness enters the composed theorem as an
 explicit contract. This factoring is what the Rocq development exploits, and
 it is also why the backend premise is separate from the timed argument.
+To the best of our knowledge, none of the translations from MTL or MITL to
+timed automata that we examined (the two above, the testers of Maler et al.,
+MightyL, and MightyPPL) is presented in this form; we did not examine every
+cited work in the same depth.
 
 Xu and Miao describe a PVS-based transformation from MITL formulas to fair
 timed automata, including construction principles and implementation
@@ -1352,9 +1358,10 @@ Rocq also checks relaxation and reset completion and composes them with an
 explicit propositional backend language-equivalence contract. The resulting
 theorem makes its backend dependency inspectable instead of hiding it in an
 assurance claim. This work builds on the mathematical language-preservation
-results of Li et al. and adjacent proof-assistant work, while contributing a
-reformulation that factors the translation through untimed clocked LTL and a
-standard LTL-to-B\"uchi backend, and a machine-checked derivation for this
+results of Li et al. and adjacent proof-assistant work, while contributing, to
+the best of our knowledge for the first time, a reformulation that factors the
+translation through untimed clocked LTL and a standard LTL-to-B\"uchi backend,
+and a machine-checked derivation for this
 construction and the semantic model defined here~\cite{li_spin7,xu08,roohi_viswanathan_vmcai18}.
 
 The theorem applies to the stated pointwise semantics and composes
