@@ -686,27 +686,21 @@ For a clock $x=F$, let $v=\CVal_{\rho^\star}(i,x)$; Table~\ref{tab:canonical-pol
 policy.
 \begin{table}[t]
 \centering
-\caption{Canonical reset decision at position $i$. A preservation row gives
+\caption{Canonical reset decision at position $i$, with $\precsim$ ranging over
+$\{\le,<\}$ and $\succsim$ over $\{\ge,>\}$. A preservation row gives
 the condition under which the clock is not reset; otherwise it is reset.}
 \label{tab:canonical-policy}
 \begin{tabular}{@{}p{0.35\columnwidth}p{0.59\columnwidth}@{}}
 \toprule
 Primitive formula $F$ & Decision at $i$\\
 \midrule
-$p\hUntil_{\le d}q$ &
-Preserve iff $v\le d$, $\mathsf{URes}_{\le}(i,v,d,p,q)$, and
+$p\hUntil_{\precsim d}q$ &
+Preserve iff $v\precsim d$, $\mathsf{URes}_{\precsim}(i,v,d,p,q)$, and
 $w,i\not\satM q$.\\
-$p\hUntil_{<d}q$ &
-Preserve iff $v<d$, $\mathsf{URes}_{<}(i,v,d,p,q)$, and
-$w,i\not\satM q$.\\
-$p\hUntil_{\ge d}q$, $p\hUntil_{>d}q$,
-$p\hRelease_{\le d}q$, $p\hRelease_{<d}q$ &
+$p\hUntil_{\succsim d}q$, $p\hRelease_{\precsim d}q$ &
 Reset iff $w,i\satM F$.\\
-$p\hRelease_{\ge d}q$ &
-Preserve iff $v<d$, $\mathsf{RRes}_{\ge}(i,v,d,p,q)$, and
-$w,i\not\satM p$.\\
-$p\hRelease_{>d}q$ &
-Preserve iff $v\le d$, $\mathsf{RRes}_{>}(i,v,d,p,q)$, and
+$p\hRelease_{\succsim d}q$ &
+Preserve iff $v\not\succsim d$, $\mathsf{RRes}_{\succsim}(i,v,d,p,q)$, and
 $w,i\not\satM p$.\\
 \bottomrule
 \end{tabular}
