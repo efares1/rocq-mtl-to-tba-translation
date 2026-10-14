@@ -354,8 +354,7 @@ event $i$ is $(\ell_i,\alpha_i,g_i,Z_i,\ell_{i+1})$, then the event action
 must satisfy $\alpha_i$ and the valuation $v_i$ must satisfy every guard in
 $g_i$. There are no location invariants in this model: timing constraints
 are checked at the events of the timed word. This is the TBA record
-represented in Rocq; the theorem does not cover a richer invariant-bearing
-automaton model without an additional encoding.
+represented in Rocq.
 
 Let $v_i$ be the clock valuation tested at event $i$ and
 $\Delta_i=t_{i+1}-t_i$. A transition at event $i$ tests $v_i$ before its
@@ -375,7 +374,7 @@ is not assumed.
 \label{sec:translation}
 \subsection{Shared clock identities}
 The translation is structural. It maps Boolean and untimed temporal
-operators homomorphically and maps each primitive timed subformula to an LTL
+operators to their LTL counterparts and maps each primitive timed subformula to an LTL
 formula over an extended alphabet. For each action $a$, the extended
 alphabet contains distinct action atoms $\mathsf{LAct}(a)$ and
 $\mathsf{LNAct}(a)$, as well as clock-related atoms: clock comparisons
@@ -461,8 +460,7 @@ The proof assigns one clock to each structurally distinct primitive timed
 formula, even when that formula is activated repeatedly. The finite prefix in
 Table~\ref{tab:overlap-example} illustrates why completeness must account for
 all pending obligations: resetting a single clock at the later request can
-make an expired earlier deadline appear to be met. The table illustrates a
-generic reset risk and makes no claim about an error in prior tools.
+make an expired earlier deadline appear to be met.
 \begin{table}[t]
 \centering
 \caption{A finite prefix illustrating overlapping response obligations.
@@ -479,7 +477,7 @@ Event $i$ & Action & Time $t_i$ & Oldest age & Reset age\\
 \bottomrule
 \end{tabular}
 \end{table}
-This is only motivation. The semantic proof below constructs one trace per
+The semantic proof below constructs one trace per
 formula-keyed clock and establishes the residual invariants needed when
 several activations are pending at once.
 
@@ -553,12 +551,7 @@ run remains accepting. Rocq proves this result as
 \Rocqid{complete_complete}.
 \end{proof}
 
-The role of propositional valuations, relaxation, and reset completion in
-both directions is proved once, as part of the composition in
-Theorem~\ref{thm:mtl-to-tba-correct}. A propositional model alone is not a
-clock-consistent timed trace.
 \input{worked_translation}
-
 
 \section{Mechanized Correctness}
 \label{sec:correctness}
@@ -582,7 +575,9 @@ and timestamps gives $w$.
 
 \subsection{Soundness for arbitrary reset traces}
 \label{subsec:primitive-soundness}
-The soundness direction does not select or assume the canonical policy. For
+The soundness direction does not select or assume any particular reset
+policy; in particular, it does not use the canonical policy that
+Section~\ref{subsec:canonical-policy} defines for completeness. For
 each primitive formula $F$ at path $\pi$, the corresponding Rocq lemma
 \texttt{sound\_*} turns $\rho,i\satL\T_\pi(F)$ into
 $\ewbase(\rho),i\satM F$, assuming clock consistency and
@@ -659,8 +654,8 @@ a stronger condition.
 The standard LTL semantics used here are formalized in Rocq as
 \Rocqid{LG_semantics}, \Rocqid{LGF_semantics},
 \Rocqid{LW_semantics}, and \Rocqid{LF_semantics}. Time divergence is used
-only for the fairness witness in lower-bounded Until; no canonical-reset
-assumption is used in any soundness family.
+only for the fairness witness in lower-bounded Until; no assumption on the
+reset policy beyond clock consistency is used in any soundness family.
 
 \subsection{Canonical reset policy and residual obligations}
 \label{subsec:canonical-policy}
@@ -1174,7 +1169,7 @@ which are recorded in \path{proof/ASSUMPTIONS.txt}; and \texttt{coqchk}
 re-checks the compiled objects. On Windows, \path{reproduce-ieee-access.ps1}
 performs these steps, runs the two Python assurance scripts, and builds the
 PDF. The scripts are executable audits, not verified components:
-\path{examples/assurance/check_spot_transcription.py} compares the saved
+\path{examples/assurance/check_spot_transcription.py} compares the
 Spot graph with the Rocq record of the alarm-response instance, up to state
 renaming, including edge guards (with mutation self-tests), and
 \path{examples/assurance/reset_policy_scenarios.py} checks the finite
