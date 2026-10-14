@@ -970,17 +970,16 @@ The convenience theorem \Rocqid{MTL_to_TBA_correct} chooses its backend
 using the project axiom \Rocqid{LTL_TO_BUCHI_CORRECT}. It is not
 assumption-free. The theorem displayed above instead takes backend
 equivalence as an explicit argument. This distinction is visible in
-\texttt{proof/ASSUMPTIONS.txt}; the concrete alarm example below proves a
-contract for one Rocq backend record and does not rely on Spot being verified.
+\texttt{proof/ASSUMPTIONS.txt}.
 
-\subsection{Rocq result map and assurance boundary}
+\subsection{Rocq result map}
 \label{subsec:rocq-result-map}
 Table~\ref{tab:rocq-result-map} maps the article's results to their checked
 declarations and assumptions. The primitive rows collect the four soundness
 and four canonical-completeness families, each with its strict variant.
 \begin{table*}[t]
 \centering
-\caption{Mathematical results and Rocq assurance boundary.}
+\caption{Mathematical results}
 \label{tab:rocq-result-map}
 \begin{tabular}{@{}p{0.18\textwidth}p{0.32\textwidth}p{0.10\textwidth}p{0.26\textwidth}@{}}
 \toprule
@@ -1014,11 +1013,6 @@ Convenience backend theorem &
 \Rocqid{MTL_to_TBA_correct} &
 Proof &
 Project axiom plus standard Rocq assumptions\\
-Alarm-response instance &
-\Rocqid{alarm_response_spot_backend_contract};
-\Rocqid{alarm_response_spot_tba_correct} &
-Alarm &
-Contract proved for the Rocq record; Spot transcription is external\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1029,17 +1023,19 @@ The source-module aliases in Table~\ref{tab:rocq-result-map} are:
 \texttt{Clock\_Derived\_Strict\_Direct\_Core.v}
 \item[Proof.] \texttt{EncodingCorrect\_Shared\_}\\
 \texttt{Clock\_Derived\_Strict\_Direct\_Proof.v}
-\item[Alarm.] \texttt{OverlappingResponse\_Example.v}
+
 \end{description}
 
-The audit lists standard library dependencies for classical real comparison
+The assumptions report (the \texttt{Print Assumptions} output of Rocq for each
+main theorem, saved as \path{proof/ASSUMPTIONS.txt}) lists standard library
+dependencies for classical real comparison
 decisions, excluded middle, functional extensionality, and descriptions.
 These are distinct from the project-specific backend axiom. The theorem
 \Rocqid{MTL_to_TBA_correct_with} has no
 \Rocqid{LTL_TO_BUCHI_CORRECT} dependency; its backend premise
 is explicit. The convenience theorem does use that axiom. The alarm-response
 backend contract itself is proved for the Rocq \texttt{PBuchi} record under
-the standard/classical assumptions in the audit.
+the standard/classical assumptions in the report.
 
 The formal domain remains deliberately bounded: well-formed core formulas;
 real-valued mathematical parameters (not executable encodings of arbitrary
@@ -1153,7 +1149,7 @@ exactly the timed words satisfying $f_{\mathit{alarm}}$.
 The artifact is available at
 \url{https://github.com/efares1/rocq-mtl-to-tba-translation};
 the revision described here is the release tagged \texttt{v1.1}.
-It contains the Rocq sources, the assumptions audit, the tool
+It contains the Rocq sources, the assumptions report, the tool
 \texttt{mtl2tba}, the evaluation scripts with their inputs and raw results,
 the Spot input and graph of the alarm-response example, and the article
 source. The proofs build with Rocq~9.0.1: \texttt{make} in \path{proof/}
@@ -1364,7 +1360,7 @@ the checked boundary. Future work
 can extend the mechanization to these components and connect the semantic
 theorem to a verified executable backend.
 
-The proof artifact and assumptions audit are described in
+The proof artifact and assumptions report are described in
 Section~\ref{sec:artifact}.
 
 \bibliographystyle{IEEEtran}
