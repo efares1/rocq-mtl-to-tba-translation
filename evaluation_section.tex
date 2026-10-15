@@ -12,6 +12,21 @@ tell? Q3: does the backend satisfy,
 on these formulas, the contract that the theorem assumes? The answers are
 measurements and tests.
 
+\paragraph{Summary of outcomes.}
+Proved: the Rocq development of Section~\ref{sec:correctness}; none of the
+numbers below is a proof. For Q1, the number of clocks of $\mathsf{compile}(f)$
+coincides with CASAAL's on every exactly encoded configuration except F2; the
+nesting family N has CASAAL's number of locations, and locations and
+transitions are larger on most other configurations, up to 48 locations and
+1,625 transitions against 16 and 80 for R4, a growth that comes from Spot. For
+Q2, the TChecker products $P_1$, $P_2$, $S$ are empty on every configuration
+that completes (22 of the 31, two of them checked only for $S$) and on all 100
+random formulas, and the word-level test finds no disagreement on 26,200
+words, 25,400 of them also compared with CASAAL. For Q3, no discrepancy with
+ltl2ba is found on 28 of the 31 configurations. Inconclusive: the larger
+configurations (R4--R8, N5--N8 for TChecker; R7, R8, N8 for the backend check)
+exceed the time limits and are reported as such.
+
 \subsection{Setup}
 The tool \texttt{mtl2tba} parses a formula, computes $\T(f)$, calls Spot~2.16
 (\texttt{ltl2tgba}), reads its LBTT output, and applies relaxation and reset
