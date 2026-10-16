@@ -17,8 +17,10 @@ Proved: the Rocq development of Section~\ref{sec:correctness}; none of the
 numbers below is a proof. For Q1, the number of clocks of $\mathsf{compile}(f)$
 coincides with CASAAL's on every exactly encoded configuration except F2; the
 nesting family N has CASAAL's number of locations, and locations and
-transitions are larger on most other configurations, up to 48 locations and
-1,625 transitions against 16 and 80 for R4, a growth that comes from Spot. For
+transitions are larger on most other configurations, for example 48 locations and
+1,625 transitions against 16 and 80 for R4 (R7: 576 locations and 296,875
+transitions against 128 and 1,024), a growth that we attribute to Spot's
+automaton (Section~\ref{subsec:compile-size}). For
 Q2, the TChecker products $P_1$, $P_2$, $S$ are empty on every configuration
 that completes (22 of the 31, two of them checked only for $S$) and on all 100
 random formulas, and the word-level test finds no disagreement on 26,200
@@ -81,6 +83,7 @@ F14 & closeness & $\Box(e_1\Rightarrow(\Diamond_{<2}(e_2\land\Diamond_{<3}e_3)\l
 \end{table}
 
 \subsection{Size of compile(f) and CASAAL reference}
+\label{subsec:compile-size}
 Table~\ref{tab:patterns} lists the patterns F1--F14, and
 Table~\ref{tab:compiled} gives, for each configuration, the reachable
 locations, transitions, and clocks of $\mathsf{compile}(f)$, and the size of
@@ -110,12 +113,13 @@ configurations, sometimes by a large factor (R4, R5); the nesting family N
 has the same number of locations as CASAAL. The growth in the R family appears
 to come from Spot's automaton for the conjunction of $k$ clocked-LTL clauses,
 before relaxation (Spot's automata for R4--R6 have 768, 3584, and 16384
-transitions). Spot's translation dominates the construction time: for R4 to
-R7, Spot takes 0.12, 2.1, 5.4, and 90~s of a total (parsing, Spot,
-\texttt{compile}) of 0.18, 2.2, 6.1, and 96~s, and the construction proper
+transitions). On R4 to R7, Spot's translation dominates the time up to
+$\mathsf{compile}(f)$: Spot takes 0.12, 2.1, 5.4, and 90~s of a total
+(parsing, Spot, relaxation, reset completion) of 0.18, 2.2, 6.1, and 96~s, and the construction proper
 (relaxation and reset completion) takes at most 6~s (R7;
 \path{evaluation/stage_times.tsv}). For R8, Spot does not finish within
-300~s. Constructing $\mathsf{compile}(f)$ takes less than one second for every configuration except R5
+300~s. A complete run of \texttt{mtl2tba} up to $\mathsf{compile}(f)$, which also
+writes the DOT file, takes less than one second for every configuration except R5
 (3.0~s), R6 (9.2~s), R7 (113~s), N6 (1.4~s), N7 (16~s), and N8 (85~s). These numbers describe the unoptimized output of the extracted
 construction; they are not a comparison of tools. Reducing these sizes by
 post-processing is left to follow-up work.
@@ -146,8 +150,8 @@ $O\times C$ is a sanity check: it must be non-empty when $\varphi$ is
 satisfiable.
 
 On the benchmark configurations, $P_1$, $P_2$, and $S$ are empty for every
-configuration that completes within the limits (F1--F14 except the hatted F3
-and F13, which CASAAL cannot express, R1--R3, and N1--N4); for F3 and F13
+configuration that completes within the limits (F1--F14 and F3b, except the hatted F3
+and F13, which CASAAL cannot express; R1--R3; and N1--N4); for F3 and F13
 only $S$ is checked, and it is empty. For R4--R7 and N5--N7 the three checks exceed 600~s. At 1800~s, run singly, $P_2$ of R4
 is empty, while $P_1$, $S$ of R4 and all three checks of N5 still time out (which
 may also mean memory exhaustion). For R8 no automaton is built within the limit.

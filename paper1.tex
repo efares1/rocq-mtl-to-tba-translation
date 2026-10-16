@@ -679,8 +679,9 @@ clock age and the required $p$ prefix. For lower-bounded Release define
 &\Bigl(w,j\satM q~\lor\nonumber\\[-1mm]
 &\exists k\in[i,j).\,w,k\satM p\Bigr)\label{eq:rres-ge}
 \end{align}
-These are universal residuals: every position already beyond the threshold
-must have $q$ or an earlier $p$ that discharges the obligation.
+The residual $\mathsf{RRes}$ is universal: every position already beyond the
+threshold must have $q$ or an earlier $p$ that discharges the obligation;
+$\mathsf{URes}$ is its existential counterpart (a reachable $q$ endpoint).
 Instantiating $\precsim$ as $\le$ or $<$, and $\succsim$ as $\ge$ or $>$,
 gives the non-strict and strict variants.
 
@@ -1290,9 +1291,10 @@ intervals in its stated positions. Its punctual-response example does not
 imply support for unrestricted punctual MTL; differing bounds and timed-word
 conventions preclude a shared-input semantic comparison.
 
-These tools address different fragments or output models; this paper neither
-re-verifies them nor makes a shared-input, coverage, clock-count, or
-performance comparison. The Rocq development is not integrated with CASAAL,
+These tools (TEMPORA, MightyPPL, and the alternating-automaton work above)
+address different fragments or output models; this paper neither re-verifies
+them nor makes a shared-input, coverage, clock-count, or performance
+comparison with them. The Rocq development is not integrated with CASAAL,
 MightyPPL, or another checker.
 
 \runinhead{Mechanized translations and trusted backends.}
