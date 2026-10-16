@@ -18,17 +18,17 @@ measurements and tests.
 \runinhead{Summary of outcomes.}
 Proved: the Rocq development of Section~\ref{sec:correctness}; none of the
 numbers below is a proof. For Q1, the number of clocks of $\mathsf{compile}(f)$
-coincides with CASAAL's on every exactly encoded configuration except F2; the
-nesting family N has CASAAL's number of locations, and locations and
-transitions are larger on most other configurations, for example 48 locations and
+coincides with CASAAL's on every exactly encoded configuration except F2; locations
+equal CASAAL's on N, F3b and F9--F11 and are fewer on F14 (7 against 8),
+while locations and transitions are larger on most other configurations, for example 48 locations and
 1625 transitions against 16 and 80 for R4 (R7: 576 locations and 296875
-transitions against 128 and 1024), a growth that we attribute to Spot's
+transitions against 128 and 1024), a growth that appears to come from Spot's
 automaton (Section~\ref{subsec:compile-size}). For
 Q2, the TChecker products $P_1$, $P_2$, $S$
 (Section~\ref{subsec:tchecker}) are empty on every configuration that completes
 (22 of the 31, two of them checked only for $S$) and on all 100 random
-formulas, which gives inclusion in CASAAL's language provided its two automata
-are complementary (not checkable in general: universality of a nondeterministic
+formulas, which gives inclusion of our language in CASAAL's, provided that CASAAL's two
+automata are complementary (not checkable in general: universality of a nondeterministic
 timed B\"uchi automaton is undecidable~\cite{alur_dill94}); the word-level test
 finds no disagreement between $\mathsf{compile}(f)$ and our Python evaluation of
 the semantics on 26200 words, 25400 of them also compared with CASAAL. For Q3, no discrepancy with
@@ -51,9 +51,9 @@ Measurements were taken on an Intel Core i7-8650U (1.9~GHz, 11.7~GB RAM) under
 Ubuntu~26.04 in WSL~2, with a limit of 600~s per tool run and per TChecker
 check (120~s for random formulas); the backend-contract runs of Spot and
 ltl2ba used 300~s, and their equivalence checks 600~s. The 31 configurations are fifteen
-specification patterns F1--F14 (F3b is F3 without hat), conjunctions R$k$ of
+specification patterns F1--F14 (F3b is F3 without the hat), conjunctions R$k$ of
 $k$ bounded responses $\Box(a_i\Rightarrow\Diamond_{\le5}b_i)$ for
-$k \in 1..8$, and nestings N$k$ of $k$ bounded eventualities
+$k=1,\dots,8$, and nestings N$k$ of $k$ bounded eventualities
 $\Diamond_{\le5}(p_1\land\Diamond_{\le5}(p_2\land\cdots))$. Scripts, inputs,
 CASAAL outputs, and raw results are in the artifact
 (\path{evaluation/}).
@@ -116,8 +116,8 @@ one-state automaton without a clock, whereas $\mathsf{compile}(f)$ keeps two
 locations and one clock. This agrees with the clock discipline of the
 construction: one clock per structurally distinct primitive timed
 subformula. Locations and transitions are larger than CASAAL's on most
-configurations, sometimes by a large factor (R4, R5); the nesting family N
-has the same number of locations as CASAAL. The growth in the R family appears
+configurations, sometimes by a large factor (R4, R5); locations equal CASAAL's
+on N, F3b and F9--F11, and are fewer on F14. The growth in the R family appears
 to come from Spot's automaton for the conjunction of $k$ clocked-LTL clauses,
 before relaxation (Spot's automata for R4--R6 have 768, 3584, and 16384
 transitions). On R4 to R7, Spot's translation dominates the time up to
@@ -125,22 +125,22 @@ $\mathsf{compile}(f)$: Spot takes 0.12, 2.1, 5.4, and 90~s of a total
 (parsing, Spot, relaxation, reset completion) of 0.18, 2.2, 6.1, and 96~s, and the construction proper
 (relaxation and reset completion) takes at most 6~s (R7;
 \path{evaluation/stage_times.tsv}). For R8, Spot does not finish within
-300~s. A complete run of \texttt{mtl2tba} up to $\mathsf{compile}(f)$, which also
+300~s (\path{evaluation/spot_low_timing.tsv}), so no $\mathsf{compile}(f)$ is built. A complete run of \texttt{mtl2tba} up to $\mathsf{compile}(f)$, which also
 writes the DOT file, takes less than one second for every configuration except R5
 (3.0~s), R6 (9.2~s), R7 (113~s), N6 (1.4~s), N7 (16~s), and N8 (85~s). These numbers describe the unoptimized output of the extracted
-construction; they are not a comparison of tools. They show the cost of the
+construction; they are not a comparison of tools. They are consistent with a cost of the
 factorization: reusing a standard LTL-to-B\"uchi backend supports a modular
-correctness argument, but can yield larger automata than specialized direct
-constructions. Reducing these sizes by post-processing is left to follow-up
+correctness argument but, with the backend used here, yielded larger automata
+than CASAAL's direct construction. Reducing these sizes by post-processing is left to follow-up
 work.
 
 Printing the negated event atom explicitly does not change R and N, whose
-formulas contain no negated event, and reduces F11--F14 (for example F11 from
+formulas contain no negated event, and reduces the automata for F11--F14 (for example F11 from
 5/11/2 to 4/7/2). On the 100 random formulas it changes 26 automata, all
 smaller: the total of locations falls from 793 to 660, that of transitions from
-3681 to 2305, and that of clocks from 163 to 159. The independent
-printing leaves cubes that require both $a$ and $\neg a$, which no
-one-event-per-position word satisfies; the explicit printing does not produce them.
+3681 to 2305, and that of clocks from 163 to 159. Printing $\mathsf{LNAct}(a)$ as an independent atom
+leaves cubes that require both $a$ and $\neg a$, which no
+one-event-per-position word satisfies; the explicit printing used here does not produce them.
 
 \subsection{Language checks with TChecker}
 \label{subsec:tchecker}
@@ -150,10 +150,10 @@ $\varphi$ and $\neg\varphi$. TChecker~0.8~\cite{tchecker} decides the
 emptiness of the products $P_1=O\times C'$, $P_2=C\times O'$, and
 $S=O\times O'$, built over infinite words with one event per position,
 strictly increasing and divergent timestamps, and clocks starting at~0.
-$P_1$ and $P_2$ empty mean that $O$ is disjoint from $C'$ and $C$ from $O'$;
+Empty $P_1$ and $P_2$ mean that $O$ is disjoint from $C'$ and $C$ from $O'$;
 if CASAAL's two automata are complementary this gives
 $L(O)\subseteq L(C)$ and $L(O')\subseteq L(C')$. The converse inclusions
-would additionally require that $O$ and $O'$ together cover all words. $S$ empty means that our automata for
+would additionally require that $O$ and $O'$ together cover all words. An empty $S$ means that our automata for
 $\varphi$ and $\neg\varphi$ never accept the same word. A fourth product
 $O\times C$ is a sanity check: it must be non-empty when $\varphi$ is
 satisfiable.
@@ -166,14 +166,15 @@ is empty, while $P_1$, $S$ of R4 and all three checks of N5 still time out (whic
 may also mean memory exhaustion). For R8 no automaton is built within the limit.
 For N8, $O$ is built (85~s), but $P_1$ exceeds 600~s and $O'$ is
 not built within the limit, so $P_2$ and $S$ are not run (inconclusive).
-The sanity product is non-empty in every completed benchmark configuration.
+The sanity product, computed for every completed configuration except the
+hatted F3 and F13, is non-empty.
 
 The artifact also contains 100 random formulas of depth at most three over
 three propositions, generated with their CASAAL automata. For all 100 of them,
 $P_1$, $P_2$, and $S$ are empty, with no timeout; for five of these, the
 sanity product is empty as well, and inspection shows that each of these
 five formulas is unsatisfiable under mutual exclusion (for example
-$q\land\Diamond_{>2}p\land r$), so the other 95 passes are non-vacuous.
+$q\land\Diamond_{>2}p\land r$), so for the other 95 the empty products are not vacuous.
 
 CASAAL prints some automata without any acceptance mark. We read such an
 automaton by its state labels (a state with an undischarged unbounded
@@ -185,7 +186,7 @@ for one random formula only.
 The TChecker checks establish inclusions and time out on the larger
 configurations, so we add a test of equality on finitely many words. For each
 configuration we draw random ultimately periodic timed words $uv^\omega$ (a
-prefix of 0--4 and a loop of 1--5 events, integer timestamps in half units,
+prefix of 0--4 and a loop of 1--5 events, timestamps that are integer multiples of $0.5$,
 strictly increasing and divergent; half of the words follow the order of the
 propositions of the formula), and compare three verdicts: the formula under the pointwise semantics above, evaluated by a Python implementation that we
 wrote independently of the translator (it is not extracted from, nor checked
@@ -198,14 +199,14 @@ initial values give the same language); with more clocks, all clocks start
 at~0. On 28 benchmark configurations (all but R6--R8;
 400 words each, 11200 in all, 4495 satisfying the formula) and on the
 100 random formulas (150 words each, 15000 in all, 8273 satisfying
-it), the semantics and $\mathsf{compile}(f)$ agree on every word. CASAAL is included on 26 of the
+it), the semantics and $\mathsf{compile}(f)$ agree on all sampled words. CASAAL is included on 26 of the
 28 benchmark configurations (not on the hatted F3 and F13) and on all random
-formulas, and agrees on every word there as well: 10400 plus 15000
+formulas, and agrees on all sampled words there as well: 10400 plus 15000
 words, 25400 three-way comparisons; the other 800 words compare only the
-semantics and the automaton. As a negative control, the same checker finds disagreements for F1
-against the formulas with bound 4 instead of 5 (11 of 300 words) and with a
-strict bound (5 of 300). The test has little weight for some formulas:
-no word of N8 satisfies the formula among the random ones, so for N5--N8 we
+semantics and the automaton. As a negative control, the same checker finds disagreements when F1
+is compared with two mutated formulas, one with bound 4 instead of 5 (11 of 300
+words) and one with a strict bound (5 of 300). The test has little weight for some formulas:
+none of the random words satisfies the formula of N8, so for N5--N8 we
 added five hand-built words each (accepted and rejected; all agree), and nine
 random formulas have fewer than five satisfying and fourteen fewer than five
 violating words. The words are finitely many and short; this is a test, not a
@@ -249,11 +250,12 @@ an $e$, a further $e$ is accepted only with the guard $x>2$.
 \subsection{Threats to validity}
 The configurations and random formulas are small, of our choosing, and use
 integer bounds only, so real-valued bounds are covered by the mathematical
-theorem but not by the extracted tool or by any test. The TChecker products and,
+theorem but not by the extracted tool or by any test. Test timestamps lie on a half-unit grid, so behavior at finer
+offsets is not exercised. The TChecker products and,
 for formulas with more than three clocks, the word-level test start all clocks
 at 0; by Corollary~\ref{cor:zero-init}, for this translation zero initial clocks
 accept the same language as existentially chosen ones. The R family shows that the size of Spot's automaton grows quickly with the
-number of conjuncts. The CASAAL automata were produced earlier and not
+number of conjuncts. The CASAAL automata were produced before this study and not
 regenerated; CASAAL's integer bounds, nondecreasing time, and acceptance
 printing differ from our model, and the inclusions depend on the unchecked
 complementarity of its automata. The TChecker products, the word-level test,

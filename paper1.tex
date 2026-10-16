@@ -89,8 +89,7 @@ through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
 also checked, giving a compositional theorem under an explicit
 language-equivalence contract for the B\"uchi backend, required
-on action-consistent words only. This contract is a premise (the convenience
-theorem postulates it as an axiom); Spot, graph import, parsing, printing,
+on action-consistent words only. This contract is a premise (axiom). Spot, graph import, parsing, printing,
 extraction, and zero-bound preprocessing lie outside the proof. The theorem assumes real-valued bounds, and strictly
 increasing divergent timestamps. On 31 configurations and 100 random formulas with integer bounds,
 TChecker inclusion and self-consistency checks find no counterexample on the 22
@@ -118,15 +117,14 @@ sharing the clock assigned to one primitive timed formula. Table~\ref{tab:overla
 illustrates why the reset semantics needs a correctness argument.
 
 The mathematical construction studied here has substantial predecessors.
-Bulychev et al. establish exact timed-automaton language results for safety
+Bulychev et al.~\cite{[BDLG14]} establish exact timed-automaton language results for safety
 and co-safety fragments. Li et al. establish full-fragment
 MTL$_{0,\infty}$-to-TBA language equality and show that their best-choice
 reset policy preserves language~\cite{[BDLG14],li_spin7}. Their
 work already contains the central timed-subformula clocking and reset
 architecture. They build the timed B\"uchi automaton directly, by extending the
 classical tableau translation with clocks. We keep that clocking and reset
-architecture but reformulate it: the formula is encoded into an untimed
-clocked-LTL formula, a standard LTL-to-B\"uchi backend is applied through an
+architecture but reformulate it: the formula is encoded into an untimed formula of clocked Linear Temporal Logic (LTL), a standard LTL-to-B\"uchi backend is applied through an
 explicit contract, and relaxation and reset completion restore the timed
 meaning. Our contribution is this reformulation and its machine-checked proof.
 Table~\ref{tab:prior-construction-comparison} compares these
@@ -136,7 +134,7 @@ Mathematical proofs and machine-checked proofs provide different assurance.
 A proof assistant requires the syntax, timed-word semantics, clock updates,
 invariants, quantifiers, and proof dependencies to be represented in a
 kernel-checkable development. Here that formalization must also reconcile
-propositions of clocked Linear Temporal Logic (LTL) with genuine clock
+propositions of clocked LTL with genuine clock
 valuations. Related proof-assistant
 work addresses neighboring problems: Xu and Miao present a Metric Interval
 Temporal Logic (MITL)-to-fair-timed-automaton construction and discuss its
@@ -189,18 +187,18 @@ The principal contributions are:
         rejected-violation traces, and an inspectable proof and assumptions
         artifact; and
   \item an evaluation of the automaton produced by the extracted
-        construction, before any optimization: sizes against CASAAL,
+        construction, before any optimization: sizes against the CASAAL tool~\cite{casaal_tool},
         language-inclusion checks with TChecker, agreement tests on random
         timed words, and tests of the backend contract (Section~\ref{sec:evaluation}).
 \end{itemize}
 
 The result is relative to the formal model defined here: real-valued bounds,
-well-formed core formulas, strictly increasing divergent timestamps,
-event-guarded TBAs without location invariants. This differs from Li et al.'s integer-bound,
-nondecreasing-time, zero-initial semantics and is not a direct refinement of
+well-formed core formulas, strictly increasing divergent timestamps, and
+event-guarded TBAs without location invariants. This model differs from Li et al.'s integer-bound,
+nondecreasing-time semantics (the choice of initial clocks does not matter here, by Corollary~\ref{cor:zero-init}) and is not a direct refinement of
 CASAAL's input/output semantics. The TBA theorem composes through an explicit
 backend-equivalence premise; for the alarm instance Rocq checks a manually
-transcribed backend record, not Spot or the graph-import path. Consequently, the
+transcribed backend record, not Spot~\cite{[spot]} or the graph-import path. Consequently, the
 contribution is a verified translation construction (the encoding, relaxation,
 reset completion, and their composition under the backend contract), not an
 end-to-end verified executable translator: no automaton emitted by
@@ -268,10 +266,10 @@ For precision, the four bounded clauses used below are:
  &\qquad\quad\lor \exists k\in(i,j).\;w,k\satM p\Bigr)\Bigr).
 \end{align*}
 The index intervals select event positions, whereas $t_j-t_i$ measures
-elapsed physical time. Thus, when a bound falls between two events, no event
-occurs exactly at that bound, and interval membership is still evaluated at
-the event positions.
-The strict increase assumption excludes simultaneous events; divergence is
+elapsed physical time. When a bound falls strictly between two events, interval membership is still
+evaluated only at event positions.
+The assumption of strictly increasing timestamps excludes simultaneous events,
+which nondecreasing-time semantics such as that of Li et al. allow; divergence is
 used in the lower-bounded Until fairness argument.
 
 The Rocq development represents action names by natural numbers rather than a
@@ -281,7 +279,7 @@ labels distinguish actions only by equality or inequality with those names.
 The well-formedness condition requires $d>0$ for every lower bound and strict
 upper bound, and $d\ge0$ for a non-strict upper bound. Ordinary timed
 operators are definitions in the mechanized core. For upper bounds
-$\precsim\in\{\le,<\}$ and lower bounds $\succsim\in\{\ge,>\},$ they are:
+$\precsim\in\{\le,<\}$ and lower bounds $\succsim\in\{\ge,>\}$, the definitions are:
 \begin{align}
 p\Until_{\precsim d}q &\equiv q\lor(p\land(p\hUntil_{\precsim d}q)),\label{eq:derive-ule}\\
 p\Until_{\succsim d}q &\equiv p\land(p\hUntil_{\succsim d}q),\label{eq:derive-uge}\\
@@ -303,9 +301,9 @@ obligation. A lower bound with $d>0$ excludes $i$, so $p$ is required now
 and the remaining witness is hatted. The Release identities are the dual
 case split: an upper-bound region includes $i$ and therefore requires $q$
 there, while a lower-bound region excludes $i$. Strict upper bounds also
-require $d>0$, avoiding the degenerate $<0$ case. The eight corresponding
-Rocq lemmas are mapped to their source modules and assumptions in
-Table~\ref{tab:rocq-result-map}.
+require $d>0$, avoiding the empty interval of a strict bound with $d=0$. The eight corresponding
+Rocq lemmas are collected in one row of Table~\ref{tab:rocq-result-map},
+which gives their source module and assumptions.
 Thus only
 the eight hatted timed constructors require primitive translation clauses.
 If a source formula has a zero lower bound, strict increase of timestamps
@@ -458,9 +456,13 @@ event. Fig.~\ref{fig:hat-reference} contrasts these readings.
 \begin{figure*}[t]
 \centering
 \input{figures/fig_sporadic_hat}
-\caption{The hatted sporadicity property and two ordinary-operator
-substitutions. A leading next shifts the timing reference to the following
-event; omitting it includes the triggering event in the window.}
+\caption{The hatted sporadicity property (a) and two ordinary-operator
+substitutions (b, c) on one finite prefix. Events are labeled by their action;
+the marked event is the timing reference, $t_e$ or $t_a$ its timestamp, and the
+brace spans the window in which $\neg e$ is required. A leading next (b) shifts
+the timing reference to the following event; omitting it (c) includes the
+triggering event in the window. The words accepted, rejected and violated are
+verdicts on this prefix.}
 \label{fig:hat-reference}
 \end{figure*}
 
@@ -471,9 +473,12 @@ all pending obligations: resetting a single clock at the later request can
 make an expired earlier deadline appear to be met.
 \begin{table}[t]
 \centering
-\caption{A finite prefix illustrating overlapping response obligations.
-The deadline is five time units; the acknowledgment at time six is late for
-the request at time zero even though it is age two from the later request.}
+\caption{A finite prefix illustrating overlapping response obligations for
+$\Box(\mathit{req}\Rightarrow\Diamond_{\le5}\mathit{ack})$, in time units.
+Oldest age is the time elapsed since the earliest pending request; reset age
+is the value of a single clock reset at each request. Both are read at event
+$i$ before any reset at $i$. The acknowledgment at time six is late for the
+request at time zero even though its reset age is two.}
 \label{tab:overlap-example}
 \begin{tabular}{@{}clccc@{}}
 \toprule
@@ -492,9 +497,10 @@ several activations are pending at once.
 \section{From Clocked LTL to a TBA}
 \label{sec:tba-construction}
 \subsection{LTL-to-B\"uchi contract}
-The backend treats the clock-related atoms as independent propositions and
-receives the negated action atom $\mathsf{LNAct}(a)$ as the negation of the
-action atom $\mathsf{LAct}(a)$. It returns a propositional B\"uchi automaton
+The backend treats the clock-related atoms as independent propositions.
+For each action $a$ it receives the atoms $\mathsf{LAct}(a)$ and
+$\mathsf{LNAct}(a)$; the contract below constrains only words in which they
+are complementary. It returns a propositional B\"uchi automaton
 (PBA) whose language is exactly that of the clocked-LTL formula. The theorem is
 stated for any such backend, deterministic or not. A propositional word is
 \emph{action-consistent} when, at every position, $\mathsf{LNAct}(a)$ holds
@@ -511,11 +517,12 @@ clock-consistent timed word. That scope is used by relaxation.
 
 \subsection{Relaxation and reset completion}
 \label{sec:reset-completion}
-The propositional backend regards every clock-related atom as independent.
-Its correctness contract therefore applies to all action-consistent Boolean
-words, including assignments of the clock-related atoms that cannot arise from
-any clock-consistent timed trace. Every
-clock-related atom in the translation occurs positively. Relaxation acts on
+The propositional backend regards every clock-related atom as independent,
+so Assumption~\ref{ass:backend} also covers assignments of these atoms that
+cannot arise from any clock-consistent timed trace. Every clock-related atom
+in the translation occurs positively, that is, $\T(f)$ is built from these
+atoms by $\land$, $\lor$, $\Next$, $\Until$, $\Release$, $\WeakUntil$,
+$\Always$ and $\Eventually$ only. Relaxation acts on
 each backend transition cube (conjunction of atomic constraints) by removing negative literals over clock
 comparisons and reset/preservation markers, removing irrelevant
 clock-related literals, and discarding contradictory cubes. Action literals
@@ -535,7 +542,8 @@ treats them separately.
 \begin{lemma}[Reset completion]
 \label{lem:reset-completion}
 Let an accepting run of the relaxed backend be accompanied by a
-clock-consistent extension $\rho$ of its timed word. Reset completion
+clock-consistent extension $\rho$ of its timed word
+(Section~\ref{sec:encoding-correctness}). Reset completion
 defines a clock-consistent extension $\rho'$ with the same timed word and
 the same initial clock valuation. The same state sequence is an accepting
 run of the completed TBA on $\rho'$.
@@ -557,7 +565,7 @@ induction gives $\CVal_{\rho'}(i,x)\ge\CVal_\rho(i,x)$. These clocks occur
 only in lower tests ($x\succsim d$, or their equivalent window-ending
 comparisons), which remain true when the value increases. The clock recurrence
 holds by the construction of $\rho'$. State transitions, event labels,
-guards that remain true, and the Büchi accepting set are unchanged, so the
+guards that remain true, and the B\"uchi accepting set are unchanged, so the
 run remains accepting. Rocq proves this result as
 \Rocqid{complete_complete}.
 \end{proof}
@@ -580,7 +588,12 @@ $\Delta_i=t_{i+1}-t_i$,
 \end{cases}
 \label{eq:clock-update}
 \end{equation}
-The value at $i$ is tested before the reset decision at $i$. The relation
+The value at $i$ is tested before the reset decision at $i$.
+Over an extended word, the clocked-LTL atoms are interpreted as follows:
+$(x\sim d)$ holds at $i$ iff $\CVal_\rho(i,x)\sim d$; $\Reset(x)$ holds at $i$
+iff $\CReset_\rho(i,x)$; $\Unch(x)$ holds at $i$ iff $\neg\CReset_\rho(i,x)$;
+and $\mathsf{LAct}(a)$, $\mathsf{LNAct}(a)$ hold at $i$ iff the action at $i$
+is, respectively is not, $a$. The relation
 $\mathsf{same\_base}(\rho,w)$ means that the projection of $\rho$ onto actions
 and timestamps gives $w$.
 
@@ -698,9 +711,11 @@ For a clock $x=F$, let $v=\CVal_{\rho^\star}(i,x)$; Table~\ref{tab:canonical-pol
 policy.
 \begin{table}[t]
 \centering
-\caption{Canonical reset decision at position $i$, with $\precsim$ ranging over
-$\{\le,<\}$ and $\succsim$ over $\{\ge,>\}$. A preservation row gives
-the condition under which the clock is not reset; otherwise it is reset.}
+\caption{Canonical reset decision at position $i$, with
+$v=\CVal_{\rho^\star}(i,x)$, $\precsim$ ranging over $\{\le,<\}$ and
+$\succsim$ over $\{\ge,>\}$. A row ``Preserve iff'' gives the condition under
+which the clock is not reset, and it is reset otherwise; the row ``Reset iff''
+gives the condition under which it is reset, and it is preserved otherwise.}
 \label{tab:canonical-policy}
 \begin{tabular}{@{}p{0.35\columnwidth}p{0.59\columnwidth}@{}}
 \toprule
@@ -709,7 +724,7 @@ Primitive formula $F$ & Decision at $i$\\
 $p\hUntil_{\precsim d}q$ &
 Preserve iff $v\precsim d$, $\mathsf{URes}_{\precsim}(i,v,d,p,q)$, and
 $w,i\not\satM q$.\\
-$p\hUntil_{\succsim d}q$, $p\hRelease_{\precsim d}q$ &
+$p\hUntil_{\succsim d}q$ and $p\hRelease_{\precsim d}q$ &
 Reset iff $w,i\satM F$.\\
 $p\hRelease_{\succsim d}q$ &
 Preserve iff $v\not\succsim d$, $\mathsf{RRes}_{\succsim}(i,v,d,p,q)$, and
@@ -736,7 +751,8 @@ extension $\rho^\star$ that serves all activations of every shared clock.
 The four operator families use different invariants:
 
 \runinhead{Upper-bounded hatted Until.}
-Choose the first position $j>i$ at which $q$ holds with $p$ on $[i,j)$, while
+Choose the first witness $j>i$ of the formula at $i$, that is, the first
+position at which $q$ holds within the bound with $p$ on $(i,j)$, while
 the activation remains pending. The
 key invariant along the translated strong-Until prefix is
 \begin{equation}
@@ -753,7 +769,7 @@ reachable $q$ endpoint and $p$ prefix; because the current $q$ has not
 discharged that residual, its witness is strictly after $i$, and the same
 identity advances the residual inequality to $i+1$. Because $j$ is the first such
 position, $q$ fails at every intermediate position $n$ with $i<n<j$: otherwise
-$n$ would be an earlier witness, since $p$ holds on $[i,n)\subseteq[i,j)$. The
+$n$ would be an earlier witness, since $p$ holds on $(i,n)\subseteq(i,j)$. The
 invariant gives $\CVal_{\rho^\star}(n,x)+\elapsed_w(n,j)\le d$, so
 $\mathsf{URes}_{\le}$ holds at $n$ with witness $j$. Hence the policy preserves
 the reference at every intermediate position, which is what the conjunct
@@ -772,7 +788,8 @@ test, and the nested $P\Until Q$ supplies the remaining witness. Before the
 first such position, the proof maintains an active-witness invariant. At
 each $n\ge i+1$ it supplies an activation $s<n$, a witness $m\ge n$ with
 $t_m-t_s\ge d$ and $w,m\models q$, $p$ at every intermediate position, and
-$\CVal_{\rho^\star}(n,x)=t_n-t_s$. Thus $p$ holds at $n$ and a $q$ witness
+$\CVal_{\rho^\star}(n,x)=t_n-t_s$. Since $n$ precedes the first qualifying position, $n<m$; thus $p$ holds at
+$n$ and a $q$ witness
 remains at or after every $n$. If a first qualifying position occurs, the
 finite branch applies; if none occurs, the invariant yields
 $\Always P\land\Always\Eventually Q$, the fairness branch (the second disjunct of Eq.~\eqref{eq:t-huge}).
@@ -782,8 +799,9 @@ formalized by \Rocqid{complete_UhatGe} and \Rocqid{complete_UhatGt}.
 
 \runinhead{Upper-bounded hatted Release.}
 At every activation where the hatted Release formula is true, the policy
-resets the restart clock. The first future event must satisfy $q$, as
-required by the hatted Release semantics. The universal condition then
+resets the restart clock. If the first future event lies inside the bounded window, it must satisfy $q$,
+as required by the hatted Release semantics; otherwise the stopping guard
+already holds there and the weak Until is discharged. The universal condition then
 continues as weak Until: $q$ holds until either $p\land q$ discharges all
 later points or the clock passes the end of the bounded window. For a
 $\le d$ window the stopping guard is $x>d$; for a $<d$ window it is
@@ -892,7 +910,7 @@ For a propositional B\"uchi automaton $A$ over the extended atoms, let
 $\mathsf{compile\_with}(A)$ denote relaxation followed by reset completion.
 Its correctness premise, Assumption~\ref{ass:backend}, is language
 equivalence over the action-consistent propositional words, including
-valuations of the clock-related atoms that are not clock-consistent. The single composed theorem (Figure~\ref{fig:correctness-composition}),
+valuations of the clock-related atoms that are not clock-consistent. The single composed theorem (Fig.~\ref{fig:correctness-composition}),
 conditional on the backend contract, is:
 \begin{theorem}[Conditional MTL-to-TBA correctness]
 \label{thm:mtl-to-tba-correct}
@@ -1008,12 +1026,12 @@ equivalence as an explicit argument. This distinction is visible in
 \subsection{Rocq result map}
 \label{subsec:rocq-result-map}
 Table~\ref{tab:rocq-result-map} maps the article's results to their checked
-declarations and assumptions. The primitive rows collect the four soundness
+declarations and assumptions. The primitive row collects the four soundness
 and four canonical-completeness families, each with its strict variant.
 \begin{table*}[t]
 \centering
 \caption{Map from the article's results to Rocq declarations, source modules
-(Core, Proof; file names below) and assumptions.}
+(Core, Proof, ZeroInit; file names below) and assumptions.}
 \label{tab:rocq-result-map}
 \begin{tabular}{@{}p{0.18\textwidth}p{0.32\textwidth}p{0.10\textwidth}p{0.26\textwidth}@{}}
 \toprule
@@ -1043,6 +1061,12 @@ Conditional backend composition &
 \Rocqid{MTL_to_TBA_correct_with} &
 Proof &
 Explicit backend equivalence premise on action-consistent propositional words\\
+Shared clock identity; every clock occurs in $\T(f)$ &
+\Rocqid{identical_nodes_share_clock};
+\Rocqid{identical_nodes_share_canonical_trace};
+\Rocqid{T_uses_every_clock} &
+Core, Proof &
+Structural; no backend premise\\
 Zero-initialized clocks &
 \Rocqid{complete_complete_init}, \Rocqid{MTL_to_TBA_correct_with_zero_init} &
 ZeroInit &
@@ -1131,7 +1155,7 @@ states $\{0,1\}$.
   \draw[fmedge] (q2) edge[bend left=55] node[fmlabel,below=2mm]
     {$x\le3\land\mathit{handled}$} (q0);
 \end{tikzpicture}
-\caption{Propositional B\"uchi automaton generated by Spot for the
+\caption{Propositional B\"uchi automaton redrawn from Spot's output for the
 alarm-response formula. Edges are labeled by the full Boolean condition on
 event and clock atoms. Double circles are accepting states, the incoming arrow
 marks the initial state, $\Unch(x)$ is the preservation marker, and state
@@ -1228,17 +1252,18 @@ computes the grouped transition counts.
 \begin{table*}[!t]
 \centering
 \caption{Representative mathematical results and mechanization evidence for
-timed-logic-to-automata constructions. The rows have different logics,
+selected timed-logic-to-automata constructions. The rows have different logics,
 semantics, targets, and proof scopes; they are not a performance comparison.}
 \label{tab:prior-construction-comparison}
 \begin{tabular}{@{}p{0.12\textwidth}p{0.20\textwidth}p{0.34\textwidth}p{0.23\textwidth}@{}}
 \toprule
 Work & Semantic scope & Existing correctness and construction & Mechanization and implementation evidence\\
 \midrule
-Bulychev~\cite{[BDLG14]} & Pointwise non-Zeno infinite words; integer bounds, all four comparisons, nondecreasing timestamps. & Theorems 1--2 prove exact automaton languages for safety/co-safety. The construction extends the classical tableau LTL-to-B\"uchi translation directly, with timed-subformula clocks, obligations, and reset/unchanged markers. & Mathematical proofs and controller-synthesis tooling for the stated fragments.\\
+Bulychev et al.~\cite{[BDLG14]} & Pointwise non-Zeno infinite words; integer bounds, all four comparisons, nondecreasing timestamps. & Theorems 1--2 prove exact automaton languages for safety/co-safety. The construction extends the classical tableau LTL-to-B\"uchi translation directly, with timed-subformula clocks, obligations, and reset/unchanged markers. & Mathematical proofs and controller-synthesis tooling for the stated fragments.\\
 Li et al.~\cite{li_spin7} & Full MTL$_{0,\infty}$; pointwise non-Zeno words, integer bounds, all four comparisons, nondecreasing timestamps, zero initial clocks. & Establishes exact language equality for the timed-B\"uchi construction (closure, extended formulas, degeneralization) and language preservation under best-choice resets. & CASAAL implements the workflow and deterministic approximations~\cite{casaal_tool}; the proof is mathematical.\\
 Xu and Miao~\cite{xu08} & MITL formulas mapped to fair timed automata; exact semantic relation to this paper's pointwise event-word model is not compared. & One tester automaton per subformula, with local clocks measuring elapsed time against the metric interval, composed in parallel; no intermediate untimed LTL stage. & The construction and its implementation in PVS.\\
-This paper & Well-formed Rocq formulas with real bounds, strictly increasing timestamps, existential nonnegative initial clocks. & Translation factored through clocked LTL and a standard LTL-to-B\"uchi backend. \Rocqid{EncodingCorrect_proved} proves clocked-LTL equivalence for all eight primitive cases; TBA composition is conditional on backend equivalence. & Rocq-checked proof and one proved contract for a manual Spot transcription; tool evaluation with extracted code (Section~\ref{sec:evaluation}).\\
+This paper & Well-formed Rocq formulas with real bounds, strictly increasing timestamps, existential nonnegative initial clocks (zero initial clocks give the same
+language, Corollary~\ref{cor:zero-init}). & Translation factored through clocked LTL and a standard LTL-to-B\"uchi backend. \Rocqid{EncodingCorrect_proved} proves clocked-LTL equivalence for all eight primitive cases; TBA composition is conditional on backend equivalence. & Rocq-checked proof and one proved contract for a manual Spot transcription; tool evaluation with extracted code (Section~\ref{sec:evaluation}).\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1296,8 +1321,8 @@ completeness proof.
 
 \runinhead{Clocked temporal logic and subformula clocks.}
 The clocked linear temporal logic extension CLTLoc adds clock comparisons and reset predicates and has been used to
-encode metric logics~\cite{bersani_cltloc}. Our similar propositional
-vocabulary is an automaton-synthesis intermediate: the backend treats clock
+encode metric logics~\cite{bersani_cltloc}. Our propositional vocabulary
+is similar, but it serves as an intermediate language for automaton synthesis: the backend treats clock
 tests and reset markers as propositions. Positivity gives upward closure, and
 reset completion restores timed meaning; hence the explicit relaxation proof.
 
@@ -1321,14 +1346,13 @@ construction results and proof sketches alongside a complete implementation
 whose testers sequentialize overlapping obligations~\cite{mightyppl_tacas26}. A companion
 preprint~\cite{mightyppl_qest_arxiv26} describes
 an implementation for existentially punctual metric temporal logic with past
-and Pnueli modalities (MTLPPL). Its term
-\emph{one-sided MTL} denotes the subfragment without past or Pnueli, whereas
+and Pnueli modalities (MTLPPL). In that preprint, the term
+\emph{one-sided MTL} denotes the subfragment without past or Pnueli modalities, whereas
 here it describes interval shapes $[0,d]$ and $[d,\infty)$. Any syntactic
 containment comparison is limited to conventional source formulas after
-zero-bound reduction and with integer bounds; it excludes hatted abstract syntax tree (AST)
-constructors. The QEST fragment also permits punctual and non-one-sided
-intervals in its stated positions. Its punctual-response example does not
-imply support for unrestricted punctual MTL; differing bounds and timed-word
+zero-bound reduction and with integer bounds; it excludes hatted abstract syntax tree
+constructors. The fragment of that preprint also permits punctual and non-one-sided
+intervals in its stated positions; differing bounds and timed-word
 conventions preclude a shared-input semantic comparison.
 
 These tools (TEMPORA, MightyPPL, and the alternating-automaton work above)
@@ -1373,24 +1397,24 @@ all eight primitive cases, soundness for arbitrary
 clock-consistent reset traces, and completeness using one canonical trace
 across repeated activations of formula-keyed clocks. The occurrence-indexed
 induction connects each syntactic occurrence to its translation while
-preserving the identity of a shared clock. This supplies a checked account of
-the obligations that a mathematical argument must discharge when several
-timed requirements overlap.
+preserving the identity of a shared clock. This gives a checked account of how
+overlapping timed requirements are handled in the specified model.
 
 Rocq also checks relaxation and reset completion and composes them with an
 explicit propositional backend language-equivalence contract. The resulting
-theorem makes its backend dependency inspectable instead of hiding it in an
-assurance claim. This work builds on the mathematical language-preservation
+theorem makes the backend dependency explicit. This work builds on the mathematical language-preservation
 results of Li et al. and adjacent proof-assistant work, while contributing a
 reformulation that factors the
 translation through untimed clocked LTL and a standard LTL-to-B\"uchi backend,
 and a machine-checked derivation for this
 construction and the semantic model defined here~\cite{li_spin7,xu08,roohi_viswanathan_vmcai18}.
 
-The evaluation of the extracted construction found no disagreement with CASAAL
-on the checked configurations and words, and no discrepancy of the backend
-contract on 28 of the 31 configurations; the larger configurations are
-inconclusive.
+The evaluation of the extracted construction found no counterexample to inclusion
+in CASAAL's language (provided its automata are complementary) or to agreement
+with its automata on the 22 completed configurations, the 100 random formulas
+and the sampled words, and no discrepancy of the backend contract with ltl2ba
+on 28 of the 31 configurations; the larger configurations are inconclusive.
+All tests use integer bounds.
 
 The theorem applies to the stated pointwise semantics and composes
 through an explicit backend contract. The contract is discharged only for a
@@ -1398,7 +1422,8 @@ manually transcribed backend record in the alarm-response instance, and
 Spot's graph generation/import and zero-bound preprocessing remain outside
 the checked boundary. Future work
 can extend the mechanization to these components and connect the semantic
-theorem to a verified executable backend.
+theorem to a verified executable backend. Tool-level behavior on non-integer
+bounds is untested.
 
 The proof artifact and assumptions report are described in
 Section~\ref{sec:artifact}.

@@ -3,8 +3,8 @@ Let
 \[
   f=(\Eventually_{\le5}p)\land(\Always_{<2}\neg p).
 \]
-It requires $p$ to be false at the origin and until age two, then true by age
-five. Fig.~\ref{fig:translation-reference-tba} shows a hand-simplified
+It requires $p$ to be false at every position before age two and to hold at
+some position no later than age five. Fig.~\ref{fig:translation-reference-tba} shows a hand-simplified
 equivalent one-clock TBA, not the syntax-directed output, which assigns
 separate clocks to the two distinct timed subformulas. The steps below show
 the clocked-LTL translation and timed reinterpretation. The concrete instance
@@ -14,9 +14,11 @@ Section~\ref{sec:alarm-example}.
 \begin{figure}[t]
 \centering
 \input{figures/fig_tba_example}
-\caption{Hand-simplified equivalent event-guarded TBA for $f$. The initial
-transition requires $\neg p$ and resets $x$; in the waiting location,
-$x\le5$, and acceptance also requires $x\ge2$. Thus $p$ first holds at age
+\caption{Hand-simplified equivalent event-guarded TBA for $f$. Edges are labeled by
+event and guard; $\mathsf{rst}(x)$ resets $x$, and $q_{\mathit{acc}}$ is the
+accepting location. The initial transition requires $\neg p$ and resets $x$;
+the edges leaving the waiting location are guarded by $x\le5$, and the edge to
+the accepting location also requires $x\ge2$. Thus $p$ first holds at an age
 in $[2,5]$.}
 \label{fig:translation-reference-tba}
 \end{figure}
@@ -74,7 +76,7 @@ the translation does not do.
 \caption{The Spot 2.16 graph for $\T(f)$ (top, redrawn; the labels are
 propositional cubes over the action atom $p$, the clock guards, and the markers
 $\mathsf{unch}(x)$ and $\mathsf{rst}(y)$) and the reset-completed TBA obtained
-from it by hand (bottom; same state numbers). A TBA edge is labeled
+from it by hand (bottom; same state numbers, which are Spot's). A TBA edge is labeled
 by the event, the clock guard, and, after a slash, the clocks reset; $\top$ is
 any event, and an edge without a slash resets no clock. This graph-to-TBA
 illustration is not the formally verified alarm-response backend instance.}
