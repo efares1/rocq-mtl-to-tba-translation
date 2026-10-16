@@ -77,7 +77,9 @@ Translating real-time specifications into timed automata supports automated
 analysis only if the translation preserves the timed-word language. We present a Rocq-checked soundness-and-completeness development for
 the pointwise dense-time translation of Metric Temporal Logic
 (MTL$_{0,\infty}$) into timed B\"uchi automata (TBAs) via clocked Linear
-Temporal Logic. Earlier constructions extend the tableau LTL-to-B\"uchi
+Temporal Logic. The encoding into clocked LTL is proved without assumptions on
+the backend; correctness of the resulting TBA holds relative to a backend
+language-equivalence contract. Earlier constructions extend the tableau LTL-to-B\"uchi
 translation with clocks directly and were proved on paper; here the translation
 instead factors through an untimed clocked-LTL formula that any standard
 LTL-to-B\"uchi backend can process. To the best of our knowledge, this
@@ -90,9 +92,10 @@ language-equivalence contract for the B\"uchi backend, required
 on action-consistent words only. This contract is a premise (the convenience
 theorem postulates it as an axiom); Spot, graph import, parsing, printing,
 extraction, and zero-bound preprocessing lie outside the proof. The theorem assumes real-valued bounds, and strictly
-increasing divergent timestamps. On 31 benchmarks and 100 random formulas with integer bounds, TChecker inclusion
-and self-consistency checks complete on 22 benchmarks and the backend contract is
-tested against ltl2ba on 28 benchmarks.
+increasing divergent timestamps. On 31 benchmark configurations and 100 random formulas with integer bounds,
+TChecker inclusion and self-consistency checks find no counterexample on the 22
+configurations that complete within the limits, and the backend contract is
+tested against ltl2ba without discrepancy on 28 configurations.
 \end{abstract}
 
 \begin{keywords}
@@ -145,12 +148,7 @@ Metric Linear Temporal Logic (MLTL)-to-regular-expression transformation in
 Isabelle/HOL; and Chattopadhyay and Mamouras mechanize online monitoring for
 past-time MTL under discrete-time quantitative semantics
 \cite{xu08,roohi_viswanathan_vmcai18,schimpf_tphols09,
-wang_mltl_tacas25,chattopadhyay_mamouras_rv20}. To the best of our knowledge,
-no previous published machine-checked soundness-and-completeness development
-has been identified for this particular pointwise MTL$_{0,\infty}$-to-TBA
-construction and formal semantic model, including its clocked-LTL encoding,
-relaxation, and reset-completion steps. This scoped claim recognizes the
-existing proof-assistant work on related logics and constructions.
+wang_mltl_tacas25,chattopadhyay_mamouras_rv20}.
 
 Several interacting proof obligations make the mechanization nontrivial.
 Soundness must hold for every clock-consistent reset trace;
@@ -201,7 +199,10 @@ event-guarded TBAs without location invariants. This differs from Li et al.'s in
 nondecreasing-time, zero-initial semantics and is not a direct refinement of
 CASAAL's input/output semantics. The TBA theorem composes through an explicit
 backend-equivalence premise; for the alarm instance Rocq checks a manually
-transcribed backend record, not Spot or the graph-import path. The development proves a
+transcribed backend record, not Spot or the graph-import path. Consequently, no
+automaton emitted by \texttt{mtl2tba} is covered by a machine-checked guarantee;
+the contract is only tested on the evaluated inputs
+(Section~\ref{sec:evaluation}). The development proves a
 semantic theorem; the evaluated tool runs code extracted from its
 definitions, and extraction, parsing, and printing are outside the proof. Section~\ref{subsec:rocq-result-map}
 summarizes the theorem dependencies and assumptions.
@@ -229,7 +230,8 @@ by the logical interval, while its timestamp remains the timing reference.
 We use $\widehat{\Box}_{\sim d}\varphi$ as shorthand for
 $\bot\hRelease_{\sim d}\varphi$; it requires $\varphi$ at each strictly
 future position whose elapsed time from the current position satisfies the
-bound.
+bound. Dually, $\widehat{\Diamond}_{\sim d}\varphi$ abbreviates
+$\top\hUntil_{\sim d}\varphi$.
 
 A timed word is $w=(a_i,t_i)_{i\in\Nat}$, where $a_i\in\Sigma$,
 $0\le t_0<t_1<\cdots$, and timestamps diverge. We write
@@ -516,7 +518,10 @@ clock-related literals, and discarding contradictory cubes. Action literals
 and positive relevant clock literals are retained. This weakens the cubes
 without asking the backend to understand clocks.
 
-Reset completion converts each relaxed cube to a timed transition. A
+Reset completion converts each relaxed cube to a timed transition. Clocks of
+upper-bounded hatted Until and lower-bounded hatted Release are preservation
+clocks (their clauses use $\Unch$); clocks of lower-bounded hatted Until and
+upper-bounded hatted Release are restart clocks (their clauses use $\Reset$). A
 preservation clock is reset unless the cube contains $\Unch(x)$; a restart
 clock is reset exactly when the cube contains $\Reset(x)$. The markers are
 then removed, clock comparisons become guards, and action literals become
@@ -982,7 +987,8 @@ declarations and assumptions. The primitive rows collect the four soundness
 and four canonical-completeness families, each with its strict variant.
 \begin{table*}[t]
 \centering
-\caption{Mathematical results}
+\caption{Map from the article's results to Rocq declarations, source modules
+(Core, Proof; file names below) and assumptions.}
 \label{tab:rocq-result-map}
 \begin{tabular}{@{}p{0.18\textwidth}p{0.32\textwidth}p{0.10\textwidth}p{0.26\textwidth}@{}}
 \toprule
@@ -1005,7 +1011,7 @@ Proof &
 Soundness: any consistent resets; completeness: canonical policy\\
 Relaxation and reset completion &
 \Rocqid{relax_sound}, \Rocqid{relax_complete},
-\Rocqid{complete_complete} &
+\Rocqid{complete_sound}, \Rocqid{complete_complete} &
 Core &
 Positive extended atoms; label side conditions\\
 Conditional backend composition &
@@ -1096,8 +1102,10 @@ states $\{0,1\}$.
     {$x\le3\land\mathit{handled}$} (q0);
 \end{tikzpicture}
 \caption{Propositional B\"uchi automaton generated by Spot for the
-alarm-response formula. Edges are labelled by the full Boolean condition on
-event and clock atoms.}
+alarm-response formula. Edges are labeled by the full Boolean condition on
+event and clock atoms. Double circles are accepting states, the incoming arrow
+marks the initial state, $\Unch(x)$ is the preservation marker, and state
+numbers are Spot's.}
 \label{fig:alarm-backend}
 \end{figure*}
 Rocq splits the disjunctive self-loop into two cubes. Lemma
@@ -1108,7 +1116,7 @@ words, which is the contract above.
 The resulting concrete TBA is \Rocqid{alarm_response_spot_tba}. It has initial
 location $0$, accepting locations $\{0,1\}$, and clock $x$.
 Figure~\ref{fig:alarm-tba} shows the reset-completed automaton of the Rocq
-record. Each edge is labelled by its event, its clock guard, and its resets;
+record. Each edge is labeled by its event, its clock guard, and its resets;
 guards are checked before resets, and an edge without a guard has none. The
 two edges from $0$ to $0$ of the record are drawn as one edge with two labels.
 \begin{figure*}[t]
@@ -1132,8 +1140,9 @@ two edges from $0$ to $0$ of the record are drawn as one edge with two labels.
     {$\mathit{handled},\;x\le3\;/\;\mathsf{rst}(x)$} (q0);
 \end{tikzpicture}
 \caption{Timed automaton of the alarm-response Rocq record after relaxation
-and reset completion. The Graphviz DOT graph-to-record correspondence remains
-outside the Rocq proof.}
+and reset completion. Edges are labeled by event, clock guard and, after a
+slash, the clocks reset; double circles are accepting states. The Graphviz DOT
+graph-to-record correspondence remains outside the Rocq proof.}
 \label{fig:alarm-tba}
 \end{figure*}
 The theorem \Rocqid{alarm_response_spot_tba_correct} instantiates
@@ -1223,7 +1232,7 @@ automata'' with two modifications: no B\"uchi acceptance condition for the
 safety and co-safety fragments, and an auxiliary clock for each timed
 subformula. Li et al. proceed by a closure, extended formulas that carry the
 clock bookkeeping, a normal form, a transition-based timed B\"uchi automaton,
-and a degeneralization step. In both, the timed expansion and the B\"uchi
+and a degeneralization step. In both, as we read them, the timed expansion and the B\"uchi
 construction are one hand-built construction. Ours differs in architecture:
 the formula is encoded into untimed clocked LTL, any LTL-to-B\"uchi backend
 may then be used, and its correctness enters the composed theorem as an
@@ -1249,7 +1258,7 @@ ferrere2019_realtimelogic_to_ta,[BM14]}; MightyL and MITL2Timed provide
 UPPAAL-oriented tools for that distinct logic
 \cite{mightyl_paper17,mitl2timed_github}. MightyL, for example, outputs a
 network of timed automata, one per temporal subformula, generalizing the
-Gastin--Oddoux LTL-to-B\"uchi construction; it does not call an LTL-to-B\"uchi
+Gastin--Oddoux LTL-to-B\"uchi construction; as described in~\cite{mightyl_paper17}, it does not call an LTL-to-B\"uchi
 tool on a timed formula. Obligation-merging techniques are
 related, while our one-sided residual predicates support the checked
 completeness proof.
@@ -1278,8 +1287,8 @@ translate our MTL$_{0,\infty}$ fragment to infinite-word TBAs.
 Ho et al.'s MightyPPL translates pointwise MITL with past and Pnueli
 modalities over finite and infinite timed words; it gives mathematical
 construction results and proof sketches alongside a complete implementation
-whose testers sequentialize overlapping obligations
-\cite{mightyppl_tacas26}.~\cite{mightyppl_qest_arxiv26} describes
+whose testers sequentialize overlapping obligations~\cite{mightyppl_tacas26}. A companion
+preprint~\cite{mightyppl_qest_arxiv26} describes
 an implementation for existentially punctual metric temporal logic with past
 and Pnueli modalities (MTLPPL). Its term
 \emph{one-sided MTL} denotes the subfragment without past or Pnueli, whereas
@@ -1318,15 +1327,13 @@ Rocq-checked correctness development for the specified pointwise infinite-word
 TBA construction.
 
 \runinhead{Event-B refinement patterns.}
-Our work on Event-B patterns addresses their generation and refinement,
-including domain-specific language (DSL)-based pattern generation~\cite{fares_abz23}, patterns using
-weakest-precondition calculus~\cite{fares_facs24}, and a forthcoming 2027
-article on pattern-based development using predicate transformers~\cite{fares_scp27}. These works
-provide the Event-B pattern-generation context for our broader objective:
-given an MTL property, use its TBA translation as the input to a downstream
-Event-B pattern-generation step. The present paper establishes the MTL-to-TBA
-stage only. It gives no TBA-to-Event-B transformation or correctness result
-for generated Event-B patterns.
+The context of this work is the generation of Event-B patterns from timed
+formulas: the TBA translation studied here is intended as the input of a later
+pattern-generation step. Our earlier work on Event-B patterns covers their
+DSL-based generation~\cite{fares_abz23}, their derivation through weakest
+preconditions~\cite{fares_facs24}, and predicate transformers~\cite{fares_scp27}.
+The present paper covers the MTL-to-TBA stage only and gives no TBA-to-Event-B
+transformation.
 
 \section{Conclusion}
 This paper provides a Rocq-checked soundness-and-completeness development for
@@ -1343,11 +1350,16 @@ Rocq also checks relaxation and reset completion and composes them with an
 explicit propositional backend language-equivalence contract. The resulting
 theorem makes its backend dependency inspectable instead of hiding it in an
 assurance claim. This work builds on the mathematical language-preservation
-results of Li et al. and adjacent proof-assistant work, while contributing, to
-the best of our knowledge for the first time, a reformulation that factors the
+results of Li et al. and adjacent proof-assistant work, while contributing a
+reformulation that factors the
 translation through untimed clocked LTL and a standard LTL-to-B\"uchi backend,
 and a machine-checked derivation for this
 construction and the semantic model defined here~\cite{li_spin7,xu08,roohi_viswanathan_vmcai18}.
+
+The evaluation of the extracted construction found no disagreement with CASAAL
+on the checked configurations and words, and no discrepancy of the backend
+contract on 28 of the 31 configurations; the larger configurations are
+inconclusive.
 
 The theorem applies to the stated pointwise semantics and composes
 through an explicit backend contract. The contract is discharged only for a

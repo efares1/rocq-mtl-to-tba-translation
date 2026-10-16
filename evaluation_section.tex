@@ -2,12 +2,15 @@
 \label{sec:evaluation}
 The theorem says nothing about the size of the automaton, or about how it compares with an
 independent implementation. This section measures the automaton
-$\mathsf{compile}(f)$ obtained by the translation $\T$, Spot, relaxation, and
-reset completion, before any further processing; no optimization is applied here to the resulting automaton. We ask three questions. Q1: how large is
+$\mathsf{compile}(f)=\mathsf{compile\_with}(A)$, where $A$ is the automaton that
+Spot returns for $\T(f)$. It is obtained by the translation $\T$, Spot,
+relaxation, and reset completion, before any further processing, and no
+optimization is applied to it here. We ask three questions. Q1: how large is
 $\mathsf{compile}(f)$, compared with the automaton of CASAAL~\cite{casaal_tool},
 which implements the construction of Li et al.~\cite{li_spin7}? Q2: on
-concrete formulas, do the languages agree with CASAAL's, as far as an
-independent timed-automaton checker, or independent evaluation on words, can
+concrete formulas, do the languages agree with CASAAL's on the common restricted model
+(strictly increasing timestamps, mutually exclusive events), as far as a
+separately implemented timed-automaton checker, or evaluation on words, can
 tell? Q3: does the backend satisfy,
 on these formulas, the contract that the theorem assumes? The answers are
 measurements and tests.
@@ -18,13 +21,17 @@ numbers below is a proof. For Q1, the number of clocks of $\mathsf{compile}(f)$
 coincides with CASAAL's on every exactly encoded configuration except F2; the
 nesting family N has CASAAL's number of locations, and locations and
 transitions are larger on most other configurations, for example 48 locations and
-1,625 transitions against 16 and 80 for R4 (R7: 576 locations and 296,875
-transitions against 128 and 1,024), a growth that we attribute to Spot's
+1625 transitions against 16 and 80 for R4 (R7: 576 locations and 296875
+transitions against 128 and 1024), a growth that we attribute to Spot's
 automaton (Section~\ref{subsec:compile-size}). For
-Q2, the TChecker products $P_1$, $P_2$, $S$ are empty on every configuration
-that completes (22 of the 31, two of them checked only for $S$) and on all 100
-random formulas, and the word-level test finds no disagreement on 26,200
-words, 25,400 of them also compared with CASAAL. For Q3, no discrepancy with
+Q2, the TChecker products $P_1$, $P_2$, $S$
+(Section~\ref{subsec:tchecker}) are empty on every configuration that completes
+(22 of the 31, two of them checked only for $S$) and on all 100 random
+formulas, which gives inclusion in CASAAL's language provided its two automata
+are complementary (not checkable in general: universality of a nondeterministic
+timed B\"uchi automaton is undecidable~\cite{alur_dill94}); the word-level test
+finds no disagreement between $\mathsf{compile}(f)$ and our Python evaluation of
+the semantics on 26200 words, 25400 of them also compared with CASAAL. For Q3, no discrepancy with
 ltl2ba is found on 28 of the 31 configurations. Inconclusive: the larger
 configurations (R4--R8, N5--N8 for TChecker; R7, R8, N8 for the backend check)
 exceed the time limits and are reported as such.
@@ -92,7 +99,7 @@ our one-event-per-position words. The two counts of transitions are not
 directly comparable: CASAAL labels a transition with a Boolean formula over
 propositions, whereas Spot's output, and hence $\mathsf{compile}(f)$, has one
 transition per cube over the propositions and clock literals. In R4, for
-example, $\mathsf{compile}(f)$ has 48 locations and 1,625 transitions, and
+example, $\mathsf{compile}(f)$ has 48 locations and 1625 transitions, and
 CASAAL 16 locations and 80 symbolic transitions; both use four clocks.
 Column Grp.~T counts the transitions of $\mathsf{compile}(f)$ after grouping
 edges with the same source, target, guard, and resets into one edge labeled by
@@ -133,6 +140,7 @@ printing leaves cubes that require both $a$ and $\neg a$, which no
 one-event-per-position word satisfies; the explicit printing does not produce them.
 
 \subsection{Language checks with TChecker}
+\label{subsec:tchecker}
 For a formula $\varphi$, let $O$ and $O'$ be $\mathsf{compile}(\varphi)$ and
 $\mathsf{compile}(\neg\varphi)$, and $C$, $C'$ CASAAL's automata for
 $\varphi$ and $\neg\varphi$. TChecker~0.8~\cite{tchecker} decides the
@@ -179,8 +187,8 @@ language is empty if no state is accepting; an automaton without such labels
 keeps the previous reading. This changes the verdict of X74 only; the other
 15 of the 16 affected CASAAL automata, and all other formulas, give the same
 results as before. The reading is our interpretation of CASAAL's output,
-checked on X74 and by the agreement of the other 15 cases, not a documented
-convention of the tool; a regression test is in the artifact
+adopted after the discrepancy on X74 (the other 15 cases give the same results
+under either reading), not a documented convention of the tool; a regression test is in the artifact
 (\path{evaluation/test_tck_product_acceptance.py}).
 
 \subsection{Agreement on ultimately periodic words}
@@ -248,8 +256,10 @@ an $e$, a further $e$ is accepted only with the guard $x>2$.
 
 \subsection{Threats to validity}
 The configurations and random formulas are small, of our choosing, and use
-integer bounds only, so real-valued bounds are covered by the proof but not by
-any test; the
+integer bounds only, so real-valued bounds are covered by the mathematical
+theorem but not by the extracted tool or by any test. The TChecker products and,
+for formulas with more than three clocks, the word-level test start all clocks
+at 0, whereas the theorem quantifies the initial clock values existentially. The
 R family shows that the size of Spot's automaton grows quickly with the
 number of conjuncts. The CASAAL automata were produced earlier and not
 regenerated; CASAAL's integer bounds, nondecreasing time, and acceptance
