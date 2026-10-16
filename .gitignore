@@ -37,3 +37,7 @@ evaluation/compile_dot/R7.dot
 
 # local review notes, not part of the artifact
 IEEE_ACCESS_CRITICAL_REVIEW.md
+
+# Python caches
+__pycache__/
+*.pyc
