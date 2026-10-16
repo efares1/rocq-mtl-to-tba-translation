@@ -128,7 +128,10 @@ def acc_names(text):
         i = k
 
 
-def from_gv(name, path, events):
+def from_gv(name, path, events, unmarked='pending'):
+    # unmarked='pending' (default): reading of an automaton without acceptance
+    # marks by its state labels (see below); unmarked='all': the previous
+    # reading, an automaton without marks accepts every infinite run.
     a = Auto(name)
     s = open(path, encoding='utf-8').read()
     nodes = set(re.findall(r'^\s*(\d+)\s*\[label', s, re.M)) - {'0'}
@@ -145,7 +148,7 @@ def from_gv(name, path, events):
         for lits in (dnf(cube) if cube not in ('', '1') else [[]]):
             add_cube(a, src, tgt, lits, accs, events)
     a.acc_labels = sorted({l for v in a.locs.values() for l in v[0]})
-    if not a.acc_labels:
+    if not a.acc_labels and unmarked == 'pending':
         # No acceptance mark is printed.  CASAAL then relies on the state
         # labels: a state whose label still contains an unbounded eventuality
         # (F or U without an interval) has an undischarged obligation, so a

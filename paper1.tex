@@ -199,10 +199,12 @@ event-guarded TBAs without location invariants. This differs from Li et al.'s in
 nondecreasing-time, zero-initial semantics and is not a direct refinement of
 CASAAL's input/output semantics. The TBA theorem composes through an explicit
 backend-equivalence premise; for the alarm instance Rocq checks a manually
-transcribed backend record, not Spot or the graph-import path. Consequently, no
-automaton emitted by \texttt{mtl2tba} is covered by a machine-checked guarantee;
-the contract is only tested on the evaluated inputs
-(Section~\ref{sec:evaluation}). The development proves a
+transcribed backend record, not Spot or the graph-import path. Consequently, the
+contribution is a verified translation construction (the encoding, relaxation,
+reset completion, and their composition under the backend contract), not an
+end-to-end verified executable translator: no automaton emitted by
+\texttt{mtl2tba} is covered by a machine-checked guarantee, and the contract is
+only tested on the evaluated inputs (Section~\ref{sec:evaluation}). The development proves a
 semantic theorem; the evaluated tool runs code extracted from its
 definitions, and extraction, parsing, and printing are outside the proof. Section~\ref{subsec:rocq-result-map}
 summarizes the theorem dependencies and assumptions.

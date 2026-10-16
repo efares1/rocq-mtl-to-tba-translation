@@ -15,7 +15,7 @@ tell? Q3: does the backend satisfy,
 on these formulas, the contract that the theorem assumes? The answers are
 measurements and tests.
 
-\paragraph{Summary of outcomes.}
+\runinhead{Summary of outcomes.}
 Proved: the Rocq development of Section~\ref{sec:correctness}; none of the
 numbers below is a proof. For Q1, the number of clocks of $\mathsf{compile}(f)$
 coincides with CASAAL's on every exactly encoded configuration except F2; the
@@ -128,8 +128,11 @@ $\mathsf{compile}(f)$: Spot takes 0.12, 2.1, 5.4, and 90~s of a total
 300~s. A complete run of \texttt{mtl2tba} up to $\mathsf{compile}(f)$, which also
 writes the DOT file, takes less than one second for every configuration except R5
 (3.0~s), R6 (9.2~s), R7 (113~s), N6 (1.4~s), N7 (16~s), and N8 (85~s). These numbers describe the unoptimized output of the extracted
-construction; they are not a comparison of tools. Reducing these sizes by
-post-processing is left to follow-up work.
+construction; they are not a comparison of tools. They show the cost of the
+factorization: reusing a standard LTL-to-B\"uchi backend supports a modular
+correctness argument, but can yield larger automata than specialized direct
+constructions. Reducing these sizes by post-processing is left to follow-up
+work.
 
 Printing the negated event atom explicitly does not change R and N, whose
 formulas contain no negated event, and reduces F11--F14 (for example F11 from
@@ -187,8 +190,21 @@ language is empty if no state is accepting; an automaton without such labels
 keeps the previous reading. This changes the verdict of X74 only; the other
 15 of the 16 affected CASAAL automata, and all other formulas, give the same
 results as before. The reading is our interpretation of CASAAL's output,
-adopted after the discrepancy on X74 (the other 15 cases give the same results
-under either reading), not a documented convention of the tool; a regression test is in the artifact
+adopted after the discrepancy on X74 and not a documented convention of the
+tool. For X74 the semantics supports it: the negation is unsatisfiable under
+mutual exclusion, so the empty language is the correct one. As a sensitivity
+check, we compared the 135 CASAAL automata of the random formulas (of the
+formulas and of their negations) that carry no acceptance mark with the
+pointwise semantics, evaluated by our Python evaluator, on 400 words each
+(54000 words), under both readings
+(\path{evaluation/casaal_unmarked_sensitivity.py}). The two readings give
+different verdicts on one automaton only, the negation of X74: there the
+previous reading disagrees with the semantics on 109 of 400 words and the
+current one on none, and the current reading agrees with the semantics on
+every word for all 135 automata. The word-level test of the next subsection
+reads CASAAL's automata with the same converter, so it is not independent
+evidence about the reading; this check compares the reading with the
+semantics. A regression test is in the artifact
 (\path{evaluation/test_tck_product_acceptance.py}).
 
 \subsection{Agreement on ultimately periodic words}
