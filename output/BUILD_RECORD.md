@@ -45,7 +45,7 @@ coqchk exit 0; the assumptions are unchanged. `examples/assurance/check_spot_tra
 ## PDF (as in the commit)
 | File | Pages | SHA-256 |
 |---|---|---|
-| `paper1.pdf` | 17 | `9f2aa776fbad6af3902fef845bd3fd3f0e0cdda0e33870c6954bdad962237d0f` |
+| `paper1.pdf` | 17 | `1331a5627122b14a7c18530adffcdeb8a567c11f184efa3574818a9351a1bdad` |
 
 Rebuild with `build-ieee-access.ps1` (Windows, MiKTeX). PDF byte hashes depend on build
 timestamps; the page count and extracted text are stable.
