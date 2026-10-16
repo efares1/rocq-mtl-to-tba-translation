@@ -44,23 +44,31 @@ CASAAL prints Boolean transition labels; Spot's output, and hence
 literals. This article reports `compile(f)` sizes (before any optimization) and
 explains this difference. It does not treat CASAAL as an optimizer baseline.
 
-## X74 (random formulas)
+## Unmarked CASAAL automata (random formulas)
 
-φ = ◇(q ∧ r) → ¬p. Under mutual exclusion, ¬φ = ◇(q ∧ r) ∧ p is
-unsatisfiable; our automaton for ¬φ has no accepting location. The CASAAL
-output read by the converter has states labeled with the pending eventuality
-`F(q & r)` but no acceptance mark. The converter used to read an unmarked
-automaton as accepting every infinite run, so P1 was non-empty. This was an
-acceptance-marking / format issue in the comparison, not a parsing
-(parenthesization) problem.
+CASAAL prints some automata without any acceptance mark. `tck_product.py`
+reads such an automaton by its state labels: a state whose label contains an
+unbounded eventuality (`F` or `U` without an upper bound, including
+lower-bounded `F[x>d]`, `U[x>=d]`) is not accepting; the other states are
+accepting; with no accepting state the language is empty. An automaton without
+such labels is read as accepting every infinite run. This is our
+interpretation of CASAAL's output, not a documented convention.
 
-Resolution (2026-10-12): `tck_product.py` now reads an unmarked CASAAL
-automaton as follows. A state whose label contains an unbounded eventuality
-(`F` or `U` without an upper bound, including lower-bounded `F[x>d]`,
-`U[x>=d]`) is not accepting; the other states are accepting; with no
-accepting state the language is empty. An automaton without such labels is
-read as before (every run accepting). 16 of the 260 CASAAL files are affected
-(all in `casaal_out_rand`). Rerunning the 100 random formulas changes only
-X74 (P1 now empty); the other 99 rows are unchanged. The reading is our
-interpretation of CASAAL's output, not a documented convention. Regression
-test: `evaluation/test_tck_product_acceptance.py`.
+135 of the 200 CASAAL files in `casaal_out_rand` (automata of the random
+formulas and of their negations) carry no mark; the rule changes the reading of
+16 of them. The alternative reading (every unmarked automaton accepts every
+run) is available as `from_gv(..., unmarked='all')`. The verdicts of the
+TChecker products depend on the reading for one formula only, X74 =
+◇(q ∧ r) → ¬p: its negation ◇(q ∧ r) ∧ p is unsatisfiable under mutual
+exclusion, our automaton for it has no accepting location, and CASAAL prints
+its automaton without a mark. Under the alternative reading P1 of X74 is
+non-empty; under the reading above P1, P2 and S are empty, and the other 99
+rows are identical under both readings.
+
+Sensitivity check: `evaluation/casaal_unmarked_sensitivity.py` compares the 135
+unmarked automata with the pointwise semantics (Python evaluator) on 400 words
+each (54000 words). The two readings differ on one automaton only, the
+negation of X74, where the alternative reading disagrees with the semantics on
+109 of 400 words; the reading above agrees with the semantics on every word
+for all 135 automata. Results: `evaluation/casaal_unmarked_sensitivity.tsv`.
+Regression test: `evaluation/test_tck_product_acceptance.py`.

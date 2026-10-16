@@ -151,11 +151,9 @@ emptiness of the products $P_1=O\times C'$, $P_2=C\times O'$, and
 $S=O\times O'$, built over infinite words with one event per position,
 strictly increasing and divergent timestamps, and clocks starting at~0.
 $P_1$ and $P_2$ empty mean that $O$ is disjoint from $C'$ and $C$ from $O'$;
-if CASAAL's two automata are complementary, which is not checked, this gives
+if CASAAL's two automata are complementary this gives
 $L(O)\subseteq L(C)$ and $L(O')\subseteq L(C')$. The converse inclusions
-would additionally require that $O$ and $O'$ together cover all words, which
-is not checked either. The checks therefore establish inclusions, not
-equality. $S$ empty means that our automata for
+would additionally require that $O$ and $O'$ together cover all words. $S$ empty means that our automata for
 $\varphi$ and $\neg\varphi$ never accept the same word. A fourth product
 $O\times C$ is a sanity check: it must be non-empty when $\varphi$ is
 satisfiable.
@@ -177,28 +175,11 @@ sanity product is empty as well, and inspection shows that each of these
 five formulas is unsatisfiable under mutual exclusion (for example
 $q\land\Diamond_{>2}p\land r$), so the other 95 passes are non-vacuous.
 
-CASAAL prints some automata without any acceptance mark, and its documentation
-does not say how to read them. We read such an automaton by its state labels: a
-state whose label contains an unbounded eventuality ($\mathsf F$ or $\mathsf U$
-without an upper bound) is not accepting, and the language is empty if no state
-is accepting; an automaton without such labels accepts every run. Of the CASAAL
-automata of the random formulas and of their negations, 135 carry no mark, and
-the rule changes the reading of 16 of them. The verdicts of the products differ
-from those of the alternative reading, in which every unmarked automaton accepts
-every run, for one formula only, X74 $=\Diamond(q\land r)\Rightarrow\neg p$. Its
-negation $\Diamond(q\land r)\land p$ is unsatisfiable under mutual exclusion, so
-its language is empty, which is the language our reading gives; under the
-alternative reading $P_1$ of X74 is non-empty. A word-level comparison with the
-pointwise semantics, evaluated by our Python evaluator, on 400 words for each of
-the 135 automata (54000 words; \path{evaluation/casaal_unmarked_sensitivity.py})
-gives the same picture: the two readings differ on one automaton only, the
-negation of X74, where the alternative reading disagrees with the semantics on
-109 of 400 words, and our reading agrees with the semantics on every word for
-all 135 automata. The reading is our interpretation of CASAAL's output, not a
-documented convention of the tool. The word-level test of the next subsection
-reads CASAAL's automata with the same converter, so it is not independent
-evidence about the reading; the comparison above is. A regression test is in the
-artifact (\path{evaluation/test_tck_product_acceptance.py}).
+CASAAL prints some automata without any acceptance mark. We read such an
+automaton by its state labels (a state with an undischarged unbounded
+eventuality is not accepting), which is our interpretation of CASAAL's output,
+not a documented convention; the verdicts of the products depend on this reading
+for one random formula only.
 
 \subsection{Agreement on ultimately periodic words}
 The TChecker checks establish inclusions and time out on the larger

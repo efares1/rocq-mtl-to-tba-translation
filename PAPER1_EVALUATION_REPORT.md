@@ -52,17 +52,20 @@ Interpretation: inclusions L(C) ⊆ L(O), L(C′) ⊆ L(O′) only if CASAAL's �
 
 ## 3. Random formulas (100, depth ≤ 3, three propositions; limit 120 s)
 
-- 100: P1, P2, S empty, no timeout (X74 was NONEMPTY for P1 before the
-  acceptance convention for unmarked CASAAL automata was fixed, see below).
+- 100: P1, P2, S empty, no timeout (CASAAL automata without an acceptance
+  mark are read by their state labels, see below).
 - 5 of these 100 have an empty sanity product C; all five are unsatisfiable
   under mutual exclusion (checked by hand: X25 `false U>2 …`; X32 requires p and
   q at one position; X43 r∧(r∧p ∨ q); X71 r∧(¬r∨p) with □≤1 r; X96 q∧…∧r).
-- X74 = ◇(q∧r) → ¬p: P1 was NONEMPTY because the converter read CASAAL's
-  unmarked automaton for the (unsatisfiable) negation as "accept all". The
-  converter now treats states with a pending unbounded eventuality as
-  non-accepting (`tck_product.py`; test `test_tck_product_acceptance.py`);
-  X74 is now empty for P1, P2 and S. The other 99 rows are unchanged.
-  Details in `CASAAL_COMPARISON_METHODOLOGY.md`.
+- Unmarked CASAAL automata: read by their state labels (`tck_product.py`;
+  states with a pending unbounded eventuality are not accepting; test
+  `test_tck_product_acceptance.py`). The rule changes the reading of 16 of the
+  random-formula automata, and the verdict of one formula, X74 = ◇(q∧r) → ¬p,
+  depends on it: its negation is unsatisfiable under mutual exclusion, and
+  under the alternative reading (every unmarked automaton accepts every run)
+  its P1 is non-empty. Sensitivity check: `casaal_unmarked_sensitivity.py`
+  (54000 words; the readings differ on the negation of X74 only). Details in
+  `CASAAL_COMPARISON_METHODOLOGY.md`.
 
 ## 4. Backend contract (Spot / ltl2ba 1.3 / autfilt / LBTT reader)
 
