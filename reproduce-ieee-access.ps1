@@ -47,7 +47,8 @@ try {
         Invoke-Checked $RocqExe @('compile', 'MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.v') 'Core compilation' | Out-Null
         Invoke-Checked $RocqExe @('compile', 'EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v') 'Correctness proof compilation' | Out-Null
         Invoke-Checked $RocqExe @('compile', 'OverlappingResponse_Example.v') 'Alarm instance compilation' | Out-Null
-        $modules = @('MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core', 'EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof', 'OverlappingResponse_Example')
+        Invoke-Checked $RocqExe @('compile', 'ZeroInit.v') 'Zero-initialization compilation' | Out-Null
+        $modules = @('MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core', 'EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof', 'OverlappingResponse_Example', 'ZeroInit')
         Invoke-Checked $RocqExe (@('check', '-silent') + $modules) 'Independent Rocq kernel check' | Out-Null
 
         $auditOutput = Invoke-Checked $RocqExe @('compile', 'CheckAssumptions.v') 'Assumption audit regeneration'

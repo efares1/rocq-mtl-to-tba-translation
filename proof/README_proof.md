@@ -10,6 +10,7 @@ The development imports only Rocq standard-library modules.
 |---|---|
 | `MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.v` | MTL syntax and semantics, formula-keyed clocks, clocked-LTL translation, automata, relaxation, reset completion, and the LTL-to-Büchi correctness contract |
 | `EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v` | canonical reset policy, residual obligations, soundness/completeness, `EncodingCorrect_proved`, and `MTL_to_TBA_correct_with` |
+| `ZeroInit.v` | zero-initialized clocks: `complete_complete_init` (reset completion keeps the initial valuation) and `MTL_to_TBA_correct_with_zero_init`; imports the Core and Proof files unchanged |
 | `OverlappingResponse_Example.v` | bounded alarm-response formula, Spot automaton transcription, proved backend/formula language equivalence, concrete TBA specialization, and fixed infinite counterexample trace |
 
 The development is intended to be checked with Rocq 9.0.1 (OCaml 4.14.2,

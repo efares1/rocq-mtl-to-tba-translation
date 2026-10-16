@@ -182,7 +182,8 @@ The principal contributions are:
         reset traces;
   \item checked relaxation and reset completion, composed with an explicit
         backend contract on action-consistent propositional words in
-        \Rocqid{MTL_to_TBA_correct_with};
+        \Rocqid{MTL_to_TBA_correct_with}, and also with zero-initialized
+        clocks in \Rocqid{MTL_to_TBA_correct_with_zero_init};
   \item a concrete alarm-response instance whose manually transcribed Rocq
         backend satisfies the contract, with proved accepted-overlap and
         rejected-violation traces, and an inspectable proof and assumptions
@@ -374,7 +375,8 @@ v_i(x)+\Delta_i,&\text{otherwise.}
 \]
 The initial nonnegative valuation $v_0$ is existentially quantified, as in
 the Rocq clock-consistent-extension semantics; standard zero initialization
-is not assumed.
+is not assumed, and Corollary~\ref{cor:zero-init} shows that it gives the same
+language for the translation.
 
 \section{Clocked-LTL Translation}
 \label{sec:translation}
@@ -925,6 +927,27 @@ transfers satisfaction to the relaxed word, as formalized by
 Theorem~\ref{thm:encoding-correctness} gives $w,0\satM f$.
 \end{proof}
 
+\begin{corollary}[Zero-initialized clocks]
+\label{cor:zero-init}
+Under the hypotheses of Theorem~\ref{thm:mtl-to-tba-correct}, $w,0\satM f$
+holds if and only if $\mathsf{compile\_with}(A)$ accepts $w$ with every clock
+starting at 0, that is, by a clock-consistent extension $\rho$ with
+$\mathrm{val}_\rho(0,x)=0$ for every clock $x$. For this translation, zero and
+existentially chosen initial clock values therefore define the same language.
+In Rocq this is \Rocqid{MTL_to_TBA_correct_with_zero_init}.
+\end{corollary}
+\begin{proof}
+A run with zero initial clocks is a run with some initial clock values, so the
+converse direction is Theorem~\ref{thm:mtl-to-tba-correct}. For the forward
+direction, the canonical extension of Theorem~\ref{thm:canonical-all} starts
+every clock at 0. The backend step and relaxation do not involve clocks, and
+reset completion keeps the initial valuation of the extension it starts from
+(\Rocqid{complete_complete_init}, the proof of \Rocqid{complete_complete} with
+this conclusion added). The completed TBA therefore accepts $w$ from the zero
+valuation. The corollary is a property of this translation; it does not hold
+for arbitrary TBAs.
+\end{proof}
+
 \begin{figure*}[!t]
 \centering
 \resizebox{\textwidth}{!}{%
@@ -1020,6 +1043,10 @@ Conditional backend composition &
 \Rocqid{MTL_to_TBA_correct_with} &
 Proof &
 Explicit backend equivalence premise on action-consistent propositional words\\
+Zero-initialized clocks &
+\Rocqid{complete_complete_init}, \Rocqid{MTL_to_TBA_correct_with_zero_init} &
+ZeroInit &
+Same explicit backend premise; same standard Rocq assumptions\\
 Convenience backend theorem &
 \Rocqid{MTL_to_TBA_correct} &
 Proof &
@@ -1034,6 +1061,7 @@ The source-module aliases in Table~\ref{tab:rocq-result-map} are:
 \texttt{Clock\_Derived\_Strict\_Direct\_Core.v}
 \item[Proof.] \texttt{EncodingCorrect\_Shared\_}\\
 \texttt{Clock\_Derived\_Strict\_Direct\_Proof.v}
+\item[ZeroInit.] \texttt{ZeroInit.v}
 
 \end{description}
 
@@ -1163,7 +1191,8 @@ It contains the Rocq sources, the assumptions report, the tool
 \texttt{mtl2tba}, the evaluation scripts with their inputs and raw results,
 the Spot input and graph of the alarm-response example, and the article
 source. The proofs build with Rocq~9.0.1: \texttt{make} in \path{proof/}
-compiles the core, the correctness development, and the alarm example;
+compiles the core, the correctness development, the alarm example, and the
+zero-initialization corollary;
 \path{proof/CheckAssumptions.v} prints the assumptions of the main theorems,
 which are recorded in \path{proof/ASSUMPTIONS.txt}; and \texttt{coqchk}
 re-checks the compiled objects. On Windows, \path{reproduce-ieee-access.ps1}

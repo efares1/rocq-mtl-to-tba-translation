@@ -193,7 +193,9 @@ against, the Rocq definitions);
 acceptance by $\mathsf{compile}(f)$; and acceptance by CASAAL's automaton.
 Clocks of CASAAL start at 0; for $\mathsf{compile}(f)$ initial clock values
 are tried on a grid when it has at most three clocks, since the theorem
-quantifies them existentially; with more clocks, all clocks start at~0. On 28 benchmark configurations (all but R6--R8;
+quantifies them existentially (Corollary~\ref{cor:zero-init} shows that zero
+initial values give the same language); with more clocks, all clocks start
+at~0. On 28 benchmark configurations (all but R6--R8;
 400 words each, 11200 in all, 4495 satisfying the formula) and on the
 100 random formulas (150 words each, 15000 in all, 8273 satisfying
 it), the semantics and $\mathsf{compile}(f)$ agree on every word. CASAAL is included on 26 of the
@@ -249,8 +251,8 @@ The configurations and random formulas are small, of our choosing, and use
 integer bounds only, so real-valued bounds are covered by the mathematical
 theorem but not by the extracted tool or by any test. The TChecker products and,
 for formulas with more than three clocks, the word-level test start all clocks
-at 0, whereas the theorem quantifies the initial clock values existentially. The
-R family shows that the size of Spot's automaton grows quickly with the
+at 0; by Corollary~\ref{cor:zero-init}, for this translation zero initial clocks
+accept the same language as existentially chosen ones. The R family shows that the size of Spot's automaton grows quickly with the
 number of conjuncts. The CASAAL automata were produced earlier and not
 regenerated; CASAAL's integer bounds, nondecreasing time, and acceptance
 printing differ from our model, and the inclusions depend on the unchecked

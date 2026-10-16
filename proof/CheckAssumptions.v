@@ -2,6 +2,7 @@
 Require Import MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.
 Require Import EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.
 Require Import OverlappingResponse_Example.
+Require Import ZeroInit.
 
 Check EncodingCorrect_proved.
 Print Assumptions EncodingCorrect_proved.
@@ -11,6 +12,8 @@ Check MTL_to_TBA_correct.
 Print Assumptions MTL_to_TBA_correct.
 Check MTL_to_TBA_correct_with.
 Print Assumptions MTL_to_TBA_correct_with.
+Check MTL_to_TBA_correct_with_zero_init.
+Print Assumptions MTL_to_TBA_correct_with_zero_init.
 Check alarm_response_tba_correct_with.
 Print Assumptions alarm_response_tba_correct_with.
 Check alarm_response_spot_backend_contract.

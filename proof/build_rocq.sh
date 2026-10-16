@@ -16,6 +16,6 @@ if [ "$what" = assumptions ] || [ "$what" = all ]; then
 fi
 if [ "$what" = chk ] || [ "$what" = all ]; then
   "$COQCHK" -silent -o MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core \
-    EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof OverlappingResponse_Example || exit 1
+    EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof OverlappingResponse_Example ZeroInit || exit 1
 fi
 echo "rocq: done ($what)"

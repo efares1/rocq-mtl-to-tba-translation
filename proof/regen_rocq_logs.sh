@@ -15,13 +15,13 @@ make COQC="$COQC" > "$LOG/build.log" 2>&1; mk=$?
 "$COQC" CheckAssumptions.v > "$HERE/ASSUMPTIONS.txt" 2> "$LOG/assumptions.stderr"; as=$?
 cp "$HERE/ASSUMPTIONS.txt" "$LOG/assumptions.txt"
 "$COQCHK" -silent -o MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core \
-  EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof OverlappingResponse_Example \
+  EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof OverlappingResponse_Example ZeroInit \
   > "$LOG/coqchk.txt" 2>&1; ck=$?
 {
   "$COQC" --version | head -1
   date -u +%Y-%m-%dT%H:%MZ
   sha256sum CheckAssumptions.v EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof.v \
-    MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.v OverlappingResponse_Example.v
+    MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.v OverlappingResponse_Example.v ZeroInit.v
   echo "make exit: $mk"
   echo "assumptions exit: $as"
   echo "coqchk exit: $ck"

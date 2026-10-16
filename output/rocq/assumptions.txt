@@ -64,6 +64,22 @@ FunctionalExtensionality.functional_extensionality_dep :
 Description.constructive_definite_description :
   forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
 Classical_Prop.classic : forall P : Prop, P \/ ~ P
+MTL_to_TBA_correct_with_zero_init
+     : forall (f : mtl) (A : PBuchi f) (w : timed_word),
+       (forall s : pword f,
+        action_consistent (root:=f) s -> PBA_accepts A s <-> psat s 0 (T f)) ->
+       well_formed f -> msat w 0 f <-> TBA_accepts_zero (compile_with A) w
+Axioms:
+ClassicalDedekindReals.sig_forall_dec :
+  forall P : nat -> Prop,
+  (forall n : nat, {P n} + {~ P n}) ->
+  {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep :
+  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+  (forall x : A, f x = g x) -> f = g
+Description.constructive_definite_description :
+  forall (A : Type) (P : A -> Prop), (exists ! x : A, P x) -> {x : A | P x}
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
 alarm_response_tba_correct_with
      : forall (A : PBuchi alarm_response) (w : timed_word),
        alarm_response_backend_contract A ->

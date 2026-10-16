@@ -32,10 +32,10 @@ Proofs (Rocq 9.0.1, Rocq Platform 2025.08):
 
 ```
 cd proof
-make COQC=<path>/coqc                 # Core, Proof, alarm example
+make COQC=<path>/coqc                 # Core, Proof, alarm example, zero-initialization corollary
 <path>/coqc CheckAssumptions.v        # Print Assumptions of the main theorems
 <path>/coqchk -silent -o MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core \
-  EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof OverlappingResponse_Example
+  EncodingCorrect_Shared_Clock_Derived_Strict_Direct_Proof OverlappingResponse_Example ZeroInit
 ```
 
 On Windows, `reproduce-ieee-access.ps1` runs the same steps and builds the PDF.

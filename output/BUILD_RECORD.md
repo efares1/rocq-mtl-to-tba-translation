@@ -18,6 +18,9 @@ revision. File digests of the sources, proofs, evaluation tables and PDF are in
 compilation, the assumption audit and the independent kernel check all exit 0.
 `reproduce-ieee-access.ps1` repeats these steps in a temporary directory and compares the
 regenerated assumptions with `proof/ASSUMPTIONS.txt`.
+`proof/ZeroInit.v` (zero-initialized clocks: `complete_complete_init`,
+`MTL_to_TBA_correct_with_zero_init`) imports the Core and Proof files unchanged; its theorem has the
+same four standard axioms as `MTL_to_TBA_correct_with` and no project axiom.
 
 ## Long TChecker run
 `evaluation/long_R4.tsv` and `evaluation/long_N5.tsv`: limit 1800 s per check, one job at a
@@ -45,7 +48,7 @@ coqchk exit 0; the assumptions are unchanged. `examples/assurance/check_spot_tra
 ## PDF (as in the commit)
 | File | Pages | SHA-256 |
 |---|---|---|
-| `paper1.pdf` | 17 | `8481d478a168befaf34a83e39ff54d4dcbc989b09ac332130e5067834d22480b` |
+| `paper1.pdf` | 17 | `89ac95037131b848b880ff1b1c6d57fd1747afe5d99ea9cab794eb7fadf78b65` |
 
 Rebuild with `build-ieee-access.ps1` (Windows, MiKTeX). PDF byte hashes depend on build
 timestamps; the page count and extracted text are stable.
