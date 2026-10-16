@@ -77,24 +77,23 @@ Translating real-time specifications into timed automata supports automated
 analysis only if the translation preserves the timed-word language. We present a Rocq-checked soundness-and-completeness development for
 the pointwise dense-time translation of Metric Temporal Logic
 (MTL$_{0,\infty}$) into timed B\"uchi automata (TBAs) via clocked Linear
-Temporal Logic. The encoding into clocked LTL is proved without assumptions on
+Temporal Logic (LTL). The encoding into clocked LTL is proved without assumptions on
 the backend; correctness of the resulting TBA holds relative to a backend
-language-equivalence contract. Earlier constructions extend the tableau LTL-to-B\"uchi
-translation with clocks directly and were proved on paper; here the translation
+language-equivalence contract. Earlier constructions (Bulychev et al., Li et al.) extend the tableau LTL-to-B\"uchi
+translation with clocks directly and have paper proofs; here the translation
 instead factors through an untimed clocked-LTL formula that any standard
 LTL-to-B\"uchi backend can process. To the best of our knowledge, this
 factoring is new, and no published machine-checked development covers a
 pointwise MTL$_{0,\infty}$-to-TBA construction in this semantic setting. Rocq checks all eight primitive cases, handling shared clocks and overlapping activations
 through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
-also checked, giving a compositional theorem under an explicit
-language-equivalence contract for the B\"uchi backend, required
-on action-consistent words only. This contract is a premise (axiom). Spot, graph import, parsing, printing,
-extraction, and zero-bound preprocessing lie outside the proof. The theorem assumes real-valued bounds, and strictly
-increasing divergent timestamps. On 31 configurations and 100 random formulas with integer bounds,
-TChecker inclusion and self-consistency checks find no counterexample on the 22
-that complete within the limits, and the backend contract is
-tested against ltl2ba without discrepancy on 28 configurations.
+also checked. The contract is a premise, not a proved result: the convenience
+theorem postulates it as an axiom, and Spot, graph import, parsing, printing,
+extraction, and zero-bound preprocessing lie outside the proof. The theorem assumes real-valued bounds and strictly
+increasing, divergent timestamps. On 31 configurations with integer bounds, TChecker checks find no counterexample
+on the 22 that complete within the limits, nor on 100 random formulas;
+inclusion in CASAAL's language holds if its automata are complementary.
+The backend contract is tested against ltl2ba without discrepancy on 28 configurations.
 \end{abstract}
 
 \begin{keywords}
