@@ -17,21 +17,19 @@ measurements and tests.
 
 \runinhead{Summary of outcomes.}
 Proved: the Rocq development of Section~\ref{sec:correctness}. For Q1, the number of clocks of $\mathsf{compile}(f)$
-coincides with CASAAL's on every exactly encoded configuration except F2; locations
-equal CASAAL's on N, F3b and F9--F11 and are fewer on F14 (7 against 8),
-while locations and transitions are larger on most other configurations, for example 48 locations and
-1625 transitions against 16 and 80 for R4 (R7: 576 locations and 296875
-transitions against 128 and 1024), a growth that appears to come from Spot's
-automaton (Section~\ref{subsec:compile-size}). For
+coincides with CASAAL's on every exactly encoded configuration except F2,
+while locations and transitions are larger on most configurations, by a large
+factor on the R family (Table~\ref{tab:compiled}), a growth that appears to come
+from Spot's automaton (Section~\ref{subsec:compile-size}). For
 Q2, the TChecker products $P_1$, $P_2$, $S$
 (Section~\ref{subsec:tchecker}) are empty on every configuration that completes
-(22 of the 31, two of them checked only for $S$) and on all 100 random
+(22 of the 31) and on all 100 random
 formulas, which gives inclusion of our language in CASAAL's, provided that CASAAL's two
 automata are complementary (not checkable in general: universality of a nondeterministic
 timed B\"uchi automaton is undecidable~\cite{alur_dill94}). For Q3, no discrepancy with
-ltl2ba is found on 28 of the 31 configurations. Inconclusive: the larger
-configurations (R4--R8, N5--N8 for TChecker; R7, R8, N8 for the backend check)
-exceed the time limits and are reported as such.
+ltl2ba is found on 28 of the 31 configurations. The larger
+configurations exceed the time limits and are reported as inconclusive
+(Table~\ref{tab:compiled}).
 
 \subsection{Setup}
 The tool \texttt{mtl2tba} parses a formula, computes $\T(f)$, calls Spot~2.16
@@ -50,7 +48,7 @@ check (120~s for random formulas); the backend-contract runs of Spot and
 ltl2ba used 300~s, and their equivalence checks 600~s. The 31 configurations are fifteen
 specification patterns F1--F14 (F3b is F3 without the hat), conjunctions R$k$ of
 $k$ bounded responses $\Box(a_i\Rightarrow\Diamond_{\le5}b_i)$ for
-$k=1,\dots,8$, and nestings N$k$ of $k$ bounded eventualities
+$k \in 1..8$, and nestings N$k$ of $k$ bounded eventualities
 $\Diamond_{\le5}(p_1\land\Diamond_{\le5}(p_2\land\cdots))$. Scripts, inputs,
 CASAAL outputs, and raw results are in the artifact
 (\path{evaluation/}).
@@ -95,15 +93,11 @@ CASAAL's output. CASAAL was run with mutually exclusive events, which matches
 our one-event-per-position words. The two counts of transitions are not
 directly comparable: CASAAL labels a transition with a Boolean formula over
 propositions, whereas Spot's output, and hence $\mathsf{compile}(f)$, has one
-transition per cube over the propositions and clock literals. In R4, for
-example, $\mathsf{compile}(f)$ has 48 locations and 1625 transitions, and
-CASAAL 16 locations and 80 symbolic transitions; both use four clocks.
-Column Grp.~T counts the transitions of $\mathsf{compile}(f)$ after grouping
+transition per cube over the propositions and clock literals. Column Grp.~T counts the transitions of $\mathsf{compile}(f)$ after grouping
 edges with the same source, target, guard, and resets into one edge labeled by
 the union of their events; it is a way of counting and changes no automaton.
-Grouping reduces R4 from 1625 to 768 and N8 from 166 to 54 transitions, but a
-gap remains (CASAAL: 80 and 19), so the difference is not explained by the
-representation of labels alone.
+Grouping does not close the gap (R4: 768 against 80; N8: 54 against 19), so it
+is not explained by the representation of labels alone.
 \input{evaluation/compiled_table}
 
 The number of clocks coincides with CASAAL's on every configuration that
@@ -116,15 +110,9 @@ subformula. Locations and transitions are larger than CASAAL's on most
 configurations, sometimes by a large factor (R4, R5); locations equal CASAAL's
 on N, F3b and F9--F11, and are fewer on F14. The growth in the R family appears
 to come from Spot's automaton for the conjunction of $k$ clocked-LTL clauses,
-before relaxation (Spot's automata for R4--R6 have 768, 3584, and 16384
-transitions). On R4 to R7, Spot's translation dominates the time up to
-$\mathsf{compile}(f)$: Spot takes 0.12, 2.1, 5.4, and 90~s of a total
-(parsing, Spot, relaxation, reset completion) of 0.18, 2.2, 6.1, and 96~s, and the construction proper
-(relaxation and reset completion) takes at most 6~s (R7;
-\path{evaluation/stage_times.tsv}). For R8, Spot does not finish within
-300~s (\path{evaluation/spot_low_timing.tsv}), so no $\mathsf{compile}(f)$ is built. A complete run of \texttt{mtl2tba} up to $\mathsf{compile}(f)$, which also
-writes the DOT file, takes less than one second for every configuration except R5
-(3.0~s), R6 (9.2~s), R7 (113~s), N6 (1.4~s), N7 (16~s), and N8 (85~s). These numbers describe the unoptimized output of the extracted
+before relaxation. Spot's translation dominates the time up to
+$\mathsf{compile}(f)$ (R7: 90 of 96~s; \path{evaluation/stage_times.tsv}). For R8, Spot does not finish within
+300~s (\path{evaluation/spot_low_timing.tsv}), so no $\mathsf{compile}(f)$ is built. These numbers describe the unoptimized output of the extracted
 construction; they are not a comparison of tools. They are consistent with a cost of the
 factorization: reusing a standard LTL-to-B\"uchi backend supports a modular
 correctness argument but, with the backend used here, yielded larger automata
@@ -134,8 +122,7 @@ work.
 Printing the negated event atom explicitly does not change R and N, whose
 formulas contain no negated event, and reduces the automata for F11--F14 (for example F11 from
 5/11/2 to 4/7/2). On the 100 random formulas it changes 26 automata, all
-smaller: the total of locations falls from 793 to 660, that of transitions from
-3681 to 2305, and that of clocks from 163 to 159. Printing $\mathsf{LNAct}(a)$ as an independent atom
+smaller. Printing $\mathsf{LNAct}(a)$ as an independent atom
 leaves cubes that require both $a$ and $\neg a$, which no
 one-event-per-position word satisfies; the explicit printing used here does not produce them.
 
@@ -194,13 +181,11 @@ are tried on a grid when it has at most three clocks, since the theorem
 quantifies them existentially (Corollary~\ref{cor:zero-init} shows that zero
 initial values give the same language); with more clocks, all clocks start
 at~0. On 28 benchmark configurations (all but R6--R8;
-400 words each, 11200 in all, 4495 satisfying the formula) and on the
-100 random formulas (150 words each, 15000 in all, 8273 satisfying
-it), the semantics and $\mathsf{compile}(f)$ agree on all sampled words. CASAAL is included on 26 of the
+400 words each) and on the 100 random formulas (150 words each),
+26200 words in all, the semantics and $\mathsf{compile}(f)$ agree on all sampled words. CASAAL is included on 26 of the
 28 benchmark configurations (not on the hatted F3 and F13) and on all random
-formulas, and agrees on all sampled words there as well: 10400 plus 15000
-words, 25400 three-way comparisons; the other 800 words compare only the
-semantics and the automaton. As a negative control, the same checker finds disagreements when F1
+formulas, and agrees on all sampled words there as well (25400 three-way comparisons;
+the other words compare only the semantics and the automaton). As a negative control, the same checker finds disagreements when F1
 is compared with two mutated formulas, one with bound 4 instead of 5 (11 of 300
 words) and one with a strict bound (5 of 300). The test has little weight for some formulas:
 none of the random words satisfies the formula of N8, so for N5--N8 we
