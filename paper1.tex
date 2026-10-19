@@ -89,10 +89,8 @@ through soundness for every clock-consistent reset trace and completeness for
 one canonical reset trace. Relaxation and reset completion are
 also checked. Spot, graph import, parsing, printing,
 extraction, and zero-bound preprocessing lie outside the proof. The theorem assumes real-valued bounds and strictly
-increasing, divergent timestamps. On 31 configurations with integer bounds, TChecker checks find no counterexample
-on the 22 that complete within the limits, nor on 100 random formulas;
-inclusion in CASAAL's language holds if its automata are complementary.
-The backend contract is tested against ltl2ba without discrepancy on 28 configurations.
+increasing, divergent timestamps. A test campaign of the extracted tool against CASAAL, TChecker, and ltl2ba, with
+integer bounds, finds no counterexample on the cases that complete within the limits.
 \end{abstract}
 
 \begin{keywords}
@@ -110,7 +108,7 @@ automaton analyzed by a downstream tool. A bounded-response requirement, for exa
 \begin{equation*}
 \Box(\mathit{req}\Rightarrow\Diamond_{\le d}\mathit{ack}).
 \end{equation*}
-Overlapping requests can leave several response obligations outstanding while
+Overlapping requests can leave several response obligations while
 sharing the clock assigned to one primitive timed formula. Table~\ref{tab:overlap-example}
 illustrates why the reset semantics needs a correctness argument.
 
@@ -702,8 +700,6 @@ clock age and the required $p$ prefix. For lower-bounded Release define
 The residual $\mathsf{RRes}$ is universal: every position already beyond the
 threshold must have $q$ or an earlier $p$ that discharges the obligation;
 $\mathsf{URes}$ is its existential counterpart (a reachable $q$ endpoint).
-Instantiating $\precsim$ as $\le$ or $<$, and $\succsim$ as $\ge$ or $>$,
-gives the non-strict and strict variants.
 
 For a clock $x=F$, let $v=\CVal_{\rho^\star}(i,x)$; Table~\ref{tab:canonical-policy} gives the
 policy.
@@ -1101,8 +1097,7 @@ real-valued mathematical parameters (not executable encodings of arbitrary
 reals); strictly increasing divergent timestamps; event-guarded automata
 without location invariants. Parsing, a concrete LTL backend implementation, Spot execution, graph import, and
 automaton printing remain outside
-the theorem. The sizes and checks of
-Section~\ref{sec:evaluation} are measurements, not mechanized results.
+the theorem. 
 
 The occurrence-indexed induction, residual invariants, and separate
 relaxation/reset-completion obligations expose the proof dependencies behind

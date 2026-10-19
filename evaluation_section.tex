@@ -16,8 +16,7 @@ on these formulas, the contract that the theorem assumes? The answers are
 measurements and tests.
 
 \runinhead{Summary of outcomes.}
-Proved: the Rocq development of Section~\ref{sec:correctness}; none of the
-numbers below is a proof. For Q1, the number of clocks of $\mathsf{compile}(f)$
+Proved: the Rocq development of Section~\ref{sec:correctness}. For Q1, the number of clocks of $\mathsf{compile}(f)$
 coincides with CASAAL's on every exactly encoded configuration except F2; locations
 equal CASAAL's on N, F3b and F9--F11 and are fewer on F14 (7 against 8),
 while locations and transitions are larger on most other configurations, for example 48 locations and
@@ -29,9 +28,7 @@ Q2, the TChecker products $P_1$, $P_2$, $S$
 (22 of the 31, two of them checked only for $S$) and on all 100 random
 formulas, which gives inclusion of our language in CASAAL's, provided that CASAAL's two
 automata are complementary (not checkable in general: universality of a nondeterministic
-timed B\"uchi automaton is undecidable~\cite{alur_dill94}); the word-level test
-finds no disagreement between $\mathsf{compile}(f)$ and our Python evaluation of
-the semantics on 26200 words, 25400 of them also compared with CASAAL. For Q3, no discrepancy with
+timed B\"uchi automaton is undecidable~\cite{alur_dill94}). For Q3, no discrepancy with
 ltl2ba is found on 28 of the 31 configurations. Inconclusive: the larger
 configurations (R4--R8, N5--N8 for TChecker; R7, R8, N8 for the backend check)
 exceed the time limits and are reported as such.
