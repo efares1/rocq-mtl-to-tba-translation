@@ -197,11 +197,11 @@ backend-equivalence premise; for the alarm instance Rocq checks a manually
 transcribed backend record, not Spot~\cite{[spot]} or the graph-import path. Consequently, the
 contribution is a verified translation construction (the encoding, relaxation,
 reset completion, and their composition under the backend contract), not an
-end-to-end verified executable translator: no automaton emitted by
-\texttt{mtl2tba} is covered by a machine-checked guarantee, and the contract is
-only tested on the evaluated inputs (Section~\ref{sec:evaluation}). The development proves a
-semantic theorem; the evaluated tool runs code extracted from its
-definitions, and extraction, parsing, and printing are outside the proof. Section~\ref{subsec:rocq-result-map}
+end-to-end verified executable translator: the evaluated tool runs code
+extracted from the Rocq definitions, but extraction, parsing, and printing are
+outside the proof, no automaton emitted by \texttt{mtl2tba} is covered by a
+machine-checked guarantee, and the contract is only tested on the evaluated
+inputs (Section~\ref{sec:evaluation}). Section~\ref{subsec:rocq-result-map}
 summarizes the theorem dependencies and assumptions.
 Optimization of the resulting automata and their export to UPPAAL are outside
 the scope of this article.
@@ -657,8 +657,8 @@ ends at $x>d$; for a strict upper bound, it ends at $x\ge d$. If the clock
 has been reset again, its value is no larger than the elapsed time from $i$,
 so either endpoint guard can hold only after the corresponding physical-time
 window has ended. If weak Until ends at $P\land Q$, $P$ at that earlier event
-discharges later Release obligations. This proves both comparisons with their
-exact strict boundary.
+discharges later Release obligations. Both comparisons are thus proved with
+their exact strict boundary.
 
 \runinhead{Lower-bounded hatted Release.}
 Before the threshold, the left side of weak Until requires both the
@@ -802,8 +802,8 @@ $\le d$ window the stopping guard is $x>d$; for a $<d$ window it is
 $x\ge d$. Resetting at a later true activation can extend the clock window,
 but the later formula's truth supplies the corresponding future
 $q$-or-discharge condition. Thus a single reset trace satisfies both the old
-and new obligations. This proves \Rocqid{complete_RhatLe} and
-\Rocqid{complete_RhatLt}.
+and new obligations. These are the arguments formalized by
+\Rocqid{complete_RhatLe} and \Rocqid{complete_RhatLt}.
 
 \runinhead{Lower-bounded hatted Release.}
 While $\mathsf{RRes}_{\ge}$ holds, $v<d$, and $p$ has not discharged the
@@ -902,10 +902,8 @@ of that formula.
 
 For a propositional B\"uchi automaton $A$ over the extended atoms, let
 $\mathsf{compile\_with}(A)$ denote relaxation followed by reset completion.
-Its correctness premise, Assumption~\ref{ass:backend}, is language
-equivalence over the action-consistent propositional words, including
-valuations of the clock-related atoms that are not clock-consistent. The single composed theorem (Fig.~\ref{fig:correctness-composition}),
-conditional on the backend contract, is:
+Its correctness premise is Assumption~\ref{ass:backend}. The single composed
+theorem (Fig.~\ref{fig:correctness-composition}), conditional on that premise, is:
 \begin{theorem}[Conditional MTL-to-TBA correctness]
 \label{thm:mtl-to-tba-correct}
 For every well-formed formula $f$, timed word $w$, and propositional
@@ -915,8 +913,7 @@ w,0\satM f
 \quad\Longleftrightarrow\quad
 \mathsf{TBA\_accepts}(\mathsf{compile\_with}(A),w).
 \]
-In Rocq this is \Rocqid{MTL_to_TBA_correct_with}; backend language
-equivalence is an explicit premise.
+In Rocq this is \Rocqid{MTL_to_TBA_correct_with}.
 \end{theorem}
 \begin{proof}
 For the forward direction, the encoding theorem supplies a canonical clock-consistent
@@ -1089,15 +1086,12 @@ dependencies for classical real comparison
 decisions, excluded middle, functional extensionality, and descriptions.
 These are distinct from the project-specific backend axiom. The theorem
 \Rocqid{MTL_to_TBA_correct_with} has no
-\Rocqid{LTL_TO_BUCHI_CORRECT} dependency; its backend premise
-is explicit. The convenience theorem does use that axiom. 
+\Rocqid{LTL_TO_BUCHI_CORRECT} dependency. 
 
-The formal domain remains deliberately bounded: well-formed core formulas;
-real-valued mathematical parameters (not executable encodings of arbitrary
-reals); strictly increasing divergent timestamps; event-guarded automata
-without location invariants. Parsing, a concrete LTL backend implementation, Spot execution, graph import, and
-automaton printing remain outside
-the theorem. 
+The formal domain is the one stated in the introduction; its real-valued
+parameters are mathematical reals, not executable encodings. Parsing, a concrete
+LTL backend implementation, Spot execution, graph import, and automaton
+printing remain outside the theorem. 
 
 The occurrence-indexed induction, residual invariants, and separate
 relaxation/reset-completion obligations expose the proof dependencies behind
@@ -1271,7 +1265,7 @@ response and separation properties~\cite{[RTH96],[BDLG14]}. The hatted
 operators make the timing reference explicit in the logic and proof.
 
 \runinhead{Translations of timed logics.}
-Li et al. establish the full-fragment mathematical language-equivalence
+Li et al. give the full-fragment mathematical language-equivalence
 result. The translations of Bulychev et al. and Li et al. state their rewriting
 rules and proofs for the non-strict ordinary operators and assume that no other
 timed operator occurs; strict bounds and the hatted operators appear in their
@@ -1399,8 +1393,7 @@ preserving the identity of a shared clock. This gives a checked account of how
 overlapping timed requirements are handled in the specified model.
 
 Rocq also checks relaxation and reset completion and composes them with an
-explicit propositional backend language-equivalence contract. The resulting
-theorem makes the backend dependency explicit. This work builds on the mathematical language-preservation
+explicit propositional backend language-equivalence contract. This work builds on the mathematical language-preservation
 results of Li et al. and adjacent proof-assistant work, while contributing a
 reformulation that factors the
 translation through untimed clocked LTL and a standard LTL-to-B\"uchi backend,
@@ -1415,10 +1408,9 @@ on 28 of the 31 configurations; the larger configurations are inconclusive.
 All tests use integer bounds.
 
 The theorem applies to the stated pointwise semantics and composes
-through an explicit backend contract. The contract is discharged only for a
-manually transcribed backend record in the alarm-response instance, and
-Spot's graph generation/import and zero-bound preprocessing remain outside
-the checked boundary. Future work
+through an explicit backend contract, discharged only for the transcribed
+alarm-response record; Spot's graph generation and import, extraction, and
+zero-bound preprocessing remain outside the checked boundary. Future work
 can extend the mechanization to these components and connect the semantic
 theorem to a verified executable backend. Tool-level behavior on non-integer
 bounds is untested.
