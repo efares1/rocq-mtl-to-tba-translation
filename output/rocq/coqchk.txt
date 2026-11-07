@@ -1,0 +1,22 @@
+
+CONTEXT SUMMARY
+===============
+
+* Theory: Set is predicative
+  
+* Theory: Rewrite rules are not allowed
+  
+* Axioms:
+    Stdlib.Logic.Description.constructive_definite_description
+    Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+    Stdlib.Reals.ClassicalDedekindReals.sig_not_dec
+    MTL_to_TBA_Shared_Clock_Derived_Strict_Direct_Core.LTL_TO_BUCHI_CORRECT
+    Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    Stdlib.Logic.Classical_Prop.classic
+  
+* Constants/Inductives relying on type-in-type: <none>
+  
+* Constants/Inductives relying on unsafe (co)fixpoints: <none>
+  
+* Inductives whose positivity is assumed: <none>
+  

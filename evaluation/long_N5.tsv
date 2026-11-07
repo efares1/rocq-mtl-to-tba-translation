@@ -1,0 +1,2 @@
+id	formula	locs	trans	clocks	time_s	P1	P2	S	C
+N5	<>[<=5](p1 & <>[<=5](p2 & <>[<=5](p3 & <>[<=5](p4 & <>[<=5] p5))))	7	57	5	0.32	timeout	timeout	timeout	NONEMPTY

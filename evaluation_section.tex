@@ -1,0 +1,31 @@
+\section{Extracted Tool and Validation}
+\label{sec:evaluation}
+To exercise the verified definitions, we extract the functions $\T$,
+relaxation, and reset completion to OCaml~\cite{letouzey_extraction} and wrap
+them in a tool, \texttt{mtl2tba}. The verified claim of the article is Theorem~\ref{thm:mtl-to-tba-correct}; the
+tool is not needed for it.
+
+\subsection{Tool and trust boundary}
+\label{subsec:workflow}
+\texttt{mtl2tba} parses an MTL formula, computes $\T(f)$, calls
+Spot~2.16~\cite{spot} as the LTL-to-B\"uchi backend, reads its LBTT output, and
+applies relaxation and reset completion. We write
+$\mathsf{compile}(f)=\mathsf{compile\_with}(A)$, where $A$ is the automaton that
+Spot returns for $\T(f)$. The functions $\T$, relaxation, and reset completion
+are extracted from the Rocq definitions, so the executable functions correspond to the Rocq definitions that
+Theorem~\ref{thm:mtl-to-tba-correct} covers, relative to the backend contract
+and assuming that extraction and the OCaml toolchain are correct. Bounds are
+integers in the tool, whereas the theorem is stated for real bounds. The verified backend of Section~\ref{subsec:verified-backend} is not
+part of the tool. Outside the checked boundary are the parser and the printers, the call
+to Spot and the LBTT import (covered only by Assumption~\ref{ass:backend}), and the extraction to OCaml and the OCaml compiler. Spot returns
+automata with transition-based, possibly generalized acceptance; their
+conversion to the propositional automaton of Assumption~\ref{ass:backend} is
+part of this unverified import, and the tool does not check at run time that
+Spot's output meets the contract. The compiled TBAs are exported to TChecker in
+a textual format; that the exported automaton has the semantics of the Rocq
+TBA (guards tested before resets at each event, no invariants, one event per
+position) is likewise unverified.
+
+The artifact (\path{evaluation/} and \path{case_study/}) contains the scripts
+that run the tool on sample formulas and a two-train railway-crossing model with
+TChecker. The article makes no claim based on their results.

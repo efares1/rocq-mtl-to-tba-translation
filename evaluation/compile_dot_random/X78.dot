@@ -1,0 +1,36 @@
+digraph TBA {
+  rankdir=LR;
+  node [shape=circle];
+  init [shape=point];
+  init -> L0;
+  L0 [shape=circle, label="L0"];
+  L1 [shape=doublecircle, label="L1"];
+  L2 [shape=doublecircle, label="L2"];
+  L3 [shape=circle, label="L3"];
+  L4 [shape=doublecircle, label="L4"];
+  L5 [shape=circle, label="L5"];
+  L6 [shape=circle, label="L6"];
+  L7 [shape=doublecircle, label="L7"];
+  L8 [shape=circle, label="L8"];
+  L0 -> L1 [label="r,other\nx0 := 0"];
+  L0 -> L2 [label="q\nx0 := 0"];
+  L0 -> L3 [label="q\nx0, x1 := 0"];
+  L1 -> L1 [label="any\nx0 := 0"];
+  L2 -> L2 [label="x0 < 2\nany"];
+  L2 -> L4 [label="r\nx0 := 0"];
+  L2 -> L4 [label="r\nx0 := 0"];
+  L3 -> L1 [label="x1 > 1\nq\nx0 := 0"];
+  L3 -> L5 [label="x1 > 1\nother\nx0 := 0"];
+  L3 -> L6 [label="q,other\nx0 := 0"];
+  L3 -> L7 [label="q,other\nx0 := 0"];
+  L4 -> L4 [label="r\nx0 := 0"];
+  L5 -> L1 [label="q\nx0 := 0"];
+  L5 -> L5 [label="other\nx0 := 0"];
+  L6 -> L1 [label="x1 > 1\nq\nx0 := 0"];
+  L6 -> L5 [label="x1 > 1\nother\nx0 := 0"];
+  L6 -> L6 [label="q,other\nx0 := 0"];
+  L7 -> L7 [label="q\nx0 := 0"];
+  L7 -> L8 [label="other\nx0 := 0"];
+  L8 -> L7 [label="q\nx0 := 0"];
+  L8 -> L8 [label="other\nx0 := 0"];
+}

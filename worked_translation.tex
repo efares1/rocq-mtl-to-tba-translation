@@ -1,0 +1,84 @@
+\subsection{Worked example: bounded eventuality with an exclusion window}
+Let
+\[
+  f=(\Diamond_{\le5}p)\land(\Box_{<2}\neg p).
+\]
+It requires $p$ to be false at every position before age 2 and to hold at
+some position no later than age 5. Figure~\ref{fig:translation-reference-tba} shows a hand-simplified
+equivalent one-clock TBA, not the syntax-directed output, since the latter assigns
+separate clocks to the two distinct timed subformulas. The steps below show
+the clocked-LTL translation and timed reinterpretation. The concrete instance
+checked in Rocq is the alarm-response example in
+Section~\ref{sec:alarm-example}.
+
+\begin{figure}[t]
+\centering
+\input{figures/fig_tba_example}
+\caption{Hand-simplified equivalent event-guarded TBA for $f$. Edges are labeled by
+event and guard; $\mathsf{rst}(x)$ resets $x$, and $q_{\mathit{acc}}$ is the
+accepting location. The initial transition requires $\neg p$ and resets $x$;
+the edges leaving the waiting location are guarded by $x\le5$, and the edge to
+the accepting location also requires $x\ge2$. Thus $p$ first holds at an age
+in $[2,5]$}
+\Description{A small event-guarded timed Büchi automaton with an initial transition that resets a clock, a waiting location with edges guarded by a clock at most 5, and an accepting location reached by an edge that also requires the clock to be at least 2.}
+\label{fig:translation-reference-tba}
+\end{figure}
+
+\begin{enumerate}[label=Step~\arabic*:,leftmargin=*]
+\item The formula is in negation normal form. Expanding the derived operators
+and applying the timed-operator identities gives
+\[
+\begin{aligned}
+f
+ &= (\top\Until_{\le5}p)\land(\bot\Release_{<2}\neg p)\\
+ &= \bigl(p\lor(\top\land\top\hUntil_{\le5}p)\bigr)\\
+ &\qquad\land\bigl(\neg p\land(\bot\lor\bot\hRelease_{<2}\neg p)\bigr).
+\end{aligned}
+\]
+These current-position cases follow Eqs.~\eqref{eq:derive-ule} and
+\eqref{eq:derive-rle}.
+
+\item The two distinct primitive timed subformulas receive clocks $x$ and
+$y$, respectively. Their clocked-LTL translation is
+\begingroup\small
+\begin{align*}
+\Phi_U={}&p\lor\bigl(\top\land\Next\bigl(((x\le5)\land\Unch(x)\land\top)\Until((x\le5)\land p)\bigr)\bigr),\\[-1mm]
+\Phi_R={}&\neg p\land\bigl(\bot\lor(\Reset(y)\land\Next(\neg p\WeakUntil((y\ge2)\lor(\bot\land\neg p))))\bigr),\\[-1mm]
+\T(f)={}&\Phi_U\land\Phi_R.
+\end{align*}
+\endgroup
+The Until clause preserves $x$; the Release test $y\ge2$ complements the source
+bound $<2$, allowing $p$ from age 2.
+
+\item The Spot~2.16 graph for $\T(f)$ is redrawn at the top of
+Figure~\ref{fig:translation-steps45}. The clock guards $x\le5$ and
+$y\ge2$, the markers $\mathsf{unch}(x)$ and $\mathsf{rst}(y)$, and the action
+atom $p$ are propositions to the backend. The graph has four
+states and seven transitions.
+
+\item Relaxation removes negative literals over extended clock atoms, here
+$\neg(y\ge2)$. Reset completion resets the preservation clock $x$ unless
+$\mathsf{unch}(x)$ is present; the restart clock $y$ is reset exactly when
+$\mathsf{rst}(y)$ is present. The bottom of
+Figure~\ref{fig:translation-steps45} shows the same state graph after these
+operations: each edge carries the event, the clock guard, and the resets. The
+event is an action ($p$ or $\neg p$), and $\top$ stands for any event.
+Relaxation removes $\neg(y\ge2)$ from the loop on~2, which therefore stays
+enabled after age~2. From then on state~2 behaves as state~3, since $y$ is
+never reset again, so no word is added; the two states could be merged, which
+the translation does not do.
+\end{enumerate}
+
+\begin{figure*}[!t]
+\centering
+\input{figures/fig_steps45}
+\caption{The Spot~2.16 graph for $\T(f)$ (top, redrawn; the labels are
+propositional cubes over the action atom $p$, the clock guards, and the markers
+$\mathsf{unch}(x)$ and $\mathsf{rst}(y)$) and the reset-completed TBA obtained
+from it by hand (bottom; same state numbers, which are Spot's). A TBA edge is labeled
+by the event, the clock guard, and, after a slash, the clocks reset; $\top$ is
+any event, and an edge without a slash resets no clock. This graph-to-TBA
+illustration is not the formally verified alarm-response backend instance}
+\Description{Two automata with the same state numbers. The top one is Spot's graph for the clocked-LTL formula, with edges labeled by propositional cubes. The bottom one is the reset-completed timed automaton derived from it, with edges labeled by event, clock guard, and resets after a slash.}
+\label{fig:translation-steps45}
+\end{figure*}

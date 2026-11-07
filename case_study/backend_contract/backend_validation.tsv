@@ -1,0 +1,5 @@
+id	atoms	spot_states	spot_edges	reader_states	reader_trans	ltl2ba_states	equivalent	time_s
+R1n	5	3	5	3	5	4	yes	0.44
+R2n	5	4	9	4	9	4	yes	0.45
+R3n	5	4	9	4	9	4	yes	0.44
+R4n	6	4	8	4	8	4	yes	0.44

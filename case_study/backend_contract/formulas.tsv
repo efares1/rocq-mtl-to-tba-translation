@@ -1,0 +1,4 @@
+R1n	negation of R1	!([]((approach1 | approach2) -> <>[<=5] lower))	-
+R2n	negation of R2	!([]((approach1 -> (!enter1 U lower)) & (approach2 -> (!enter2 U lower))))	-
+R3n	negation of R3	!([]((enter1 -> (!raise U exit1)) & (enter2 -> (!raise U exit2))))	-
+R4n	negation of R4	!([]((approach1 -> ^[][<5] !approach1) & (approach2 -> ^[][<5] !approach2)))	-

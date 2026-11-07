@@ -1,0 +1,4 @@
+ok runs 3000 violating runs: {'R1': 0, 'R2': 0, 'R3': 0, 'R4': 0}
+slow runs 3000 violating runs: {'R1': 2255, 'R2': 1518, 'R3': 0, 'R4': 0}
+counter runs 3000 violating runs: {'R1': 0, 'R2': 0, 'R3': 1336, 'R4': 0}
+turnback runs 3000 violating runs: {'R1': 0, 'R2': 0, 'R3': 0, 'R4': 308}

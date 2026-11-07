@@ -1,0 +1,42 @@
+# build products
+build/
+_build/
+tmp/
+*.aux
+*.log
+*.blg
+*.bbl
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+# Rocq / OCaml objects
+*.vo
+*.vos
+*.vok
+*.glob
+.*.aux
+.lia.cache
+.nra.cache
+*.cmi
+*.cmo
+*.cmx
+*.o
+*.exe
+# local / personal
+.agents/
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini
+
+# large generated automata (regenerate with evaluation/dump_compile_dot.sh)
+evaluation/compile_dot/R6.dot
+evaluation/compile_dot/R7.dot
+
+# Python caches
+__pycache__/
+*.pyc
+
+*.pdf

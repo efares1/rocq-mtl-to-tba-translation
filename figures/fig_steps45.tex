@@ -1,0 +1,39 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+% Left: the saved Spot graph for T(f) (negated event atom printed as !"p").
+% Right of the arrows: guards and resets of the reset-completed TBA.
+\begin{scope}[xshift=0cm]
+  \node[fmnote,font=\small\bfseries,anchor=west] at (-0.9,1.55) {Spot output};
+  \node[fmstate] (a0) at (0.0,0.0) {$1$};
+  \node[fmstate] (a1) at (4.6,0.0) {$2$};
+  \node[fmstate] (a3) at (9.8,0.0) {$3$};
+  \node[fmaccept] (a2) at (4.6,-2.7) {$0$};
+  \draw[fmedge] (-1.0,0.0) -- (a0);
+  \draw[fmedge] (a0) -- node[fmlabel,above] {$\neg p\land\mathsf{rst}(y)$} (a1);
+  \draw[fmedge] (a1) edge[loop above,looseness=6]
+    node[fmlabel,yshift=9pt] {$\neg p\land\mathsf{unch}(x)\land x\le5\land\neg(y\ge2)$} (a1);
+  \draw[fmedge] (a1) -- node[fmlabel,above,yshift=7pt,xshift=0pt] {$\neg p\land\mathsf{unch}(x)$\\$\land x\le5\land y\ge2$} (a3);
+  \draw[fmedge] (a1) -- node[fmlabel,left,xshift=-12pt] {$p\land x\le5\land y\ge2$} (a2);
+  \draw[fmedge] (a3) edge[loop above,looseness=6]
+    node[fmlabel,yshift=9pt] {$\neg p\land\mathsf{unch}(x)\land x\le5$} (a3);
+  \draw[fmedge] (a3) -- node[fmlabel,sloped,below,yshift=-10pt] {$p\land x\le5$} (a2);
+  \draw[fmedge] (a2) edge[loop below,looseness=5] node[fmlabel,yshift=-9pt] {$\top$} (a2);
+\end{scope}
+
+\begin{scope}[yshift=-6.6cm]
+  \node[fmnote,font=\small\bfseries,anchor=west] at (-0.9,1.55) {Reset-completed TBA};
+  \node[fmstate] (b0) at (0.0,0.0) {$1$};
+  \node[fmstate] (b1) at (4.6,0.0) {$2$};
+  \node[fmstate] (b3) at (9.8,0.0) {$3$};
+  \node[fmaccept] (b2) at (4.6,-2.7) {$0$};
+  \draw[fmedge] (-1.0,0.0) -- (b0);
+  \draw[fmedge] (b0) -- node[fmlabel,above] {$\neg p\;/\;\mathsf{rst}(x,y)$} (b1);
+  \draw[fmedge] (b1) edge[loop above,looseness=6]
+    node[fmlabel,yshift=9pt] {$\neg p,\;x\le5$} (b1);
+  \draw[fmedge] (b1) -- node[fmlabel,above,yshift=7pt,xshift=-8pt] {$\neg p,\;x\le5\land y\ge2$} (b3);
+  \draw[fmedge] (b1) -- node[fmlabel,left,xshift=-12pt] {$p,\;x\le5\land y\ge2\;/\;\mathsf{rst}(x)$} (b2);
+  \draw[fmedge] (b3) edge[loop above,looseness=6]
+    node[fmlabel,yshift=9pt] {$\neg p,\;x\le5$} (b3);
+  \draw[fmedge] (b3) -- node[fmlabel,sloped,below,yshift=-10pt] {$p,\;x\le5\;/\;\mathsf{rst}(x)$} (b2);
+  \draw[fmedge] (b2) edge[loop below,looseness=5] node[fmlabel,yshift=-9pt] {$\top\;/\;\mathsf{rst}(x)$} (b2);
+\end{scope}
+\end{tikzpicture}

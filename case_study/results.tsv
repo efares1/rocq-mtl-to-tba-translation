@@ -1,0 +1,21 @@
+req	formula	model	compile_locs	compile_trans	clocks	verdict	secs
+R1	[]((approach1 | approach2) -> <>[<=5] lower)	ok	3	6	1	holds	0.21
+R1	[]((approach1 | approach2) -> <>[<=5] lower)	slow	3	6	1	VIOLATED	0.11
+R1	[]((approach1 | approach2) -> <>[<=5] lower)	counter	3	6	1	holds	0.31
+R1	[]((approach1 | approach2) -> <>[<=5] lower)	turnback	3	6	1	holds	2.41
+R2	[]((approach1 -> (!enter1 U lower)) & (approach2 -> (!enter2 U lower)))	ok	4	16	0	holds	0.21
+R2	[]((approach1 -> (!enter1 U lower)) & (approach2 -> (!enter2 U lower)))	slow	4	16	0	VIOLATED	0.11
+R2	[]((approach1 -> (!enter1 U lower)) & (approach2 -> (!enter2 U lower)))	counter	4	16	0	holds	0.41
+R2	[]((approach1 -> (!enter1 U lower)) & (approach2 -> (!enter2 U lower)))	turnback	4	16	0	holds	1.31
+R3	[]((enter1 -> (!raise U exit1)) & (enter2 -> (!raise U exit2)))	ok	4	14	0	holds	0.21
+R3	[]((enter1 -> (!raise U exit1)) & (enter2 -> (!raise U exit2)))	slow	4	14	0	holds	0.51
+R3	[]((enter1 -> (!raise U exit1)) & (enter2 -> (!raise U exit2)))	counter	4	14	0	VIOLATED	0.11
+R3	[]((enter1 -> (!raise U exit1)) & (enter2 -> (!raise U exit2)))	turnback	4	14	0	holds	1.11
+R4	[]((approach1 -> ^[][<5] !approach1) & (approach2 -> ^[][<5] !approach2))	ok	4	8	2	holds	0.21
+R4	[]((approach1 -> ^[][<5] !approach1) & (approach2 -> ^[][<5] !approach2))	slow	4	8	2	holds	0.51
+R4	[]((approach1 -> ^[][<5] !approach1) & (approach2 -> ^[][<5] !approach2))	counter	4	8	2	holds	0.31
+R4	[]((approach1 -> ^[][<5] !approach1) & (approach2 -> ^[][<5] !approach2))	turnback	4	8	2	VIOLATED	0.11
+model-alone	-	ok	-	-	-	CYCLE true	-
+model-alone	-	slow	-	-	-	CYCLE true	-
+model-alone	-	counter	-	-	-	CYCLE true	-
+model-alone	-	turnback	-	-	-	CYCLE true	-

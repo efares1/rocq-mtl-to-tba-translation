@@ -1,0 +1,5 @@
+R1 holds on the run: True
+R2 holds on the run: True
+R3 holds on the run: False
+R4 holds on the run: True
+n3 accepted by compile(neg R3): True

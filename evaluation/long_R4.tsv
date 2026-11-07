@@ -1,0 +1,2 @@
+id	formula	locs	trans	clocks	time_s	P1	P2	S	C
+R4	[](a1 -> <>[<=5] b1) & [](a2 -> <>[<=5] b2) & [](a3 -> <>[<=5] b3) & [](a4 -> <>[<=5] b4)	48	1625	4	3.36	timeout	empty	timeout	NONEMPTY

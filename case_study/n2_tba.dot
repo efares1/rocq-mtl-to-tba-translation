@@ -1,0 +1,26 @@
+digraph TBA {
+  rankdir=LR;
+  node [shape=circle];
+  init [shape=point];
+  init -> L0;
+  L0 [shape=circle, label="L0"];
+  L1 [shape=doublecircle, label="L1"];
+  L2 [shape=doublecircle, label="L2"];
+  L3 [shape=doublecircle, label="L3"];
+  L0 -> L0 [label="lower"];
+  L0 -> L0 [label="enter1,enter2,lower,other"];
+  L0 -> L0 [label="approach2,enter1,lower,other"];
+  L0 -> L0 [label="approach1,enter2,lower,other"];
+  L0 -> L0 [label="approach1,approach2,lower,other"];
+  L0 -> L1 [label=""];
+  L0 -> L1 [label=""];
+  L0 -> L2 [label="approach1"];
+  L0 -> L2 [label="approach1"];
+  L0 -> L3 [label="approach2"];
+  L0 -> L3 [label="approach2"];
+  L1 -> L1 [label="any"];
+  L2 -> L1 [label="enter1"];
+  L2 -> L2 [label="approach1,approach2,enter2,other"];
+  L3 -> L1 [label="enter2"];
+  L3 -> L3 [label="approach1,approach2,enter1,other"];
+}

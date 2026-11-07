@@ -1,0 +1,8 @@
+digraph TBA {
+  rankdir=LR;
+  node [shape=circle];
+  init [shape=point];
+  init -> L0;
+  L0 [shape=doublecircle, label="L0"];
+  L0 -> L0 [label="q\nx0 := 0"];
+}
